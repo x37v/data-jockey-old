@@ -1,24 +1,8 @@
 #include "mixerpanelview.hpp"
-#include "djmixercontrolview.hpp"
-#include "eqview.hpp"
+#include "djmixerchannelview.cpp"
 #include <QSlider>
 #include <QGridLayout>
 #include <QToolButton>
-
-DJMixerChannelView::DJMixerChannelView(QWidget * parent)
-	: QWidget(parent) 
-{
-	mDJMixerControl = new DJMixerControlView(this);
-	mMixerChannel = new MixerChannelView(this);
-}
-
-DJMixerControlView * DJMixerChannelView::DJMixerControl(){
-	return mDJMixerControl;
-}
-
-MixerChannelView * DJMixerChannelView::mixerChannel(){
-	return mMixerChannel;
-}
 
 MixerPanelView::MixerPanelView(unsigned int numMixers, QWidget *parent)
 : QWidget(parent)
