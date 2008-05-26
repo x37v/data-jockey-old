@@ -1,5 +1,4 @@
-#include "djmixercontrolview.hpp"
-#include "masterview.hpp"
+#include "mixerpanelview.hpp"
 #include <QApplication>
 #include <QWidget>
 #include <QCleanlooksStyle>
@@ -9,6 +8,8 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 	 app.setStyle(new QCleanlooksStyle);
+
+	 /*
 	 QWidget * win = new QWidget;
 	 win->setWindowTitle("floatme: datajockey");
     DJMixerControlView * mixerChans = new DJMixerControlView[4];
@@ -24,6 +25,9 @@ int main(int argc, char *argv[])
 	 layout->addWidget(master);
 	 win->setLayout(layout);
 	 win->show();
+	 */
 
+	 MixerPanelView * mixerPannel = new MixerPanelView;
+	 mixerPannel->show();
     return app.exec();
 }

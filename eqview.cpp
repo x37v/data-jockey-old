@@ -18,6 +18,14 @@ EQView::EQView(QWidget *parent)
 	mMid->setToolTip("eq mid");
 	mHigh->setToolTip("eq high");
 
+	mLow->setFixedSize(mLow->minimumSizeHint());
+	mMid->setFixedSize(mMid->minimumSizeHint());
+	mHigh->setFixedSize(mHigh->minimumSizeHint());
+
+	//mLow->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
+	//mMid->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
+	//mHigh->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
+
 	//mLow.setMouseTracking(true);
 	//mMid.setMouseTracking(true);
 	//mHigh.setMouseTracking(true);
@@ -27,6 +35,8 @@ EQView::EQView(QWidget *parent)
 	mLayout->addWidget(mHigh, 0, Qt::AlignHCenter);
 	mLayout->addWidget(mMid, 0, Qt::AlignHCenter);
 	mLayout->addWidget(mLow, 0, Qt::AlignHCenter);
+
+	setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
 
 	setLayout(mLayout);
 }
