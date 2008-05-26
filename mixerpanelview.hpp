@@ -3,23 +3,25 @@
 
 #include <QWidget>
 #include "djmixercontrolview.hpp"
+#include "mixerchannelview.hpp"
 
 class DJMixerControlView;
 class EQView;
 class QSlider;
-class MixerPanelView;
+class QToolButton;
 class QGridLayout;
+class MixerPanelView;
 
-class DJMixerChannelView {
+class DJMixerChannelView : public QWidget {
+	Q_OBJECT
 	public:
-		EQView * eq();
-		QSlider * volumeSlider();
+		DJMixerChannelView(QWidget *parent = NULL);
 		DJMixerControlView * DJMixerControl();
+		MixerChannelView * mixerChannel();
 	private:
 		friend class MixerPanelView;
-		EQView * mEQ;
-		QSlider * mVolumeSlider;
 		DJMixerControlView * mDJMixerControl;
+		MixerChannelView * mMixerChannel;
 };
 
 class MixerPanelView : public QWidget {

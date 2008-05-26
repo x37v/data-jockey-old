@@ -3,40 +3,53 @@
 #include "eqview.hpp"
 #include <QSlider>
 #include <QGridLayout>
+#include <QToolButton>
 
-EQView * DJMixerChannelView::eq(){
-	return mEQ;
-}
-
-QSlider * DJMixerChannelView::volumeSlider(){
-	return mVolumeSlider;
+DJMixerChannelView::DJMixerChannelView(QWidget * parent)
+	: QWidget(parent) 
+{
+	mDJMixerControl = new DJMixerControlView(this);
+	mMixerChannel = new MixerChannelView(this);
 }
 
 DJMixerControlView * DJMixerChannelView::DJMixerControl(){
 	return mDJMixerControl;
 }
 
+MixerChannelView * DJMixerChannelView::mixerChannel(){
+	return mMixerChannel;
+}
+
 MixerPanelView::MixerPanelView(unsigned int numMixers, QWidget *parent)
 : QWidget(parent)
 {
 	mLayout = new QGridLayout(this);
-	mMasterVolume = new QSlider(this);
+	if(numMixers == 0)
+		numMixers = 1;
 	for(unsigned int i = 0; i < numMixers; i++){
 		DJMixerChannelView * cur = new DJMixerChannelView;
 		mDJMixerChannels.push_back(cur);
-		cur->mVolumeSlider = new QSlider(this);
-		cur->mEQ = new EQView(this);
-		cur->mDJMixerControl = new DJMixerControlView(this);
 		mLayout->addWidget(cur->DJMixerControl(),0, i, 1, 1, Qt::AlignCenter);
-		mLayout->addWidget(cur->eq(),1, i, 1, 1, Qt::AlignCenter);
-		mLayout->addWidget(cur->volumeSlider(),2, i, 1, 1, Qt::AlignHCenter);
+		mLayout->addWidget(cur->mixerChannel()->eq(),1, i, 1, 1, Qt::AlignCenter);
+		mLayout->addWidget(cur->mixerChannel()->muteButton(),2, i, 1, 1, Qt::AlignHCenter);
+		mLayout->addWidget(cur->mixerChannel()->volumeSlider(),3, i, 1, 1, Qt::AlignHCenter);
 		mLayout->setColumnStretch(i,0);
 	}
-	mLayout->addWidget(mMasterVolume, 2, numMixers, 1, 1, Qt::AlignHCenter);
+
+	//create the master volume and have it reflect the settings of the mixer channels volume
+	mMasterVolume = new QSlider(this);
+	mMasterVolume->setTickPosition(mDJMixerChannels[0]->mixerChannel()->volumeSlider()->tickPosition());
+	mMasterVolume->setRange(mDJMixerChannels[0]->mixerChannel()->volumeSlider()->minimum(),
+			mDJMixerChannels[0]->mixerChannel()->volumeSlider()->maximum());
+	mMasterVolume->setValue(100);
+	mLayout->addWidget(mMasterVolume, 3, numMixers, 1, 1, Qt::AlignHCenter);
+
+	//set layout settings
 	mLayout->setColumnStretch(numMixers,0);
 	mLayout->setRowStretch(0,0);
 	mLayout->setRowStretch(1,0);
-	mLayout->setRowStretch(2,10);
+	mLayout->setRowStretch(2,0);
+	mLayout->setRowStretch(3,10);
 	mLayout->setSpacing(0);
 	mLayout->setContentsMargins(0,0,0,0);
 	setLayout(mLayout);

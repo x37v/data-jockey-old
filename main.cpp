@@ -28,6 +28,7 @@ int main(int argc, char *argv[])
 	 */
 
 	 MixerPanelView * mixerPannel = new MixerPanelView;
+	 mixerPannel->setWindowTitle("floatme: datajockey");
 	 mixerPannel->show();
     return app.exec();
 }
