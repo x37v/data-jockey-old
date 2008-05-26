@@ -13,7 +13,6 @@ class DJMixerChannelView : public QWidget {
 		DJMixerControlView * DJMixerControl();
 		MixerChannelView * mixerChannel();
 	private:
-		friend class MixerPanelView;
 		DJMixerControlView * mDJMixerControl;
 		MixerChannelView * mMixerChannel;
 };

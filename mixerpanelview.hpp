@@ -6,9 +6,7 @@
 class DJMixerChannelView;
 class EQView;
 class QSlider;
-class QToolButton;
 class QGridLayout;
-class MixerPanelView;
 
 class MixerPanelView : public QWidget {
 	Q_OBJECT

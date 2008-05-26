@@ -26,7 +26,7 @@ MixerPanelView::MixerPanelView(unsigned int numMixers, QWidget *parent)
 	mMasterVolume = new QSlider(this);
 	mMasterVolume->setTickPosition(tmpSlider->tickPosition());
 	mMasterVolume->setRange(tmpSlider->minimum(), tmpSlider->maximum());
-	mMasterVolume->setValue(100);
+	mMasterVolume->setValue(tmpSlider->value());
 	mLayout->addWidget(mMasterVolume, 3, numMixers, 1, 1, Qt::AlignHCenter);
 
 	//set layout settings
@@ -39,3 +39,4 @@ MixerPanelView::MixerPanelView(unsigned int numMixers, QWidget *parent)
 	mLayout->setContentsMargins(0,0,0,0);
 	setLayout(mLayout);
 }
+
