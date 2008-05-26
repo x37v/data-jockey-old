@@ -7,16 +7,20 @@ class DJMixerChannelView;
 class EQView;
 class QSlider;
 class QGridLayout;
+class QDoubleSpinBox;
 
 class MixerPanelView : public QWidget {
 	Q_OBJECT
 	public:
 		MixerPanelView(unsigned int numMixers = 4, QWidget *parent = NULL);
 		//XXX destructor?
+		QSlider * masterVolume();
+		QDoubleSpinBox * tempo();
 	private:
 		QGridLayout * mLayout;
 		std::vector<DJMixerChannelView *> mDJMixerChannels;
 		QSlider * mMasterVolume;
+		QDoubleSpinBox * mTempo;
 };
 
 #endif
