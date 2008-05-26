@@ -1,17 +1,14 @@
-#include "djmixerchannelview.hpp"
-#include "mixerchannelview.hpp"
+#include "djmixercontrolview.hpp"
 #include <QVBoxLayout>
-#include <QHBoxLayout>
 #include <QToolButton>
 #include <QProgressBar>
 #include <QSpinBox>
 
-DJMixerChannelView::DJMixerChannelView(QWidget *parent)
+DJMixerControlView::DJMixerControlView(QWidget *parent)
 	: QWidget(parent)
 {
 	mLayout = new QVBoxLayout(this);
 	setLayout(mLayout);
-	mMixerChannel = new MixerChannelView(this);
 	mLayout->setContentsMargins(0,0,0,0);
 	mLayout->setSpacing(0);
 
@@ -79,6 +76,5 @@ DJMixerChannelView::DJMixerChannelView(QWidget *parent)
 	mLayout->addLayout(playLayout,0);
 	mLayout->addLayout(seekLayout,0);
 	mLayout->addWidget(mProgressBar,1, Qt::AlignHCenter);
-	mLayout->addWidget(mMixerChannel,0);
 	mLayout->addWidget(mBeatOffeset, 1, Qt::AlignHCenter);
 }

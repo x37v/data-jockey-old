@@ -1,23 +1,20 @@
-#ifndef DJ_MIXER_CHANNEL_VIEW_HPP
-#define DJ_MIXER_CHANNEL_VIEW_HPP
+#ifndef DJ_MIXER_CONTROL_VIEW_HPP
+#define DJ_MIXER_CONTROL_VIEW_HPP
 
 #include <QWidget>
-#include "mixerchannelview.hpp"
+#include <QHBoxLayout>
 
 class QVBoxLayout;
-class QHBoxLayout;
 class QToolButton;
 class QProgressBar;
 class QSpinBox;
 
-class DJMixerChannelView : public QWidget {
+class DJMixerControlView : public QWidget {
 	Q_OBJECT
 	public:
-		DJMixerChannelView(QWidget *parent = NULL);
-		MixerChannelView * mixerChannel();
+		DJMixerControlView(QWidget *parent = NULL);
 		void reset();
 	private:
-		MixerChannelView * mMixerChannel;
 		QToolButton * mLoadBtn;
 		QToolButton * mResetBtn;
 		QToolButton * mCueBtn;
@@ -30,7 +27,6 @@ class DJMixerChannelView : public QWidget {
 
 		QVBoxLayout * mLayout;
 };
-
 
 #endif
 
