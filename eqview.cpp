@@ -2,8 +2,6 @@
 #include <QDial>
 #include <QVBoxLayout>
 #include <QWidget>
-#include <QLabel>
-
 
 EQView::EQView(QWidget *parent)
 	: QWidget(parent) 
@@ -11,13 +9,14 @@ EQView::EQView(QWidget *parent)
 	mLow = new QDial(this);
 	mMid = new QDial(this);
 	mHigh = new QDial(this);
-	mLowLabel = new QLabel(tr("Low"),this);
-	mMidLabel = new QLabel(tr("Mid"),this);
-	mHighLabel = new QLabel(tr("High"),this);
 	mLayout = new QVBoxLayout(this);
 	mLow->setRange(-100,100);
 	mMid->setRange(-100,100);
 	mHigh->setRange(-100,100);
+
+	mLow->setToolTip("eq low");
+	mMid->setToolTip("eq mid");
+	mHigh->setToolTip("eq high");
 
 	//mLow.setMouseTracking(true);
 	//mMid.setMouseTracking(true);
@@ -25,11 +24,8 @@ EQView::EQView(QWidget *parent)
 	
 	mLayout->setSpacing(0);
 	mLayout->setContentsMargins(0,0,0,0);
-	mLayout->addWidget(mHighLabel, 0, Qt::AlignHCenter);
 	mLayout->addWidget(mHigh, 0, Qt::AlignHCenter);
-	mLayout->addWidget(mMidLabel, 0, Qt::AlignHCenter);
 	mLayout->addWidget(mMid, 0, Qt::AlignHCenter);
-	mLayout->addWidget(mLowLabel, 0, Qt::AlignHCenter);
 	mLayout->addWidget(mLow, 0, Qt::AlignHCenter);
 
 	setLayout(mLayout);

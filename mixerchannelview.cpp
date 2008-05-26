@@ -5,13 +5,16 @@ MixerChannelView::MixerChannelView(QWidget * parent)
 {
 	mEQView = new EQView(this); 
 	mVolumeSlider = new QSlider(Qt::Vertical, this);
-	mMuteBtn = new QPushButton("mute", this);
+	mMuteBtn = new QToolButton(this);
 	mLayout = new QVBoxLayout(this);
+	mVolumeSlider->setToolTip("volume");
 
 	mVolumeSlider->setRange(0,200);
 	mVolumeSlider->setTickPosition(QSlider::TicksLeft);
 	mVolumeSlider->setValue(100);
 
+	//XXX set muteIcon
+	mMuteBtn->setToolTip("mute (toggle)");
 	mMuteBtn->setCheckable(true);
 
 	mLayout->setContentsMargins(0,0,0,0);
@@ -29,6 +32,10 @@ EQView * MixerChannelView::eq(){
 
 QSlider * MixerChannelView::volumeSlider(){
 	return mVolumeSlider;
+}
+
+QToolButton * MixerChannelView::muteButton(){
+	return mMuteBtn;
 }
 
 void MixerChannelView::reset(){

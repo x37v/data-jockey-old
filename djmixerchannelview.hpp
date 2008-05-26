@@ -6,7 +6,9 @@
 
 class QVBoxLayout;
 class QHBoxLayout;
-class QPushButton;
+class QToolButton;
+class QProgressBar;
+class QSpinBox;
 
 class DJMixerChannelView : public QWidget {
 	Q_OBJECT
@@ -16,14 +18,15 @@ class DJMixerChannelView : public QWidget {
 		void reset();
 	private:
 		MixerChannelView * mMixerChannel;
-
-		QPushButton * mPlayBtn;
-		QPushButton * mCueBtn;
-		QPushButton * mLoadBtn;
-		QPushButton * mResetBtn;
-
-		QPushButton * mSeekFwdBtn;
-		QPushButton * mSeekBkwdBtn;
+		QToolButton * mLoadBtn;
+		QToolButton * mResetBtn;
+		QToolButton * mCueBtn;
+		QToolButton * mSyncBtn;
+		QToolButton * mPlayBtn;
+		QToolButton * mSeekFwdBtn;
+		QToolButton * mSeekBkwdBtn;
+		QProgressBar * mProgressBar;
+		QSpinBox * mBeatOffeset;
 
 		QVBoxLayout * mLayout;
 };

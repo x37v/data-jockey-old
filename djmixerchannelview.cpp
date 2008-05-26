@@ -2,6 +2,9 @@
 #include "mixerchannelview.hpp"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QToolButton>
+#include <QProgressBar>
+#include <QSpinBox>
 
 DJMixerChannelView::DJMixerChannelView(QWidget *parent)
 	: QWidget(parent)
@@ -10,25 +13,72 @@ DJMixerChannelView::DJMixerChannelView(QWidget *parent)
 	setLayout(mLayout);
 	mMixerChannel = new MixerChannelView(this);
 	mLayout->setContentsMargins(0,0,0,0);
-	mLayout->setSpacing(1);
+	mLayout->setSpacing(0);
 
-	//mPlayBtn = new QPushButton(">", this);
-	//mCueBtn = new QPushButton("c", this);
-	//mLoadBtn = new QPushButton("load", this);
-	//mResetBtn = new QPushButton("r", this);
+	mProgressBar = new QProgressBar(this);
+	mProgressBar->setAlignment(Qt::AlignHCenter);
+	mProgressBar->setValue(0);
+
+	mLoadBtn = new QToolButton(this);
+	mResetBtn = new QToolButton(this);
+	mCueBtn = new QToolButton(this);
+	mSyncBtn = new QToolButton(this);
+	mPlayBtn = new QToolButton(this);
+	mSeekFwdBtn = new QToolButton(this);
+	mSeekBkwdBtn = new QToolButton(this);
+
+	mBeatOffeset = new QSpinBox(this);
+	mBeatOffeset->setToolTip("beat start offset");
+	mBeatOffeset->setMaximum(999);
+	mBeatOffeset->setMinimum(-16);
+
+	mLoadBtn->setToolTip("load selected file");
+	mResetBtn->setToolTip("reset playback position");
+	mLoadBtn->setArrowType(Qt::UpArrow);
+	mResetBtn->setArrowType(Qt::DownArrow);
+
+	mCueBtn->setToolTip("cue (toggle)");
+	mSyncBtn->setToolTip("sync/free playback (toggle)");
+	mPlayBtn->setToolTip("play/pause (toggle)");
+	mCueBtn->setCheckable(true);
+	mSyncBtn->setCheckable(true);
+	mPlayBtn->setCheckable(true);
+
+	mSeekFwdBtn->setArrowType(Qt::RightArrow);
+	mSeekBkwdBtn->setArrowType(Qt::LeftArrow);
+	mSeekFwdBtn->setToolTip("seek forward");
+	mSeekBkwdBtn->setToolTip("seek backward");
+
+	QHBoxLayout * loadResetLayout = new QHBoxLayout;
+	loadResetLayout->setContentsMargins(0,0,0,0);
+	loadResetLayout->setSpacing(0);
+	loadResetLayout->addStretch();
+	loadResetLayout->addWidget(mLoadBtn);
+	loadResetLayout->addWidget(mResetBtn);
+	loadResetLayout->addStretch();
+
+	QHBoxLayout * playLayout = new QHBoxLayout;
+	playLayout->setContentsMargins(0,0,0,0);
+	playLayout->setSpacing(0);
+	playLayout->addStretch();
+	playLayout->addWidget(mCueBtn);
+	playLayout->addWidget(mSyncBtn);
+	playLayout->addWidget(mPlayBtn);
+	playLayout->addStretch();
 	
-	//mPlayBtn->setCheckable(true);
-	//mCueBtn->setCheckable(true);
-
 	//addLayout sets parent, no need to explicitly set it here
 	QHBoxLayout * seekLayout = new QHBoxLayout;
 	seekLayout->setContentsMargins(0,0,0,0);
-	seekLayout->setSpacing(1);
-	mSeekFwdBtn = new QPushButton(">>", this);
-	mSeekBkwdBtn = new QPushButton("<<", this);
-	seekLayout->addWidget(mSeekBkwdBtn,1);
-	seekLayout->addWidget(mSeekFwdBtn,1);
+	seekLayout->setSpacing(0);
+	seekLayout->addStretch();
+	seekLayout->addWidget(mSeekBkwdBtn, 0, Qt::AlignHCenter);
+	seekLayout->addWidget(mSeekFwdBtn, 0, Qt::AlignHCenter);
+	seekLayout->addStretch();
 
-	mLayout->addLayout(seekLayout,1);
+	mLayout->addLayout(loadResetLayout,0);
+	mLayout->addLayout(playLayout,0);
+	mLayout->addLayout(seekLayout,0);
+	mLayout->addWidget(mProgressBar,1, Qt::AlignHCenter);
 	mLayout->addWidget(mMixerChannel,0);
+	mLayout->addWidget(mBeatOffeset, 1, Qt::AlignHCenter);
 }

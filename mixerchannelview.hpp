@@ -4,7 +4,7 @@
 #include "eqview.hpp"
 #include <QVBoxLayout>
 #include <QSlider>
-#include <QPushButton>
+#include <QToolButton>
 
 class MixerChannelView : public QWidget {
 	Q_OBJECT
@@ -12,12 +12,13 @@ class MixerChannelView : public QWidget {
 		MixerChannelView(QWidget *parent = NULL);
 		EQView * eq();
 		QSlider * volumeSlider();
+		QToolButton * muteButton();
 		void reset();
 	private:
 		EQView * mEQView;
 		QSlider * mVolumeSlider;
 		QVBoxLayout * mLayout;
-		QPushButton * mMuteBtn;
+		QToolButton * mMuteBtn;
 };
 
 #endif
