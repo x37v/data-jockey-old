@@ -20,11 +20,12 @@ MixerPanelView::MixerPanelView(unsigned int numMixers, QWidget *parent)
 		mLayout->setColumnStretch(i,0);
 	}
 
+	QSlider * tmpSlider = mDJMixerChannels[0]->mixerChannel()->volumeSlider();
+
 	//create the master volume and have it reflect the settings of the mixer channels volume
 	mMasterVolume = new QSlider(this);
-	mMasterVolume->setTickPosition(mDJMixerChannels[0]->mixerChannel()->volumeSlider()->tickPosition());
-	mMasterVolume->setRange(mDJMixerChannels[0]->mixerChannel()->volumeSlider()->minimum(),
-			mDJMixerChannels[0]->mixerChannel()->volumeSlider()->maximum());
+	mMasterVolume->setTickPosition(tmpSlider->tickPosition());
+	mMasterVolume->setRange(tmpSlider->minimum(), tmpSlider->maximum());
 	mMasterVolume->setValue(100);
 	mLayout->addWidget(mMasterVolume, 3, numMixers, 1, 1, Qt::AlignHCenter);
 
