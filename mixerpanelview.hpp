@@ -8,6 +8,7 @@ class EQView;
 class QSlider;
 class QGridLayout;
 class QDoubleSpinBox;
+class QRadioButton;
 
 class MixerPanelView : public QWidget {
 	Q_OBJECT
@@ -19,6 +20,7 @@ class MixerPanelView : public QWidget {
 	private:
 		QGridLayout * mLayout;
 		std::vector<DJMixerChannelView *> mDJMixerChannels;
+		std::vector<QRadioButton *> mSyncSource;
 		QSlider * mMasterVolume;
 		QDoubleSpinBox * mTempo;
 };
