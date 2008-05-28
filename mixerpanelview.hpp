@@ -23,6 +23,7 @@ class MixerPanelView : public QWidget {
 		std::vector<QRadioButton *> mSyncSource;
 		QSlider * mMasterVolume;
 		QDoubleSpinBox * mTempo;
+		QDoubleSpinBox * mTempoMul;
 };
 
 #endif
