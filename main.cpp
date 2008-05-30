@@ -3,6 +3,8 @@
 #include <QWidget>
 #include <QCleanlooksStyle>
 
+#include "crossfadeview.hpp"
+
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);

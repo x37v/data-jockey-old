@@ -63,12 +63,13 @@ MasterView::MasterView(unsigned int numMixers, QWidget *parent) :
 	mTempoMul->setSingleStep(0.01);
 	mTempoMul->setValue(1.0);
 	mTempoMul->setDisabled(true);
+
+	//add items to the layout
 	tempoLayout->addWidget(tempoLabel, 0, Qt::AlignHCenter);
 	tempoLayout->addWidget(mTempo, 0, Qt::AlignHCenter);
 	tempoLayout->addWidget(tempoMulLabel, 0, Qt::AlignHCenter);
 	tempoLayout->addWidget(mTempoMul, 0, Qt::AlignHCenter);
 	tempoLayout->addLayout(syncLayout, 0);
-
 	mTempoWidget->setLayout(tempoLayout);
 }
 
