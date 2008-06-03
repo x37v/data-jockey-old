@@ -1,6 +1,8 @@
 #ifndef AUDIO_WORK_TABLE_MODEL_HPP
 #define AUDIO_WORK_TABLE_MODEL_HPP
 
+//QSortFilterProxyModel
+
 #include <QSqlQueryModel>
 #include <QSqlQuery>
 #include <string>

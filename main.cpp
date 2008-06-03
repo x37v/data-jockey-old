@@ -10,6 +10,7 @@
 #include <QTableView>
 
 #include <QHeaderView>
+#include <QSortFilterProxyModel>
 
 #include "crossfadeview.hpp"
 #include "audioworktablemodel.hpp"
@@ -35,12 +36,16 @@ int main(int argc, char *argv[])
 
 	MixerPanelView * mixerPannel = new MixerPanelView(4,window);
 	AudioWorkTableModel tableModel(db);
-	tableModel.setFiltered(false);
+	tableModel.setFiltered(true);
 	tableModel.query();
+	QSortFilterProxyModel sortedModel;
+	sortedModel.setSourceModel(&tableModel);
+	sortedModel.setDynamicSortFilter(true);
+	sortedModel.setSortCaseSensitivity(Qt::CaseInsensitive);
 
 	QTableView *tableView = new QTableView(window);
 	tableView->setSortingEnabled(true);
-	tableView->setModel(&tableModel);
+	tableView->setModel(&sortedModel);
 	tableView->setColumnHidden(0, true);
 	tableView->horizontalHeader()->setMovable(true);
 
