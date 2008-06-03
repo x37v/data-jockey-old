@@ -9,6 +9,8 @@
 #include <QMessageBox>
 #include <QTableView>
 
+#include <QHeaderView>
+
 #include "crossfadeview.hpp"
 #include "audioworktablemodel.hpp"
 
@@ -33,12 +35,14 @@ int main(int argc, char *argv[])
 
 	MixerPanelView * mixerPannel = new MixerPanelView(4,window);
 	AudioWorkTableModel tableModel(db);
+	tableModel.setFiltered(false);
 	tableModel.query();
 
 	QTableView *tableView = new QTableView(window);
 	tableView->setSortingEnabled(true);
 	tableView->setModel(&tableModel);
 	tableView->setColumnHidden(0, true);
+	tableView->horizontalHeader()->setMovable(true);
 
 	layout->addWidget(mixerPannel, 1);
 	layout->addWidget(tableView, 10);
