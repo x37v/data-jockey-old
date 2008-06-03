@@ -43,7 +43,7 @@ MasterView::MasterView(unsigned int numMixers, QWidget *parent) :
 
 	//set up the Sync source radio button layout
 	QVBoxLayout * syncLayout = new QVBoxLayout();
-	QLabel * syncLabel = new QLabel("<b>sync src</b>", this); 
+	QLabel * syncLabel = new QLabel(tr("sync src"), this); 
 	syncLabel->setToolTip("set master clock sync src");
 	syncLayout->addWidget(syncLabel, 0, Qt::AlignHCenter);
 	for(std::vector<QRadioButton *>::iterator it = mSyncSource.begin();
@@ -54,8 +54,8 @@ MasterView::MasterView(unsigned int numMixers, QWidget *parent) :
 
 	//set up the tempo layout
 	QVBoxLayout * tempoLayout = new QVBoxLayout();
-	QLabel * tempoLabel = new QLabel("<b>tempo</b>", this);
-	QLabel * tempoMulLabel = new QLabel("<b>tempo mul</b>", this);
+	QLabel * tempoLabel = new QLabel(tr("tempo"), this);
+	QLabel * tempoMulLabel = new QLabel(tr("tempo mul"), this);
 	mTempo->setToolTip("master tempo (bpm)");
 	mTempo->setRange(10.0,300.0);
 	mTempoMul->setToolTip("master tempo multiply");
