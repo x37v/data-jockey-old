@@ -9,13 +9,13 @@
 bool AudioWorkTableModel::cInited = false;
 std::string AudioWorkTableModel::cFilteredQuery;
 std::string AudioWorkTableModel::cUnFilteredQuery;
-std::string AudioWorkTableModel::cSortByArtistASC = "order by artists.name ASC, albums.name ASC, audio_works.name ASC";
-std::string AudioWorkTableModel::cSortByArtistDESC = "order by artists.name DESC, albums.name ASC, audio_works.name ASC";
-std::string AudioWorkTableModel::cSortByAlbumASC = "order by albums.name ASC, artists.name ASC, audio_works.name ASC";
-std::string AudioWorkTableModel::cSortByAlbumDESC = "order by albums.name DESC, artists.name ASC, audio_works.name ASC";
-std::string AudioWorkTableModel::cSortByTitleASC = "order by audio_works.name ASC, artists.name ASC, albums.name ASC";
-std::string AudioWorkTableModel::cSortByTitleDESC = "order by audio_works.name DESC, artists.name ASC, albums.name ASC";
-std::string AudioWorkTableModel::cSortByOther = ", artists.name ASC, albums.name ASC, audio_works.name ASC";
+std::string AudioWorkTableModel::cSortByArtistASC = "order by artists.name ASC, albums.name ASC, track ASC, audio_works.name ASC";
+std::string AudioWorkTableModel::cSortByArtistDESC = "order by artists.name DESC, albums.name ASC, track ASC, audio_works.name ASC";
+std::string AudioWorkTableModel::cSortByAlbumASC = "order by albums.name ASC, track ASC, artists.name ASC, audio_works.name ASC";
+std::string AudioWorkTableModel::cSortByAlbumDESC = "order by albums.name DESC, track ASC, artists.name ASC, audio_works.name ASC";
+std::string AudioWorkTableModel::cSortByTitleASC = "order by audio_works.name ASC, artists.name ASC, albums.name ASC, track ASC ";
+std::string AudioWorkTableModel::cSortByTitleDESC = "order by audio_works.name DESC, artists.name ASC, albums.name ASC, track ASC";
+std::string AudioWorkTableModel::cSortByOther = ", artists.name ASC, albums.name ASC, track ASC, audio_works.name ASC";
 
 void AudioWorkTableModel::init(const QSqlDatabase & db){
 	if(cInited)
@@ -50,7 +50,8 @@ void AudioWorkTableModel::init(const QSqlDatabase & db){
 		"\taudio_works.id as id," << std::endl <<
 		"\tartists.name as artist," << std::endl <<
 		"\taudio_works.name as title," << std::endl <<
-		"\talbums.name album, " << std::endl <<
+		"\talbums.name as album, " << std::endl <<
+		"\talbum_audio_works.track as track, " << std::endl <<
 		"\taudio_files.milliseconds as duration, " << std::endl;
 	for(unsigned int i = 0; i < descriptorFieldNames.size() - 1; i++)
 		queryBeforeFilter << "\t" << descriptorFieldNames[i] << ", " << std::endl;
