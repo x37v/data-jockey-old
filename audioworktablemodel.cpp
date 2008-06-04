@@ -6,11 +6,16 @@
 
 #include <iostream>
 
-using std::cout;
-
 bool AudioWorkTableModel::cInited = false;
 std::string AudioWorkTableModel::cFilteredQuery;
 std::string AudioWorkTableModel::cUnFilteredQuery;
+std::string AudioWorkTableModel::cSortByArtistASC = "order by artists.name ASC, albums.name ASC, audio_works.name ASC";
+std::string AudioWorkTableModel::cSortByArtistDESC = "order by artists.name DESC, albums.name ASC, audio_works.name ASC";
+std::string AudioWorkTableModel::cSortByAlbumASC = "order by albums.name ASC, artists.name ASC, audio_works.name ASC";
+std::string AudioWorkTableModel::cSortByAlbumDESC = "order by albums.name DESC, artists.name ASC, audio_works.name ASC";
+std::string AudioWorkTableModel::cSortByTitleASC = "order by audio_works.name ASC, artists.name ASC, albums.name ASC";
+std::string AudioWorkTableModel::cSortByTitleDESC = "order by audio_works.name DESC, artists.name ASC, albums.name ASC";
+std::string AudioWorkTableModel::cSortByOther = ", artists.name ASC, albums.name ASC, audio_works.name ASC";
 
 void AudioWorkTableModel::init(const QSqlDatabase & db){
 	if(cInited)
@@ -61,8 +66,9 @@ void AudioWorkTableModel::init(const QSqlDatabase & db){
 	for(unsigned int i = 0; i < descriptorJoinClauses.size(); i++)
 		queryAfterFilter << "\t" << descriptorJoinClauses[i] << std::endl;
 
-	queryAfterFilter << "group by audio_works.id" << std::endl <<
-			"order by artists.name, albums.name, audio_works.name";
+	queryAfterFilter << "group by audio_works.id";
+		//<< std::endl <<
+			//"order by artists.name, albums.name, audio_works.name";
 
 	std::stringstream tmpUnfiltered;
 	tmpUnfiltered << queryBeforeFilter.str() << queryAfterFilter.str();
@@ -81,15 +87,79 @@ AudioWorkTableModel::AudioWorkTableModel(
 		QObject * parent):
 	QSqlQueryModel(parent)
 {
+	std::stringstream query;
 	if(!cInited)
 		init(db);
-	setQuery(cFilteredQuery.c_str(), db);
+	mSortString = cSortByArtistASC;
+	query << cFilteredQuery.c_str() << std::endl << mSortString << std::endl;
+	setQuery(query.str().c_str(), db);
+}
+
+//XXX this is sort of a hack..
+void AudioWorkTableModel::sort(int column, Qt::SortOrder order){
+	std::stringstream queryStr;
+	//build up the sortBy string..
+	switch(column){
+		case 1:
+			if(order == Qt::AscendingOrder)
+				mSortString = cSortByArtistASC;
+			else
+				mSortString = cSortByArtistDESC;
+			break;
+		case 2:
+			if(order == Qt::AscendingOrder)
+				mSortString = cSortByTitleASC;
+			else
+				mSortString = cSortByTitleDESC;
+			break;
+		case 3:
+			if(order == Qt::AscendingOrder)
+				mSortString = cSortByAlbumASC;
+			else
+				mSortString = cSortByAlbumDESC;
+			break;
+		default:
+			//if we're not in one of the above columns then first sort by
+			//that columns data up/down, then by artist down, album down, title down.
+			QVariant header = headerData(column, Qt::Horizontal);
+			if(header.isValid() && header.canConvert(QVariant::String)){
+				std::stringstream tmp;
+				tmp << "order by `" << header.toString().toStdString();
+				if(order == Qt::AscendingOrder)
+					tmp << "` ASC" << cSortByOther << std::endl;
+				else
+					tmp << "` DESC" << cSortByOther << std::endl;
+				mSortString = tmp.str();
+			}
+			break;
+	};
+	queryStr << cFilteredQuery.c_str() << std::endl << mSortString;
+	setQuery(queryStr.str().c_str());
+	query();
 }
 
 void AudioWorkTableModel::setFiltered(bool filtered){
+	std::stringstream query;
 	if(filtered)
-		setQuery(cFilteredQuery.c_str());
+		query << cFilteredQuery;
 	else
-		setQuery(cUnFilteredQuery.c_str());
+		query << cUnFilteredQuery;
+	query << std::endl << mSortString << std::endl;
+	setQuery(query.str().c_str());
 }
 
+/*
+QVariant AudioWorkTableModel::data( const QModelIndex & item, int role) const {
+	QVariant ret = QSqlQueryModel::data(item,role);
+	if(item.isValid() && (item.column() == 4) && (role == Qt::DisplayRole)){
+		QVariant itemData = item.data(Qt::DisplayRole);
+			//item.data(Qt::DisplayRole).canConvert(QVariant::UInt)){
+			//QString timeString;
+			//QString seconds;
+			//QString minutes;
+			//unsigned int ms = item.data(Qt::DisplayRole).toUInt();
+			//minutes.setNum(ms / 60000);
+	}
+	return ret;
+}
+*/

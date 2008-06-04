@@ -38,14 +38,14 @@ int main(int argc, char *argv[])
 	AudioWorkTableModel tableModel(db);
 	tableModel.setFiltered(true);
 	tableModel.query();
-	QSortFilterProxyModel sortedModel;
-	sortedModel.setSourceModel(&tableModel);
-	sortedModel.setDynamicSortFilter(true);
-	sortedModel.setSortCaseSensitivity(Qt::CaseInsensitive);
+	//QSortFilterProxyModel sortedModel;
+	//sortedModel.setSourceModel(&tableModel);
+	//sortedModel.setDynamicSortFilter(true);
+	//sortedModel.setSortCaseSensitivity(Qt::CaseInsensitive);
 
 	QTableView *tableView = new QTableView(window);
 	tableView->setSortingEnabled(true);
-	tableView->setModel(&sortedModel);
+	tableView->setModel(&tableModel);
 	tableView->setColumnHidden(0, true);
 	tableView->horizontalHeader()->setMovable(true);
 
