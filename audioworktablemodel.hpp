@@ -35,6 +35,7 @@ class AudioWorkTableModel : public QSqlQueryModel {
 		static std::string cSortByTitleASC;
 		static std::string cSortByTitleDESC;
 		static std::string cSortByOther;
+		bool mFiltered;
 		std::string mSortString;
 };
 

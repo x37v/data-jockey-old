@@ -94,6 +94,7 @@ AudioWorkTableModel::AudioWorkTableModel(
 	mSortString = cSortByArtistASC;
 	query << cFilteredQuery.c_str() << std::endl << mSortString << std::endl;
 	setQuery(query.str().c_str(), db);
+	mFiltered = true;
 }
 
 //XXX this is sort of a hack..
@@ -134,7 +135,11 @@ void AudioWorkTableModel::sort(int column, Qt::SortOrder order){
 			}
 			break;
 	};
-	queryStr << cFilteredQuery.c_str() << std::endl << mSortString;
+
+	if(mFiltered)
+		queryStr << cFilteredQuery.c_str() << std::endl << mSortString;
+	else
+		queryStr << cUnFilteredQuery.c_str() << std::endl << mSortString;
 	setQuery(queryStr.str().c_str());
 	query();
 }
@@ -159,15 +164,17 @@ QVariant AudioWorkTableModel::data( const QModelIndex & index, int role) const {
 }
 
 void AudioWorkTableModel::setFiltered(bool filtered){
-	std::stringstream query;
+	std::stringstream queryStr;
+	mFiltered = filtered;
 	if(filtered)
-		query << cFilteredQuery;
+		queryStr << cFilteredQuery;
 	else
-		query << cUnFilteredQuery;
-	query << std::endl << mSortString << std::endl;
-	setQuery(query.str().c_str());
+		queryStr << cUnFilteredQuery;
+	queryStr << std::endl << mSortString << std::endl;
+	setQuery(queryStr.str().c_str());
 }
 
 void AudioWorkTableModel::setUnFiltered(){
+	mFiltered = false;
 	setFiltered(false);
 }

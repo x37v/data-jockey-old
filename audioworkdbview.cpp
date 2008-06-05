@@ -27,13 +27,8 @@ AudioWorkDBView::AudioWorkDBView(AudioWorkTableModel * model,
 
 	QObject::connect(mApplyFilterButton, SIGNAL(clicked(bool)),
 			model, SLOT(setFiltered()));
-	QObject::connect(mApplyFilterButton, SIGNAL(clicked(bool)),
-			model, SLOT(query()));
-
 	QObject::connect(mRemoveFilterButton, SIGNAL(clicked(bool)),
 			model, SLOT(setUnFiltered()));
-	QObject::connect(mRemoveFilterButton, SIGNAL(clicked(bool)),
-			model, SLOT(query()));
 
 	//add items to the buttonLayout
 	buttonLayout->addWidget(mApplyFilterButton, 0);
