@@ -16,6 +16,9 @@
 #include "audioworktablemodel.hpp"
 #include "audioworkdbview.hpp"
 
+#include "mixerchannelmodel.hpp"
+#include "djmixerchannelview.hpp"
+
 int main(int argc, char *argv[])
 {
 	QApplication app(argc, argv);
@@ -45,6 +48,20 @@ int main(int argc, char *argv[])
 	layout->addWidget(mixerPannel, 1);
 	layout->addWidget(tableView, 10);
 	window->show();
+
+	MixerChannelModel * mixerModel = new MixerChannelModel;
+	MixerChannelView * mixerChan = mixerPannel->mixerChannels()->front()->mixerChannel();
+	QObject::connect(
+			(QObject*)mixerChan,
+			SIGNAL(volumeChanged(double)),
+			mixerModel, SLOT(setVolume(double)));
+
+	QObject::connect(
+			mixerModel,
+			SIGNAL(volumeChanged(double)),
+			mixerChan,
+			SLOT(setVolume(double)));
+
 	return app.exec();
 }
 

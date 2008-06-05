@@ -2,9 +2,9 @@
 #define MIXER_PANEL_VIEW_HPP
 
 #include <QWidget>
-#include "masterview.hpp"
-
+class MasterView;
 class DJMixerChannelView;
+class DJMixerControlView;
 class EQView;
 class QGridLayout;
 class CrossFadeView;

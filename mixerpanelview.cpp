@@ -1,11 +1,15 @@
+#include "masterview.hpp"
 #include "mixerpanelview.hpp"
-#include "djmixerchannelview.cpp"
+#include "mixerchannelview.hpp"
+#include "djmixerchannelview.hpp"
+#include "djmixercontrolview.hpp"
+#include "crossfadeview.hpp"
+#include "eqview.hpp"
 #include <QSlider>
 #include <QGridLayout>
 #include <QToolButton>
 #include <QDoubleSpinBox>
 #include <QRadioButton>
-#include "crossfadeview.hpp"
 
 MixerPanelView::MixerPanelView(unsigned int numMixers, QWidget *parent)
 : QWidget(parent)
