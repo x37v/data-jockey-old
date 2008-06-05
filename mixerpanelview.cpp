@@ -30,7 +30,7 @@ MixerPanelView::MixerPanelView(unsigned int numMixers, QWidget *parent)
 	//add the master widgets and the cross fade
 	mLayout->addWidget(mMaster->volume(), 3, numMixers, 1, 1, Qt::AlignHCenter);
 	mLayout->addWidget(mMaster->tempoWidget(), 0, numMixers, 2, 1, Qt::AlignCenter);
-	mLayout->addWidget(mXFade, 4, 0, 1, numMixers + 1, Qt::AlignCenter);
+	mLayout->addWidget(mXFade, 4, 0, 1, numMixers + 1);
 
 	//set layout settings
 	mLayout->setColumnStretch(numMixers,10);

@@ -40,11 +40,11 @@ CrossFadeView::CrossFadeView(unsigned int numMixers, QWidget *parent) :
 
 	//set up layout params
 	mLayout->setSpacing(5);
-	mLayout->setContentsMargins(0,0,0,0);
+	mLayout->setContentsMargins(20,0,20,0);
 
 	//add items to the layout
 	mLayout->addStretch();
-	mLayout->addWidget(mSlider, 10, Qt::AlignHCenter);
+	mLayout->addWidget(mSlider, 10);
 	mLayout->addWidget(mSelection, 0, Qt::AlignHCenter);
 	mLayout->addStretch();
 
