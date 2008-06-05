@@ -139,6 +139,25 @@ void AudioWorkTableModel::sort(int column, Qt::SortOrder order){
 	query();
 }
 
+//reformat the time display role so that it is in MM:SS not milliseconds
+QVariant AudioWorkTableModel::data( const QModelIndex & index, int role) const {
+	QVariant ret = QSqlQueryModel::data(index,role);
+	if(index.isValid() && (index.column() == TIME_COLUMN) && (role == Qt::DisplayRole)){
+		QVariant itemData = QSqlQueryModel::data(index, Qt::DisplayRole);
+		if(itemData.canConvert(QVariant::Int)){
+			QString timeString;
+			int seconds;
+			int minutes;
+			int ms = itemData.toInt();
+			minutes = ms / 60000;
+			seconds = (ms - (minutes * 60000)) / 1000;
+			timeString.sprintf("%02d:%02d", minutes, seconds);
+			return QString(timeString);
+		}
+	}
+	return ret;
+}
+
 void AudioWorkTableModel::setFiltered(bool filtered){
 	std::stringstream query;
 	if(filtered)
@@ -149,18 +168,6 @@ void AudioWorkTableModel::setFiltered(bool filtered){
 	setQuery(query.str().c_str());
 }
 
-/*
-QVariant AudioWorkTableModel::data( const QModelIndex & item, int role) const {
-	QVariant ret = QSqlQueryModel::data(item,role);
-	if(item.isValid() && (item.column() == 4) && (role == Qt::DisplayRole)){
-		QVariant itemData = item.data(Qt::DisplayRole);
-			//item.data(Qt::DisplayRole).canConvert(QVariant::UInt)){
-			//QString timeString;
-			//QString seconds;
-			//QString minutes;
-			//unsigned int ms = item.data(Qt::DisplayRole).toUInt();
-			//minutes.setNum(ms / 60000);
-	}
-	return ret;
+void AudioWorkTableModel::setUnFiltered(){
+	setFiltered(false);
 }
-*/

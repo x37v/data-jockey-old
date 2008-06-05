@@ -9,6 +9,7 @@
 
 class QSqlDatabase;
 class QSqlRecord;
+#define TIME_COLUMN 5
 
 class AudioWorkTableModel : public QSqlQueryModel {
 	Q_OBJECT
@@ -19,8 +20,10 @@ class AudioWorkTableModel : public QSqlQueryModel {
 				QObject * parent = NULL
 				);
 		virtual void sort ( int column, Qt::SortOrder order = Qt::AscendingOrder );
+		virtual QVariant data ( const QModelIndex & index, int role = Qt::DisplayRole ) const;
+	public slots:
 		void setFiltered(bool filtered = true);
-		//virtual QVariant data ( const QModelIndex & item, int role = Qt::DisplayRole ) const;
+		void setUnFiltered();
 	private:
 		static bool cInited;
 		static std::string cFilteredQuery;

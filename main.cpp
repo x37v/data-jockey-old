@@ -14,6 +14,7 @@
 
 #include "crossfadeview.hpp"
 #include "audioworktablemodel.hpp"
+#include "audioworkdbview.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -38,16 +39,8 @@ int main(int argc, char *argv[])
 	AudioWorkTableModel tableModel(db);
 	tableModel.setFiltered(true);
 	tableModel.query();
-	//QSortFilterProxyModel sortedModel;
-	//sortedModel.setSourceModel(&tableModel);
-	//sortedModel.setDynamicSortFilter(true);
-	//sortedModel.setSortCaseSensitivity(Qt::CaseInsensitive);
 
-	QTableView *tableView = new QTableView(window);
-	tableView->setSortingEnabled(true);
-	tableView->setModel(&tableModel);
-	tableView->setColumnHidden(0, true);
-	tableView->horizontalHeader()->setMovable(true);
+	AudioWorkDBView * tableView = new AudioWorkDBView(&tableModel, window);
 
 	layout->addWidget(mixerPannel, 1);
 	layout->addWidget(tableView, 10);
