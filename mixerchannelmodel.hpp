@@ -7,16 +7,16 @@ class MixerChannelModel : public QObject {
 	Q_OBJECT
 	public:
 		MixerChannelModel(QObject *parent = NULL);
-		double volume() const;
+		float volume() const;
 		bool muted() const;
 	signals:
-		void volumeChanged(double volume);
+		void volumeChanged(float volume);
 		void mutedChanged(bool muted);
 	public slots:
-		void setVolume(double volume);
+		void setVolume(float volume);
 		void setMuted(bool muted = true);
 	private:
-		double mVolume;
+		float mVolume;
 		bool mMuted;
 };
 

@@ -54,14 +54,14 @@ int main(int argc, char *argv[])
 	MixerChannelView * mixerChan = mixerPannel->mixerChannels()->front()->mixerChannel();
 	QObject::connect(
 			mixerChan,
-			SIGNAL(volumeChanged(double)),
-			mixerModel, SLOT(setVolume(double)));
+			SIGNAL(volumeChanged(float)),
+			mixerModel, SLOT(setVolume(float)));
 
 	QObject::connect(
 			mixerModel,
-			SIGNAL(volumeChanged(double)),
+			SIGNAL(volumeChanged(float)),
 			mixerChan,
-			SLOT(setVolume(double)));
+			SLOT(setVolume(float)));
 
 	QObject::connect(
 			mixerChan,

@@ -50,8 +50,8 @@ QToolButton * MixerChannelView::muteButton(){
 	return mMuteBtn;
 }
 
-double MixerChannelView::volume() const {
-	return (double)mVolumeSlider->value() / 100.0;
+float MixerChannelView::volume() const {
+	return (float)mVolumeSlider->value() / 100.0;
 }
 
 bool MixerChannelView::muted() const {
@@ -62,7 +62,7 @@ void MixerChannelView::reset(){
 	mEQView->reset();
 }
 
-void MixerChannelView::setVolume(double volume){
+void MixerChannelView::setVolume(float volume){
 	if(mRecursing)
 		return;
 	mRecursing = true;
@@ -86,8 +86,8 @@ void MixerChannelView::setVolume(int volume){
 	//always emit because the signal could have
 	//come internally and we need to update slots
 	//that are connected to us
-	double volDouble = ((double)volume) / 100.0;
-	emit(volumeChanged(volDouble));
+	float volFloat = ((float)volume) / 100.0;
+	emit(volumeChanged(volFloat));
 
 	mRecursing = false;
 }

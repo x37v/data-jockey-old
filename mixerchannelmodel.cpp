@@ -5,7 +5,7 @@ MixerChannelModel::MixerChannelModel(QObject * parent) : QObject(parent) {
 	mMuted = false;
 }
 
-double MixerChannelModel::volume() const {
+float MixerChannelModel::volume() const {
 	return mVolume;
 }
 
@@ -16,7 +16,7 @@ bool MixerChannelModel::muted() const {
 #include <iostream>
 using namespace std;
 
-void MixerChannelModel::setVolume(double volume){
+void MixerChannelModel::setVolume(float volume){
 	if(mVolume != volume){
 		cout << "volume changed" << volume << endl;
 		mVolume = volume;
