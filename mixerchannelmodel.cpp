@@ -13,12 +13,22 @@ bool MixerChannelModel::muted() const {
 	return mMuted;
 }
 
+#include <iostream>
+using namespace std;
+
 void MixerChannelModel::setVolume(double volume){
-	mVolume = volume;
-	emit(volumeChanged(volume));
+	if(mVolume != volume){
+		cout << "volume changed" << volume << endl;
+		mVolume = volume;
+		emit(volumeChanged(volume));
+	}
 }
 
 void MixerChannelModel::setMuted(bool muted){
-	mMuted = muted;
+	if(muted != mMuted){
+		cout << "mute changed " << muted << endl;
+		mMuted = muted;
+		emit(mutedChanged(mMuted));
+	}
 }
 

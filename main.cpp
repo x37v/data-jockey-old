@@ -17,6 +17,7 @@
 #include "audioworkdbview.hpp"
 
 #include "mixerchannelmodel.hpp"
+#include "mixerchannelview.hpp"
 #include "djmixerchannelview.hpp"
 
 int main(int argc, char *argv[])
@@ -52,7 +53,7 @@ int main(int argc, char *argv[])
 	MixerChannelModel * mixerModel = new MixerChannelModel;
 	MixerChannelView * mixerChan = mixerPannel->mixerChannels()->front()->mixerChannel();
 	QObject::connect(
-			(QObject*)mixerChan,
+			mixerChan,
 			SIGNAL(volumeChanged(double)),
 			mixerModel, SLOT(setVolume(double)));
 
@@ -61,6 +62,20 @@ int main(int argc, char *argv[])
 			SIGNAL(volumeChanged(double)),
 			mixerChan,
 			SLOT(setVolume(double)));
+
+	QObject::connect(
+			mixerChan,
+			SIGNAL(mutedChanged(bool)),
+			mixerModel,
+			SLOT(setMuted(bool)));
+	QObject::connect(
+			mixerModel,
+			SIGNAL(mutedChanged(bool)),
+			mixerChan,
+			SLOT(setMuted(bool)));
+
+	mixerModel->setMuted(true);
+	mixerModel->setVolume(2.0);
 
 	return app.exec();
 }

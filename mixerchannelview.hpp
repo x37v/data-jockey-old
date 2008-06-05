@@ -24,11 +24,12 @@ class MixerChannelView : public QWidget {
 		void setVolume(int volume);
 		void setMuted(bool muted = true);
 	private:
-		bool mRecursing;
 		EQView * mEQView;
 		QSlider * mVolumeSlider;
 		QVBoxLayout * mLayout;
 		QToolButton * mMuteBtn;
+		//to prevent infinite loops
+		bool mRecursing;
 };
 
 #endif
