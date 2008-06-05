@@ -20,6 +20,7 @@ AudioWorkDBView::AudioWorkDBView(AudioWorkTableModel * model,
 	mTableView->setModel(model);
 	mTableView->setColumnHidden(0, true);
 	mTableView->horizontalHeader()->setMovable(true);
+	mTableView->verticalHeader()->setVisible(false);
 
 	//create the buttons
 	mApplyFilterButton = new QPushButton("apply filter", this);
@@ -40,5 +41,17 @@ AudioWorkDBView::AudioWorkDBView(AudioWorkTableModel * model,
 	layout->addWidget(mTableView, 10);
 	layout->addLayout(buttonLayout, 0);
 	setLayout(layout);
+}
+
+QTableView * AudioWorkDBView::tableView(){
+	return mTableView;
+}
+
+QPushButton * AudioWorkDBView::applyFilterButton(){
+	return mApplyFilterButton;
+}
+
+QPushButton * AudioWorkDBView::removeFilterButton(){
+	return mRemoveFilterButton;
 }
 

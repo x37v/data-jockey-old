@@ -11,6 +11,9 @@ class AudioWorkDBView : public QWidget {
 	Q_OBJECT
 	public:
 		AudioWorkDBView(AudioWorkTableModel * model, QWidget *parent = NULL);
+		QTableView * tableView();
+		QPushButton * applyFilterButton();
+		QPushButton * removeFilterButton();
 	private:
 		QTableView * mTableView;
 		QPushButton * mApplyFilterButton;
