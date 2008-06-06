@@ -7,7 +7,7 @@ class QSlider;
 class QDoubleSpinBox;
 class QRadioButton;
 
-class MasterView : public QWidget {
+class MasterView : public QObject {
 	Q_OBJECT
 	public:
 		MasterView(unsigned int numMixers, QWidget *parent = NULL);

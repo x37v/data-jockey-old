@@ -1,12 +1,12 @@
 #ifndef DJ_MIXER_CHANNEL_VIEW_HPP
 #define DJ_MIXER_CHANNEL_VIEW_HPP
 
-#include <QWidget>
+#include <QObject>
 
 class DJMixerControlView;
 class MixerChannelView;
 
-class DJMixerChannelView : public QWidget {
+class DJMixerChannelView : public QObject {
 	Q_OBJECT
 	public:
 		DJMixerChannelView(QWidget *parent = NULL);

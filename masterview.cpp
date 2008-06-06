@@ -8,13 +8,13 @@
 #include <sstream>
 
 MasterView::MasterView(unsigned int numMixers, QWidget *parent) :
-	QWidget(parent)
+	QObject(parent)
 {
-	mTempoWidget = new QWidget(this);
-	mVolumeSlider = new QSlider(this);
-	mTempo = new QDoubleSpinBox(this);
-	mTempoMul = new QDoubleSpinBox(this);
-	mSyncSource.push_back(new QRadioButton("master", this));
+	mTempoWidget = new QWidget(parent);
+	mVolumeSlider = new QSlider(parent);
+	mTempo = new QDoubleSpinBox(parent);
+	mTempoMul = new QDoubleSpinBox(parent);
+	mSyncSource.push_back(new QRadioButton("master", parent));
 	mSyncSource.front()->setChecked(true);
 
 	//when syncing to the master clock the tempo mul doesn't work, just the master tempo
@@ -28,7 +28,7 @@ MasterView::MasterView(unsigned int numMixers, QWidget *parent) :
 		std::stringstream numAsString; 
 		numAsString << i;
 		syncSrcName.append(numAsString.str());
-		newRadioButton = new QRadioButton(syncSrcName.c_str(), this);
+		newRadioButton = new QRadioButton(syncSrcName.c_str(), parent);
 		mSyncSource.push_back(newRadioButton);
 		//when syncing to a mixer channel the 'master tempo' doesn't work.. just the tempo mul
 		QObject::connect(newRadioButton, SIGNAL(clicked(bool)),
@@ -43,7 +43,7 @@ MasterView::MasterView(unsigned int numMixers, QWidget *parent) :
 
 	//set up the Sync source radio button layout
 	QVBoxLayout * syncLayout = new QVBoxLayout();
-	QLabel * syncLabel = new QLabel(tr("sync src"), this); 
+	QLabel * syncLabel = new QLabel(tr("sync src"), parent); 
 	syncLabel->setToolTip("set master clock sync src");
 	syncLayout->addWidget(syncLabel, 0, Qt::AlignHCenter);
 	for(std::vector<QRadioButton *>::iterator it = mSyncSource.begin();
@@ -54,8 +54,8 @@ MasterView::MasterView(unsigned int numMixers, QWidget *parent) :
 
 	//set up the tempo layout
 	QVBoxLayout * tempoLayout = new QVBoxLayout();
-	QLabel * tempoLabel = new QLabel(tr("tempo"), this);
-	QLabel * tempoMulLabel = new QLabel(tr("tempo mul"), this);
+	QLabel * tempoLabel = new QLabel(tr("tempo"), parent);
+	QLabel * tempoMulLabel = new QLabel(tr("tempo mul"), parent);
 	mTempo->setToolTip("master tempo (bpm)");
 	mTempo->setRange(10.0,300.0);
 	mTempoMul->setToolTip("master tempo multiply");

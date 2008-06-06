@@ -48,8 +48,12 @@ void DJMixerControlModel::setPaused(bool paused){
 	}
 }
 
+#include <iostream>
+using namespace std;
+
 void DJMixerControlModel::setPlay(bool play){
 	setPaused(!play);
+	cout << "play" << endl;
 }
 
 void DJMixerControlModel::setSync(bool sync){
@@ -57,6 +61,7 @@ void DJMixerControlModel::setSync(bool sync){
 		mSynced = sync;
 		emit(runningFreeChanged(mSynced));
 	}
+	cout << "sync" << endl;
 }
 
 void DJMixerControlModel::setRunFree(bool free){

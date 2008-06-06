@@ -18,8 +18,11 @@
 
 #include "mixerchannelmodel.hpp"
 #include "mixerchannelview.hpp"
+
 #include "djmixerchannelview.hpp"
+
 #include "djmixercontrolview.hpp"
+#include "djmixercontrolmodel.hpp"
 
 #include "eqview.hpp"
 #include "eqmodel.hpp"
@@ -43,7 +46,8 @@ int main(int argc, char *argv[])
 	QHBoxLayout * layout = new QHBoxLayout(window);
 	window->setLayout(layout);
 
-	MixerPanelView * mixerPannel = new MixerPanelView(4,window);
+	MixerPanelView * mixerPannel = new MixerPanelView(4, window);
+
 	AudioWorkTableModel tableModel(db);
 	tableModel.setFiltered(true);
 	tableModel.query();
@@ -58,6 +62,16 @@ int main(int argc, char *argv[])
 	MixerChannelView * mixerChan = mixerPannel->mixerChannels()->front()->mixerChannel();
 
 	mixerPannel->mixerChannels()->front()->DJMixerControl()->setProgress(0.4123f);
+	DJMixerControlModel * djModel = new DJMixerControlModel;
+
+	QObject::connect(
+			(*mixerPannel->mixerChannels())[0]->DJMixerControl(),
+			SIGNAL(loadClicked(bool)),
+			djModel, SLOT(setSync(bool)));
+	QObject::connect(
+			(*mixerPannel->mixerChannels())[0]->DJMixerControl(),
+			SIGNAL(resetClicked(bool)),
+			djModel, SLOT(setPlay(bool)));
 
 	EQView * eqView = mixerChan->eq();
 	EQModel * eqModel = new EQModel();

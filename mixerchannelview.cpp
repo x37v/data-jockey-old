@@ -2,13 +2,12 @@
 #include "eqview.hpp"
 
 MixerChannelView::MixerChannelView(QWidget * parent)
-	: QWidget(parent) 
+	: QObject(parent) 
 {
 	mRecursing = false;
-	mEQView = new EQView(this); 
-	mVolumeSlider = new QSlider(Qt::Vertical, this);
-	mMuteBtn = new QToolButton(this);
-	mLayout = new QVBoxLayout(this);
+	mEQView = new EQView(parent); 
+	mVolumeSlider = new QSlider(Qt::Vertical, parent);
+	mMuteBtn = new QToolButton(parent);
 	mVolumeSlider->setToolTip("volume");
 
 	mVolumeSlider->setRange(0,200);
@@ -18,14 +17,6 @@ MixerChannelView::MixerChannelView(QWidget * parent)
 	//XXX set muteIcon
 	mMuteBtn->setToolTip("mute (toggle)");
 	mMuteBtn->setCheckable(true);
-
-	mLayout->setContentsMargins(0,0,0,0);
-
-	mLayout->setAlignment(Qt::AlignHCenter);
-	mLayout->addWidget(mEQView, 1);
-	mLayout->addWidget(mMuteBtn, 0, Qt::AlignHCenter);
-	mLayout->addWidget(mVolumeSlider, 10, Qt::AlignHCenter);
-	setLayout(mLayout);
 
 	//connect our widget's signals to our slots (or signals)
 	QObject::connect(

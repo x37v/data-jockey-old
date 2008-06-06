@@ -6,7 +6,7 @@
 #include <QToolButton>
 class EQView;
 
-class MixerChannelView : public QWidget {
+class MixerChannelView : public QObject {
 	Q_OBJECT
 	public:
 		MixerChannelView(QWidget *parent = NULL);
@@ -25,7 +25,6 @@ class MixerChannelView : public QWidget {
 	private:
 		EQView * mEQView;
 		QSlider * mVolumeSlider;
-		QVBoxLayout * mLayout;
 		QToolButton * mMuteBtn;
 		//to prevent infinite loops
 		bool mRecursing;

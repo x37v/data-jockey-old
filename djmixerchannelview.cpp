@@ -3,10 +3,10 @@
 #include "mixerchannelview.hpp"
 
 DJMixerChannelView::DJMixerChannelView(QWidget * parent)
-	: QWidget(parent) 
+	: QObject(parent) 
 {
-	mDJMixerControl = new DJMixerControlView(this);
-	mMixerChannel = new MixerChannelView(this);
+	mDJMixerControl = new DJMixerControlView(parent);
+	mMixerChannel = new MixerChannelView(parent);
 }
 
 DJMixerControlView * DJMixerChannelView::DJMixerControl(){
