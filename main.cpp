@@ -27,6 +27,8 @@
 #include "eqview.hpp"
 #include "eqmodel.hpp"
 
+#include "workdetailview.hpp"
+
 int main(int argc, char *argv[])
 {
 	QApplication app(argc, argv);
@@ -40,6 +42,9 @@ int main(int argc, char *argv[])
 					"Click Cancel to exit."), QMessageBox::Cancel);
 		return false;
 	}
+
+	WorkDetailView * asdf = new WorkDetailView(db);
+	asdf->show();
 
 	QWidget * window = new QWidget;
 	window->setWindowTitle("floatme");
