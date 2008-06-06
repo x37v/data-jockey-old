@@ -1,6 +1,6 @@
 #include "djmixerchannelview.hpp"
-#include "djmixercontrolview.cpp"
-#include "mixerchannelview.cpp"
+#include "djmixercontrolview.hpp"
+#include "mixerchannelview.hpp"
 
 DJMixerChannelView::DJMixerChannelView(QWidget * parent)
 	: QWidget(parent) 

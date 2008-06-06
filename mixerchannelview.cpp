@@ -58,10 +58,6 @@ bool MixerChannelView::muted() const {
 	return false;
 }
 
-void MixerChannelView::reset(){
-	mEQView->reset();
-}
-
 void MixerChannelView::setVolume(float volume){
 	if(mRecursing)
 		return;

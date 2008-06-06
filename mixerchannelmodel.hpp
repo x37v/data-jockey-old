@@ -3,12 +3,15 @@
 
 #include <QObject>
 
+class EQModel;
+
 class MixerChannelModel : public QObject {
 	Q_OBJECT
 	public:
 		MixerChannelModel(QObject *parent = NULL);
 		float volume() const;
 		bool muted() const;
+		EQModel * eq();
 	signals:
 		void volumeChanged(float volume);
 		void mutedChanged(bool muted);
@@ -18,6 +21,7 @@ class MixerChannelModel : public QObject {
 	private:
 		float mVolume;
 		bool mMuted;
+		EQModel * mEQ;
 };
 
 #endif

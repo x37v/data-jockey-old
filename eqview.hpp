@@ -11,15 +11,30 @@ class EQView : public QWidget {
 	Q_OBJECT
 	public:
 		EQView(QWidget *parent = NULL);
-		void reset();
 		QDial * low();
 		QDial * mid();
 		QDial * high();
+		float highValue() const;
+		float midValue() const;
+		float lowValue() const;
+	signals:
+		void highValueChanged(float high);
+		void midValueChanged(float mid);
+		void lowValueChanged(float low);
+	public slots:
+		void setHigh(float val);
+		void setHigh(int val);
+		void setMid(float val);
+		void setMid(int val);
+		void setLow(float val);
+		void setLow(int val);
 	private:
 		QDial * mLow;
 		QDial * mMid;
 		QDial * mHigh;
 		QVBoxLayout * mLayout;
+		//to prevent infinite loops
+		bool mRecursing;
 };
 
 #endif

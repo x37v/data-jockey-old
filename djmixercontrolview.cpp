@@ -24,10 +24,10 @@ DJMixerControlView::DJMixerControlView(QWidget *parent)
 	mSeekFwdBtn = new QToolButton(this);
 	mSeekBkwdBtn = new QToolButton(this);
 
-	mBeatOffeset = new QSpinBox(this);
-	mBeatOffeset->setToolTip("beat start offset");
-	mBeatOffeset->setMaximum(999);
-	mBeatOffeset->setMinimum(-16);
+	mBeatOffset = new QSpinBox(this);
+	mBeatOffset->setToolTip("beat start offset");
+	mBeatOffset->setMaximum(999);
+	mBeatOffset->setMinimum(-16);
 
 	mLoadBtn->setToolTip("load selected file");
 	mResetBtn->setToolTip("reset playback position");
@@ -76,5 +76,93 @@ DJMixerControlView::DJMixerControlView(QWidget *parent)
 	mLayout->addLayout(playLayout,0);
 	mLayout->addLayout(seekLayout,0);
 	mLayout->addWidget(mProgressBar,1, Qt::AlignHCenter);
-	mLayout->addWidget(mBeatOffeset, 1, Qt::AlignHCenter);
+	mLayout->addWidget(mBeatOffset, 1, Qt::AlignHCenter);
+
+	//connect up our signals
+	QObject::connect(
+			mCueBtn,
+			SIGNAL(clicked(bool)),
+			this, SIGNAL(cueModeChanged(bool)));
+	QObject::connect(
+			mPlayBtn,
+			SIGNAL(clicked(bool)),
+			this, SIGNAL(pausedChanged(bool)));
+	QObject::connect(
+			mSyncBtn,
+			SIGNAL(clicked(bool)),
+			this, SIGNAL(runningFreeChanged(bool)));
+	QObject::connect(
+			mSeekFwdBtn,
+			SIGNAL(clicked(bool)),
+			this, SIGNAL(seekFwdClicked(bool)));
+	QObject::connect(
+			mSeekBkwdBtn,
+			SIGNAL(clicked(bool)),
+			this, SIGNAL(seekBwdClicked(bool)));
+	QObject::connect(
+			mLoadBtn,
+			SIGNAL(clicked(bool)),
+			this, SIGNAL(loadClicked(bool)));
+	QObject::connect(
+			mResetBtn,
+			SIGNAL(clicked(bool)),
+			this, SIGNAL(resetClicked(bool)));
+	QObject::connect(
+			mBeatOffset,
+			SIGNAL(valueChanged(int)),
+			this, SIGNAL(beatOffsetChanged(int)));
 }
+
+bool DJMixerControlView::cueMode() const {
+	return mCueBtn->isChecked();
+}
+
+bool DJMixerControlView::paused() const {
+	return mPlayBtn->isChecked();
+}
+
+bool DJMixerControlView::runningFree() const {
+	return mSyncBtn->isChecked();
+}
+
+int DJMixerControlView::beatOffset() const {
+	return mBeatOffset->value();
+}
+
+//this slots emit signals when necessary through the actual buttons
+
+void DJMixerControlView::setCueing(bool cueing){
+	if(cueing != mCueBtn->isChecked())
+		mCueBtn->setChecked(cueing);
+}
+
+void DJMixerControlView::setPaused(bool paused){
+	if(paused != mPlayBtn->isChecked())
+		mPlayBtn->setChecked(paused);
+}
+
+void DJMixerControlView::setPlaying(bool playing){
+	setPaused(!playing);
+}
+
+void DJMixerControlView::setRunningFree(bool free){
+	if(free != mSyncBtn->isChecked())
+		mSyncBtn->setChecked(free);
+}
+
+void DJMixerControlView::setSynced(bool synced){
+	setRunningFree(!synced);
+}
+
+void DJMixerControlView::setProgress(float progress){
+	mProgressBar->setValue(100 * progress);
+}
+
+void DJMixerControlView::setProgress(int progress){
+	mProgressBar->setValue(progress);
+}
+
+void DJMixerControlView::setBeatOffset(int offset){
+	mBeatOffset->setValue(offset);
+}
+

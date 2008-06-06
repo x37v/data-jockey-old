@@ -13,7 +13,30 @@ class DJMixerControlView : public QWidget {
 	Q_OBJECT
 	public:
 		DJMixerControlView(QWidget *parent = NULL);
-		void reset();
+		bool cueMode() const;
+		bool paused() const;
+		bool runningFree() const;
+		int beatOffset() const;
+	signals:
+		void cueModeChanged(bool cueing);
+		void pausedChanged(bool paused);
+		void runningFreeChanged(bool free);
+		void seekFwdClicked(bool clicked);
+		void seekBwdClicked(bool clicked);
+		void loadClicked(bool clicked);
+		void resetClicked(bool reset);
+		void beatOffsetChanged(int offset);
+	public slots:
+		void setCueing(bool cueing = true);
+		void setPaused(bool paused = true);
+		void setPlaying(bool playing = true);
+		void setRunningFree(bool free = true); 
+		void setSynced(bool synced = true);
+		//0..1
+		void setProgress(float progress);
+		//0..100
+		void setProgress(int progress);
+		void setBeatOffset(int offset);
 	private:
 		QToolButton * mLoadBtn;
 		QToolButton * mResetBtn;
@@ -23,7 +46,7 @@ class DJMixerControlView : public QWidget {
 		QToolButton * mSeekFwdBtn;
 		QToolButton * mSeekBkwdBtn;
 		QProgressBar * mProgressBar;
-		QSpinBox * mBeatOffeset;
+		QSpinBox * mBeatOffset;
 
 		QVBoxLayout * mLayout;
 };

@@ -13,7 +13,6 @@ class MixerChannelView : public QWidget {
 		EQView * eq();
 		QSlider * volumeSlider();
 		QToolButton * muteButton();
-		void reset();
 		float volume() const;
 		bool muted() const;
 	signals:

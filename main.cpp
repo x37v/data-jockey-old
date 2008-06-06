@@ -20,6 +20,9 @@
 #include "mixerchannelview.hpp"
 #include "djmixerchannelview.hpp"
 
+#include "eqview.hpp"
+#include "eqmodel.hpp"
+
 int main(int argc, char *argv[])
 {
 	QApplication app(argc, argv);
@@ -52,6 +55,37 @@ int main(int argc, char *argv[])
 
 	MixerChannelModel * mixerModel = new MixerChannelModel;
 	MixerChannelView * mixerChan = mixerPannel->mixerChannels()->front()->mixerChannel();
+
+	EQView * eqView = mixerChan->eq();
+	EQModel * eqModel = new EQModel();
+
+	QObject::connect(
+			eqView,
+			SIGNAL(highValueChanged(float)),
+			eqModel, SLOT(setHigh(float)));
+	QObject::connect(
+			eqModel,
+			SIGNAL(highChanged(float)),
+			eqView, SLOT(setHigh(float)));
+
+	QObject::connect(
+			eqView,
+			SIGNAL(midValueChanged(float)),
+			eqModel, SLOT(setMid(float)));
+	QObject::connect(
+			eqModel,
+			SIGNAL(midChanged(float)),
+			eqView, SLOT(setMid(float)));
+
+	QObject::connect(
+			eqView,
+			SIGNAL(lowValueChanged(float)),
+			eqModel, SLOT(setLow(float)));
+	QObject::connect(
+			eqModel,
+			SIGNAL(lowChanged(float)),
+			eqView, SLOT(setLow(float)));
+
 	QObject::connect(
 			mixerChan,
 			SIGNAL(volumeChanged(float)),
