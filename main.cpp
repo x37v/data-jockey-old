@@ -19,6 +19,7 @@
 #include "mixerchannelmodel.hpp"
 #include "mixerchannelview.hpp"
 #include "djmixerchannelview.hpp"
+#include "djmixercontrolview.hpp"
 
 #include "eqview.hpp"
 #include "eqmodel.hpp"
@@ -55,6 +56,8 @@ int main(int argc, char *argv[])
 
 	MixerChannelModel * mixerModel = new MixerChannelModel;
 	MixerChannelView * mixerChan = mixerPannel->mixerChannels()->front()->mixerChannel();
+
+	mixerPannel->mixerChannels()->front()->DJMixerControl()->setProgress(0.4123f);
 
 	EQView * eqView = mixerChan->eq();
 	EQModel * eqModel = new EQModel();
