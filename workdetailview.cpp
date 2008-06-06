@@ -18,7 +18,12 @@ WorkDetailView::WorkDetailView(
 
 	mLayout->addWidget(mTitle, 0, 0);
 	mLayout->addWidget(mArtist, 1, 0);
-	mLayout->addWidget(mTagView, 0, 1, 1, 3);
+	mLayout->addWidget(mTagView, 0, 1, 3, 1);
+
+	mLayout->setColumnStretch(0,0);
+	mLayout->setColumnStretch(1,0);
+	mLayout->setRowStretch(0,0);
+	mLayout->setRowStretch(1,0);
 	setLayout(mLayout);
 }
 

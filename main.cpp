@@ -43,14 +43,15 @@ int main(int argc, char *argv[])
 		return false;
 	}
 
-	WorkDetailView * asdf = new WorkDetailView(db);
-	asdf->show();
 
 	QWidget * window = new QWidget;
 	window->setWindowTitle("floatme");
-	QHBoxLayout * layout = new QHBoxLayout(window);
+	QGridLayout * layout = new QGridLayout(window);
 	layout->setContentsMargins(2,2,2,2);
 	window->setLayout(layout);
+
+	WorkDetailView * detailView = new WorkDetailView(db, window);
+	detailView->show();
 
 	MixerPanelView * mixerPannel = new MixerPanelView(4, window);
 
@@ -60,8 +61,13 @@ int main(int argc, char *argv[])
 
 	AudioWorkDBView * tableView = new AudioWorkDBView(&tableModel, window);
 
-	layout->addWidget(mixerPannel, 1);
-	layout->addWidget(tableView, 10);
+	layout->addWidget(mixerPannel, 0, 0);
+	layout->addWidget(tableView, 0, 1, 2, 1);
+	layout->addWidget(detailView, 1, 0);
+	layout->setColumnStretch(1,10);
+	layout->setColumnStretch(0,0);
+	layout->setRowStretch(0,10);
+	layout->setRowStretch(1,0);
 	window->show();
 
 	MixerChannelModel * mixerModel = new MixerChannelModel;
