@@ -4,6 +4,7 @@
 #include <QObject>
 
 class DJMixerControlView;
+class DJMixerWorkInfoView;
 class MixerChannelView;
 
 class DJMixerChannelView : public QObject {
@@ -11,9 +12,11 @@ class DJMixerChannelView : public QObject {
 	public:
 		DJMixerChannelView(QWidget *parent = NULL);
 		DJMixerControlView * DJMixerControl();
+		DJMixerWorkInfoView * DJMixerWorkInfo();
 		MixerChannelView * mixerChannel();
 	private:
 		DJMixerControlView * mDJMixerControl;
+		DJMixerWorkInfoView * mDJMixerWorkInfo;
 		MixerChannelView * mMixerChannel;
 };
 

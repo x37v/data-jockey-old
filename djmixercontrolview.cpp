@@ -90,7 +90,7 @@ DJMixerControlView::DJMixerControlView(QWidget *parent)
 	QObject::connect(
 			mSyncBtn,
 			SIGNAL(clicked(bool)),
-			this, SIGNAL(runningFreeChanged(bool)));
+			this, SIGNAL(syncModeChanged(bool)));
 	QObject::connect(
 			mSeekFwdBtn,
 			SIGNAL(clicked(bool)),

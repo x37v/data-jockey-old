@@ -44,6 +44,7 @@ int main(int argc, char *argv[])
 	QWidget * window = new QWidget;
 	window->setWindowTitle("floatme");
 	QHBoxLayout * layout = new QHBoxLayout(window);
+	layout->setContentsMargins(2,2,2,2);
 	window->setLayout(layout);
 
 	MixerPanelView * mixerPannel = new MixerPanelView(4, window);
@@ -61,17 +62,22 @@ int main(int argc, char *argv[])
 	MixerChannelModel * mixerModel = new MixerChannelModel;
 	MixerChannelView * mixerChan = mixerPannel->mixerChannels()->front()->mixerChannel();
 
-	mixerPannel->mixerChannels()->front()->DJMixerControl()->setProgress(0.4123f);
 	DJMixerControlModel * djModel = new DJMixerControlModel;
 
 	QObject::connect(
 			(*mixerPannel->mixerChannels())[0]->DJMixerControl(),
-			SIGNAL(loadClicked(bool)),
-			djModel, SLOT(setSync(bool)));
+			SIGNAL(pausedChanged(bool)),
+			djModel, SLOT(setPaused(bool)));
 	QObject::connect(
 			(*mixerPannel->mixerChannels())[0]->DJMixerControl(),
-			SIGNAL(resetClicked(bool)),
-			djModel, SLOT(setPlay(bool)));
+			SIGNAL(syncModeChanged(bool)),
+			djModel, SLOT(setRunFree(bool)));
+	QObject::connect(
+			djModel,
+			SIGNAL(progressChanged(float)),
+			(*mixerPannel->mixerChannels())[0]->DJMixerControl(),
+			SLOT(setProgress(float)));
+	djModel->setProgress(0.324);
 
 	EQView * eqView = mixerChan->eq();
 	EQModel * eqModel = new EQModel();

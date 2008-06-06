@@ -20,7 +20,7 @@ class DJMixerControlView : public QWidget {
 	signals:
 		void cueModeChanged(bool cueing);
 		void pausedChanged(bool paused);
-		void runningFreeChanged(bool free);
+		void syncModeChanged(bool free);
 		void seekFwdClicked(bool clicked);
 		void seekBwdClicked(bool clicked);
 		void loadClicked(bool clicked);
