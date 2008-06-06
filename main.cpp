@@ -9,6 +9,8 @@
 #include <QMessageBox>
 #include <QTableView>
 
+#include <QSplitter>
+
 #include <QHeaderView>
 #include <QSortFilterProxyModel>
 
@@ -46,9 +48,9 @@ int main(int argc, char *argv[])
 
 	QWidget * window = new QWidget;
 	window->setWindowTitle("floatme");
-	QGridLayout * layout = new QGridLayout(window);
-	layout->setContentsMargins(2,2,2,2);
-	window->setLayout(layout);
+	//QGridLayout * layout = new QGridLayout(window);
+	//layout->setContentsMargins(2,2,2,2);
+	//window->setLayout(layout);
 
 	WorkDetailView * detailView = new WorkDetailView(db, window);
 	detailView->show();
@@ -62,13 +64,35 @@ int main(int argc, char *argv[])
 
 	AudioWorkDBView * tableView = new AudioWorkDBView(&tableModel, window);
 
-	layout->addWidget(mixerPannel, 0, 0);
-	layout->addWidget(tableView, 0, 1, 2, 1);
-	layout->addWidget(detailView, 1, 0);
-	layout->setColumnStretch(1,10);
-	layout->setColumnStretch(0,0);
-	layout->setRowStretch(0,10);
-	layout->setRowStretch(1,0);
+	QSplitter *splitter = new QSplitter(Qt::Vertical, window);
+	QSplitter *splitter2 = new QSplitter(Qt::Horizontal, window);
+
+	splitter->addWidget(mixerPannel);
+	splitter->addWidget(detailView);
+	splitter2->addWidget(splitter);
+	splitter2->addWidget(tableView);
+	QVBoxLayout * layout = new QVBoxLayout(window);
+	splitter2->setStretchFactor(0,0);
+	splitter2->setStretchFactor(1,10);
+	layout->addWidget(splitter2);
+	layout->setContentsMargins(2,2,2,2);
+	window->setLayout(layout);
+
+	QObject::connect(tableView, SIGNAL(workSelected(int)),
+			detailView, SLOT(setWork(int)));
+
+	//layout->addWidget(splitter,0,0);
+	//layout->addWidget(tableView,0,1);
+	//layout->addWidget(mixerPannel, 0, 0);
+	//layout->addWidget(tableView, 0, 1, 3, 1);
+	//layout->addWidget(splitter, 1, 0);
+	//layout->addWidget(detailView, 2, 0);
+
+
+	//layout->setColumnStretch(1,10);
+	//layout->setColumnStretch(0,0);
+	//layout->setRowStretch(0,10);
+	//layout->setRowStretch(1,0);
 	window->show();
 
 	MixerChannelModel * mixerModel = new MixerChannelModel;

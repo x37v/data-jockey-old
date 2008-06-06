@@ -2,6 +2,8 @@
 #define AUDIO_WORK_DB_VIEW_HPP
 
 #include <QWidget>
+#include <QModelIndex>
+#include <QItemSelection>
 
 class AudioWorkTableModel;
 class QTableView;
@@ -14,6 +16,11 @@ class AudioWorkDBView : public QWidget {
 		QTableView * tableView();
 		QPushButton * applyFilterButton();
 		QPushButton * removeFilterButton();
+	protected slots:
+		void selectWork(const QModelIndex & index);
+		void selectionChanged( const QItemSelection & selected);
+	signals:
+		void workSelected(int work);
 	private:
 		QTableView * mTableView;
 		QPushButton * mApplyFilterButton;

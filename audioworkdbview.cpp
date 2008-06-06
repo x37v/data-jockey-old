@@ -5,6 +5,10 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QHeaderView>
+#include <QSqlRecord>
+#include <QSqlTableModel>
+
+#define WORK_ID_COL 0
 
 AudioWorkDBView::AudioWorkDBView(AudioWorkTableModel * model, 
 		QWidget *parent) :
@@ -21,6 +25,8 @@ AudioWorkDBView::AudioWorkDBView(AudioWorkTableModel * model,
 	mTableView->setColumnHidden(0, true);
 	mTableView->horizontalHeader()->setMovable(true);
 	mTableView->verticalHeader()->setVisible(false);
+	mTableView->setSelectionBehavior(QAbstractItemView::SelectRows);
+	mTableView->setSelectionMode(QAbstractItemView::SingleSelection);
 
 	//create the buttons
 	mApplyFilterButton = new QPushButton("apply filter", this);
@@ -41,6 +47,14 @@ AudioWorkDBView::AudioWorkDBView(AudioWorkTableModel * model,
 	layout->addWidget(mTableView, 10);
 	layout->addLayout(buttonLayout, 0);
 	setLayout(layout);
+
+	//QObject::connect(mTableView, SIGNAL(clicked(const QModelIndex)),
+			//this, SLOT(selectWork(const QModelIndex)));
+
+	QObject::connect(mTableView->selectionModel(), 
+			SIGNAL(selectionChanged(const QItemSelection, const QItemSelection)),
+			this,
+			SLOT(selectionChanged(const QItemSelection)));
 }
 
 QTableView * AudioWorkDBView::tableView(){
@@ -53,5 +67,19 @@ QPushButton * AudioWorkDBView::applyFilterButton(){
 
 QPushButton * AudioWorkDBView::removeFilterButton(){
 	return mRemoveFilterButton;
+}
+
+void AudioWorkDBView::selectWork(const QModelIndex & index ){
+	QSqlRecord record = ((QSqlTableModel *)mTableView->model())->record(index.row());
+	QVariant itemData = record.value(WORK_ID_COL);
+	//find the id of the work and emit that
+	if(itemData.isValid() && itemData.canConvert(QVariant::Int)){
+		int work = itemData.toInt();
+		emit(workSelected(work));
+	}
+}
+
+void AudioWorkDBView::selectionChanged( const QItemSelection & selected){
+	selectWork(selected.indexes()[0]);
 }
 

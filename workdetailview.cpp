@@ -33,6 +33,7 @@ WorkDetailView::WorkDetailView(
 	mLayout->addWidget(mTitle, 0, 0);
 	mLayout->addWidget(mArtist, 1, 0);
 	mLayout->addWidget(mTagView, 0, 1, 3, 1);
+	mLayout->setContentsMargins(0,0,0,0);
 
 	mLayout->setColumnStretch(0,0);
 	mLayout->setColumnStretch(1,0);
@@ -57,6 +58,7 @@ void WorkDetailView::setWork(int work_id){
 		mTitle->setText(mWorkQuery.value(titleCol).toString());
 		mArtist->setText(mWorkQuery.value(artistCol).toString());
 		mTagView->setWork(work_id);
+		mTagView->expandAll();
 	} else {
 		clear();
 	}
@@ -66,5 +68,12 @@ void WorkDetailView::clear(){
 	mArtist->setText("artist");
 	mTitle->setText("title");
 	mTagView->clear();
+}
+
+void WorkDetailView::expandTags(bool expand){
+	if(expand)
+		mTagView->expandAll();
+	else
+		mTagView->collapseAll();
 }
 

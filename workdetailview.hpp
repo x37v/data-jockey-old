@@ -20,6 +20,7 @@ class WorkDetailView : public QWidget {
 	public slots:
 		void setWork(int work_id);
 		void clear();
+		void expandTags(bool expand = true);
 	private:
 		static const QString cWorkQuery;
 		QGridLayout * mLayout;
