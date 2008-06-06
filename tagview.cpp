@@ -1,5 +1,6 @@
 #include "tagview.hpp"
 #include "treemodel.h"
+#include "treeitem.h"
 #include <QSqlRecord>
 
 const QString TagView::cAllTagsStr(
@@ -27,6 +28,7 @@ TagView::TagView(const QSqlDatabase & db, QWidget * parent) :
 	QTreeView(parent), mQuery(db)
 {
 	mModel = new TreeModel(this);
+	setModel(mModel);
 }
 
 void TagView::setWork(int work_id){
@@ -40,15 +42,23 @@ void TagView::setWork(int work_id){
 	//exec and build the model
 	mQuery.exec(queryStr);
 	buildFromQuery();
+	setColumnHidden(1,true);
 }
 
 void TagView::setShowAll(){
 	mQuery.exec(cAllTagsStr);
 	buildFromQuery();
+	setColumnHidden(1,true);
 }
 
 void TagView::clear(){
+	QList<QVariant> rootData;
+	rootData << "empty";
+	mModel->setRoot(new TreeItem(rootData));
 }
+
+#include <iostream>
+using namespace std;
 
 void TagView::buildFromQuery(){
 	if(mQuery.first()){
@@ -57,8 +67,34 @@ void TagView::buildFromQuery(){
 		int classIdCol = rec.indexOf("class_id");
 		int classCol = rec.indexOf("class");
 		int nameCol = rec.indexOf("name");
+
+		QList<QVariant> rootData;
+		rootData << "tag (class -> name)" << "id";
+		TreeItem * newRoot = new TreeItem(rootData);
+
+		QList<QVariant> parentData;
+		parentData << mQuery.value(classCol).toString() << mQuery.value(classIdCol).toInt() ;
+		TreeItem * curParent = new TreeItem(parentData, newRoot);
+		newRoot->appendChild(curParent);
 		do {
+			QList<QVariant> childData;
+			int classId = mQuery.value(classIdCol).toInt();
+			int id = mQuery.value(idCol).toInt();
+			QString name(mQuery.value(nameCol).toString());
+			QString className(mQuery.value(classCol).toString());
+
+			//do we need a new parent? if so create it
+			if(classId != parentData[1].toInt()){
+				parentData.clear();
+				parentData << className << classId;
+				curParent = new TreeItem(parentData, newRoot);
+				newRoot->appendChild(curParent);
+			}
+			//create the child (tag)
+			childData << name << id;
+			curParent->appendChild(new TreeItem(childData, curParent));
 		} while(mQuery.next());
+		mModel->setRoot(newRoot);
 	} else {
 	}
 }

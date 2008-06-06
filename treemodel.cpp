@@ -174,8 +174,10 @@ int TreeModel::rowCount(const QModelIndex &parent) const
 
 //added by alex
 void TreeModel::setRoot(TreeItem *root){
+	//emit(modelAboutToBeReset());
 	delete rootItem;
 	rootItem = root;
+	reset();
 }
 
 /*

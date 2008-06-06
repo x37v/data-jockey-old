@@ -41,9 +41,6 @@ WorkDetailView::WorkDetailView(
 	setLayout(mLayout);
 }
 
-#include <iostream>
-using namespace std;
-
 void WorkDetailView::setWork(int work_id){
 	//build up the queries
 	QString workQueryStr(cWorkQuery);
