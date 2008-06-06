@@ -12,16 +12,19 @@ class DJMixerControlModel : public QObject {
 		bool synced() const;
 		bool runningFree() const;
 		bool cueing() const;
+		float progress() const;
 	public slots:
 		void setCueing(bool cue = true);
 		void setPaused(bool paused = true);
 		void setPlay(bool play = true);
 		void setSync(bool sync = true);
 		void setRunFree(bool free = true);
+		void setProgress(float progress);
 	signals:
 		void cueModeChanged(bool cue);
 		void pausedChanged(bool paused);
 		void runningFreeChanged(bool free);
+		void progressChanged(float progress);
 	private:
 		float mProgress;
 		bool mPaused;

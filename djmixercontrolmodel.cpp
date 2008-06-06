@@ -29,18 +29,22 @@ bool DJMixerControlModel::cueing() const {
 	return mCueing;
 }
 
+float DJMixerControlModel::progress() const {
+	return mProgress;
+}
+
 //slots
 void DJMixerControlModel::setCueing(bool cue){
 	if(cue != mCueing){
 		mCueing = cue;
-		emit(cueModeChanged(cue));
+		emit(cueModeChanged(mCueing));
 	}
 }
 
 void DJMixerControlModel::setPaused(bool paused){
 	if(paused != mPaused){
 		mPaused = paused;
-		emit(pausedChanged(paused));
+		emit(pausedChanged(mPaused));
 	}
 }
 
@@ -51,11 +55,18 @@ void DJMixerControlModel::setPlay(bool play){
 void DJMixerControlModel::setSync(bool sync){
 	if(sync != mSynced){
 		mSynced = sync;
-		emit(runningFreeChanged(sync));
+		emit(runningFreeChanged(mSynced));
 	}
 }
 
 void DJMixerControlModel::setRunFree(bool free){
 	setSync(!free);
+}
+
+void DJMixerControlModel::setProgress(float progress){
+	if(mProgress != progress){
+		mProgress = progress;
+		emit(progressChanged(mProgress));
+	}
 }
 
