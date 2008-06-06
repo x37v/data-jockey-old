@@ -4,11 +4,11 @@
 #include <QWidget>
 #include <QSqlDatabase>
 #include <QSqlQuery>
-#include "treemodel.h"
+#include <QString>
 
 class QLineEdit;
 class QGridLayout;
-class QTreeView;
+class TagView;
 
 class WorkDetailView : public QWidget {
 	Q_OBJECT
@@ -21,13 +21,12 @@ class WorkDetailView : public QWidget {
 		void setWork(int work_id);
 		void clear();
 	private:
+		static const QString cWorkQuery;
 		QGridLayout * mLayout;
 		QLineEdit * mArtist;
 		QLineEdit * mTitle;
-		QTreeView * mTagView;
+		TagView * mTagView;
 
-		//TreeModel mTagModel;
-		QSqlQuery mTagQuery;
 		QSqlQuery mWorkQuery;
 };
 

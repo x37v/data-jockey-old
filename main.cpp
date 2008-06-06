@@ -52,6 +52,7 @@ int main(int argc, char *argv[])
 
 	WorkDetailView * detailView = new WorkDetailView(db, window);
 	detailView->show();
+	detailView->setWork(12);
 
 	MixerPanelView * mixerPannel = new MixerPanelView(4, window);
 

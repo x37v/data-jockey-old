@@ -24,6 +24,7 @@ HEADERS += audioworkdbview.hpp \
            mixerchannelview.hpp \
            mixerpanelview.hpp \ 
            workdetailview.hpp \
+			  tagview.hpp \
 			  treeitem.h \
 			  treemodel.h \
 
@@ -42,6 +43,7 @@ SOURCES += audioworkdbview.cpp \
            mixerchannelview.cpp \
            mixerpanelview.cpp \
            workdetailview.cpp \
+			  tagview.cpp \
 			  treeitem.cpp \
 			  treemodel.cpp \
 
