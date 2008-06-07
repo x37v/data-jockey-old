@@ -14,15 +14,27 @@ class EQModel : public QObject {
 		void highChanged(float high);
 		void midChanged(float mid);
 		void lowChanged(float low);
+		void highCutChanged(bool cut);
+		void midCutChanged(bool cut);
+		void lowCutChanged(bool cut);
 	public slots:
 		void reset();
 		void setHigh(float val);
 		void setMid(float val);
 		void setLow(float val);
+		void toggleHighCut();
+		void toggleMidCut();
+		void toggleLowCut();
 	private:
 		float mHigh;
 		float mMid;
 		float mLow;
+		float mHighLast;
+		float mMidLast;
+		float mLowLast;
+		bool mCuttingHigh;
+		bool mCuttingMid;
+		bool mCuttingLow;
 };
 
 #endif
