@@ -14,6 +14,7 @@ HEADERS += audioworkdbview.hpp \
            audioworktablemodel.hpp \
            crossfadeview.hpp \
            djmixerchannelview.hpp \
+           djmixerchannelmodel.hpp \
            djmixercontrolview.hpp \
            djmixercontrolmodel.hpp \
 			  djmixerworkinfoview.hpp \
@@ -32,6 +33,7 @@ SOURCES += audioworkdbview.cpp \
            audioworktablemodel.cpp \
            crossfadeview.cpp \
            djmixerchannelview.cpp \
+           djmixerchannelmodel.cpp \
            djmixercontrolview.cpp \
            djmixercontrolmodel.cpp \
 			  djmixerworkinfoview.cpp \
