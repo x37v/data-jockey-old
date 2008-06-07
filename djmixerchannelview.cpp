@@ -23,3 +23,7 @@ MixerChannelView * DJMixerChannelView::mixerChannel(){
 	return mMixerChannel;
 }
 
+void DJMixerChannelView::reset(){
+	mDJMixerWorkInfo->reset();
+}
+

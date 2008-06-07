@@ -10,9 +10,15 @@ class DJMixerChannelModel : public QObject {
 	Q_OBJECT
 	public:
 		DJMixerChannelModel(QObject * parent = NULL);
-		DJMixerControlModel * DJMixerControl();
-		MixerChannelModel * mixerChannel();
+		DJMixerControlModel * DJMixerControl() const;
+		MixerChannelModel * mixerChannel() const;
+		int work() const;
+	signals:
+		void workChanged(int work);
+	public slots:
+		void loadWork(int work);
 	private:
+		int mWork;
 		DJMixerControlModel * mDJMixerControl;
 		MixerChannelModel * mMixerChannel;
 };

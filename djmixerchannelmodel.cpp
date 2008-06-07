@@ -7,13 +7,25 @@ DJMixerChannelModel::DJMixerChannelModel(QObject * parent):
 {
 	mDJMixerControl = new DJMixerControlModel(this);
 	mMixerChannel = new MixerChannelModel(this);
+	mWork = -1;
 }
 
-DJMixerControlModel * DJMixerChannelModel::DJMixerControl(){
+DJMixerControlModel * DJMixerChannelModel::DJMixerControl() const {
 	return mDJMixerControl;
 }
 
-MixerChannelModel * DJMixerChannelModel::mixerChannel(){
+MixerChannelModel * DJMixerChannelModel::mixerChannel() const {
 	return mMixerChannel;
+}
+
+int DJMixerChannelModel::work() const {
+	return mWork;
+}
+
+void DJMixerChannelModel::loadWork(int work){
+	if(mWork != work){
+		mWork = work;
+		emit(workChanged(mWork));
+	}
 }
 

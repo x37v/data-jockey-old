@@ -20,15 +20,15 @@ WorkDetailView::WorkDetailView(
 	mWorkQuery(db)
 {
 	mLayout = new QGridLayout(this);
-	mArtist = new QLineEdit("artist", this);
-	mTitle = new QLineEdit("title", this);
+	mArtist = new QLineEdit(tr("artist"), this);
+	mTitle = new QLineEdit(tr("title"), this);
 	mTagView = new TagView(db,this);
 
 	mArtist->setReadOnly(true);
 	mTitle->setReadOnly(true);
 
-	mArtist->setToolTip("artist");
-	mTitle->setToolTip("song title");
+	mArtist->setToolTip(tr("artist"));
+	mTitle->setToolTip(tr("song title"));
 
 	mLayout->addWidget(mTitle, 0, 0);
 	mLayout->addWidget(mArtist, 1, 0);
@@ -65,8 +65,8 @@ void WorkDetailView::setWork(int work_id){
 }
 
 void WorkDetailView::clear(){
-	mArtist->setText("artist");
-	mTitle->setText("title");
+	mArtist->setText(tr("artist"));
+	mTitle->setText(tr("title"));
 	mTagView->clear();
 }
 

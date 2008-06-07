@@ -14,6 +14,8 @@ class DJMixerChannelView : public QObject {
 		DJMixerControlView * DJMixerControl();
 		DJMixerWorkInfoView * DJMixerWorkInfo();
 		MixerChannelView * mixerChannel();
+	public slots:
+		void reset();
 	private:
 		DJMixerControlView * mDJMixerControl;
 		DJMixerWorkInfoView * mDJMixerWorkInfo;
