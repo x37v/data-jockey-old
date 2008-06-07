@@ -80,6 +80,10 @@ void AudioWorkDBView::selectWork(const QModelIndex & index ){
 }
 
 void AudioWorkDBView::selectionChanged( const QItemSelection & selected){
-	selectWork(selected.indexes()[0]);
+	//if valid, otherwise send a -1 for work selected
+	if(selected.indexes().size() > 0)
+		selectWork(selected.indexes()[0]);
+	else 
+		emit(workSelected(-1));
 }
 
