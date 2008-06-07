@@ -19,9 +19,12 @@ class AudioWorkDBView : public QWidget {
 	protected slots:
 		void selectWork(const QModelIndex & index);
 		void selectionChanged( const QItemSelection & selected);
+		void setFiltered();
+		void setUnFiltered();
 	signals:
 		void workSelected(int work);
 	private:
+		AudioWorkTableModel * mModel;
 		QTableView * mTableView;
 		QPushButton * mApplyFilterButton;
 		QPushButton * mRemoveFilterButton;

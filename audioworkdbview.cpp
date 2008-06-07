@@ -14,6 +14,8 @@ AudioWorkDBView::AudioWorkDBView(AudioWorkTableModel * model,
 		QWidget *parent) :
 	QWidget(parent)
 {
+	mModel = model;
+
 	//create the layouts
 	QVBoxLayout * layout = new QVBoxLayout(this);
 	QHBoxLayout * buttonLayout = new QHBoxLayout;
@@ -33,9 +35,9 @@ AudioWorkDBView::AudioWorkDBView(AudioWorkTableModel * model,
 	mRemoveFilterButton = new QPushButton("remove filter", this);
 
 	QObject::connect(mApplyFilterButton, SIGNAL(clicked(bool)),
-			model, SLOT(setFiltered()));
+			this, SLOT(setFiltered()));
 	QObject::connect(mRemoveFilterButton, SIGNAL(clicked(bool)),
-			model, SLOT(setUnFiltered()));
+			this, SLOT(setUnFiltered()));
 
 	//add items to the buttonLayout
 	buttonLayout->addWidget(mApplyFilterButton, 0);
@@ -85,5 +87,25 @@ void AudioWorkDBView::selectionChanged( const QItemSelection & selected){
 		selectWork(selected.indexes()[0]);
 	else 
 		emit(workSelected(-1));
+}
+
+void AudioWorkDBView::setFiltered(){
+	//bool selected = false;
+	//int work_index = 0;
+	//QModelIndexList indexes = mTableView->selectionModel()->selectedIndexes();
+	//if(indexes.size() > 0){
+		//QSqlRecord record = ((QSqlTableModel *)mTableView->model())->record(indexes[0].row());
+		//QVariant itemData = record.value(WORK_ID_COL);
+		//work_index = itemData.toInt();
+		//selected = true;
+	//}
+	mModel->setFiltered();
+	//if(selected){
+	//XXX what to do now?
+	//}
+}
+
+void AudioWorkDBView::setUnFiltered(){
+	mModel->setUnFiltered();
 }
 
