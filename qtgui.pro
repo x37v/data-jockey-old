@@ -22,6 +22,7 @@ HEADERS += audioworkdbview.hpp \
            eqview.hpp \
            eqmodel.hpp \
            masterview.hpp \
+           mastermodel.hpp \
            mixerchannelmodel.hpp \
            mixerchannelview.hpp \
            mixerpanelview.hpp \ 
@@ -43,6 +44,7 @@ SOURCES += audioworkdbview.cpp \
            eqmodel.cpp \
            main.cpp \
            masterview.cpp \
+           mastermodel.cpp \
            mixerchannelmodel.cpp \
            mixerchannelview.cpp \
            mixerpanelview.cpp \

@@ -1,7 +1,7 @@
 #ifndef MASTER_VIEW_HPP
 #define MASTER_VIEW_HPP
 
-#include<QWidget>
+#include <QWidget>
 
 class QSlider;
 class QDoubleSpinBox;
