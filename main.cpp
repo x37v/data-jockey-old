@@ -167,6 +167,19 @@ int main(int argc, char *argv[])
 			mixerChan,
 			SLOT(setMuted(bool)));
 
+	/*
+	 //just to test cuts
+	QObject::connect(
+			(*mixerPannel->mixerChannels())[0]->DJMixerControl(),
+			SIGNAL(syncModeChanged(bool)),
+			eqModel, SLOT(toggleLowCut()));
+
+	QObject::connect(
+			eqModel, SIGNAL(lowCutChanged(bool)),
+			(*mixerPannel->mixerChannels())[0]->DJMixerControl(),
+			SLOT(setRunningFree(bool)));
+			*/
+
 	mixerModel->setMuted(true);
 	mixerModel->setVolume(2.0);
 

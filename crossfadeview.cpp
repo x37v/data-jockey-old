@@ -59,3 +59,33 @@ CrossFadeView::~CrossFadeView(){
 		delete [] *it;
 }
 
+void CrossFadeView::setMixers(unsigned int left, unsigned int right){
+	for(unsigned int i = 0; i < mPairList.size(); i++){
+		if(mPairList[i][0] == left && mPairList[i][1] == right){
+			//index 0 is 'disabled'
+			mSelection->setCurrentIndex(i + 1);
+			break;
+		}
+	}
+}
+
+void CrossFadeView::disable(){
+	if(mSelection->currentIndex() != 0){
+		mSelection->setCurrentIndex(0);
+		emit(disabled());
+	}
+}
+
+void CrossFadeView::currentIndexChanged(int index){
+	if(index == 0){
+		disable();
+	} else if (index > 0 && (index - 1) < (int)mPairList.size()){
+		int left, right;
+		left = mPairList[index - 1][0];
+		right = mPairList[index - 1][1];
+		emit(mixersChanged(left,right));
+	} else {
+		//XXX this shouldn't ever happen
+	}
+}
+

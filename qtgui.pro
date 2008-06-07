@@ -13,6 +13,7 @@ QT += sql
 HEADERS += audioworkdbview.hpp \
            audioworktablemodel.hpp \
            crossfadeview.hpp \
+           crossfademodel.hpp \
            djmixerchannelview.hpp \
            djmixerchannelmodel.hpp \
            djmixercontrolview.hpp \
@@ -32,6 +33,7 @@ HEADERS += audioworkdbview.hpp \
 SOURCES += audioworkdbview.cpp \
            audioworktablemodel.cpp \
            crossfadeview.cpp \
+           crossfademodel.cpp \
            djmixerchannelview.cpp \
            djmixerchannelmodel.cpp \
            djmixercontrolview.cpp \
