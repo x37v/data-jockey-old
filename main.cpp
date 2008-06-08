@@ -29,6 +29,9 @@
 #include "eqview.hpp"
 #include "eqmodel.hpp"
 
+#include "masterview.hpp"
+#include "mastermodel.hpp"
+
 #include "workdetailview.hpp"
 
 int main(int argc, char *argv[])
@@ -57,6 +60,12 @@ int main(int argc, char *argv[])
 	detailView->setWork(12);
 
 	MixerPanelView * mixerPannel = new MixerPanelView(4, window);
+	MasterView * master = mixerPannel->master();
+	MasterModel * masterModel = new MasterModel(4);
+	QObject::connect(master, SIGNAL(syncSourceChanged(unsigned int)),
+			masterModel, SLOT(setSyncSource(unsigned int)));
+	QObject::connect(masterModel, SIGNAL(syncSourceChanged(unsigned int)),
+			master, SLOT(setSyncSource(unsigned int)));
 
 	AudioWorkTableModel tableModel(db);
 	tableModel.setFiltered(true);

@@ -10,6 +10,7 @@
 MasterView::MasterView(unsigned int numMixers, QWidget *parent) :
 	QObject(parent)
 {
+	mRecursing = false;
 	mTempoWidget = new QWidget(parent);
 	mVolumeSlider = new QSlider(parent);
 	mTempo = new QDoubleSpinBox(parent);
@@ -17,11 +18,18 @@ MasterView::MasterView(unsigned int numMixers, QWidget *parent) :
 	mSyncSource.push_back(new QRadioButton("master", parent));
 	mSyncSource.front()->setChecked(true);
 
+	//interally call our syncSrcClicked, so that we can send our
+	//syncSourceChanged signal
+	QObject::connect(mSyncSource.front(), SIGNAL(clicked(bool)),
+			this, SLOT(syncSrcClicked(bool)));
+
 	//when syncing to the master clock the tempo mul doesn't work, just the master tempo
-	QObject::connect(mSyncSource.front(), SIGNAL(clicked(bool)),
-                      mTempoMul, SLOT(setDisabled(bool)));
-	QObject::connect(mSyncSource.front(), SIGNAL(clicked(bool)),
-                      mTempo, SLOT(setEnabled(bool)));
+	//XXX this should be done by the model
+	//QObject::connect(mSyncSource.front(), SIGNAL(clicked(bool)),
+                      //mTempoMul, SLOT(setDisabled(bool)));
+	//QObject::connect(mSyncSource.front(), SIGNAL(clicked(bool)),
+                      //mTempo, SLOT(setEnabled(bool)));
+
 	for(unsigned int i = 0; i < numMixers; i++){
 		QRadioButton * newRadioButton;
 		std::string syncSrcName("mixer ");
@@ -30,11 +38,20 @@ MasterView::MasterView(unsigned int numMixers, QWidget *parent) :
 		syncSrcName.append(numAsString.str());
 		newRadioButton = new QRadioButton(syncSrcName.c_str(), parent);
 		mSyncSource.push_back(newRadioButton);
+
+		//interally call our syncSrcClicked, so that we can send our
+		//syncSourceChanged signal
+		QObject::connect(newRadioButton, SIGNAL(clicked(bool)),
+				this, SLOT(syncSrcClicked(bool)));
+
 		//when syncing to a mixer channel the 'master tempo' doesn't work.. just the tempo mul
+		//XXX this should be done by the model
+		/*
 		QObject::connect(newRadioButton, SIGNAL(clicked(bool)),
 				mTempoMul, SLOT(setEnabled(bool)));
 		QObject::connect(newRadioButton, SIGNAL(clicked(bool)),
 				mTempo, SLOT(setDisabled(bool)));
+		*/
 	}
 
 	mVolumeSlider->setRange(0,200);
@@ -71,6 +88,20 @@ MasterView::MasterView(unsigned int numMixers, QWidget *parent) :
 	tempoLayout->addWidget(mTempoMul, 0, Qt::AlignHCenter);
 	tempoLayout->addLayout(syncLayout, 0);
 	mTempoWidget->setLayout(tempoLayout);
+
+	//connect our widget's signals to our slots (or signals)
+	QObject::connect(
+			mVolumeSlider,
+			SIGNAL(valueChanged(int)),
+			this, SLOT(setVolume(int)));
+	QObject::connect(
+			mTempo,
+			SIGNAL(valueChanged(double)),
+			this, SLOT(setTempoDouble(double)));
+	QObject::connect(
+			mTempoMul,
+			SIGNAL(valueChanged(double)),
+			this, SLOT(setTempoMulDouble(double)));
 }
 
 QSlider * MasterView::volume(){
@@ -83,5 +114,86 @@ QDoubleSpinBox * MasterView::tempo(){
 
 QWidget * MasterView::tempoWidget(){
 	return mTempoWidget;
+}
+
+void MasterView::setVolume(float vol){
+	if(mRecursing)
+		return;
+	mRecursing = true;
+
+	mVolumeSlider->setValue((int)(100 * vol));
+
+	mRecursing = false;
+}
+
+void MasterView::setTempo(float tempo){
+	if(mRecursing)
+		return;
+	mRecursing = true;
+
+	mTempo->setValue(tempo);
+
+	mRecursing = false;
+}
+
+void MasterView::setTempoMul(float mul){
+	if(mRecursing)
+		return;
+	mRecursing = true;
+
+	mTempoMul->setValue(mul);
+
+	mRecursing = false;
+}
+
+void MasterView::setSyncSource(unsigned int src){
+	if(src < mSyncSource.size() && !mSyncSource[src]->isChecked()){
+		mSyncSource[src]->setChecked(true);
+	}
+}
+
+//this is only called internally so it simply emits the value
+void MasterView::setVolume(int vol){
+	if(mRecursing)
+		return;
+	mRecursing = true;
+
+	float volFloat = ((float)vol) / 100.0f;
+	emit(volumeChanged(volFloat));
+	
+	mRecursing = false;
+}
+
+//this is only called internally so it simply emits the value
+void MasterView::setTempoDouble(double tempo){
+	if(mRecursing)
+		return;
+	mRecursing = true;
+
+	emit(tempoChanged(tempo));
+
+	mRecursing = false;
+}
+
+//this is only called internally so it simply emits the value
+void MasterView::setTempoMulDouble(double mul){
+	if(mRecursing)
+		return;
+	mRecursing = true;
+
+	emit(tempoMulChanged(mul));
+
+	mRecursing = false;
+}
+
+void MasterView::syncSrcClicked(bool clicked){
+	if(clicked) {
+		for(unsigned int i = 0; i < mSyncSource.size(); i++){
+			if(mSyncSource[i]->isChecked()){
+				emit(syncSourceChanged(i));
+				break;
+			}
+		}
+	}
 }
 
