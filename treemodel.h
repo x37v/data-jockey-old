@@ -1,3 +1,4 @@
+//Modified slightly by Alex Norman 
 /****************************************************************************
 **
 ** Copyright (C) 2005-2008 Trolltech ASA. All rights reserved.
