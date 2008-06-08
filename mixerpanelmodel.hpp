@@ -12,8 +12,8 @@ class MixerPanelModel : public QObject {
 	Q_OBJECT
 	public:
 		MixerPanelModel(unsigned int numMixers = 4, QObject *parent = NULL);
-		CrossFadeModel * crossFade();
-		MasterModel * master();
+		CrossFadeModel * crossFade() const;
+		MasterModel * master() const;
 		std::vector<DJMixerChannelModel *> * mixerChannels();
 	private:
 		std::vector<DJMixerChannelModel *> mDJMixerChannels;

@@ -12,15 +12,15 @@ MixerPanelModel::MixerPanelModel(unsigned int numMixers, QObject *parent) :
 		mDJMixerChannels.push_back(new DJMixerChannelModel(this));
 }
 
-CrossFadeModel * MixerPanelModel::crossFade(){
+CrossFadeModel * MixerPanelModel::crossFade() const {
 	return mXFade;
 }
 
-MasterModel * MixerPanelModel::master(){
+MasterModel * MixerPanelModel::master() const {
 	return mMaster;
 }
 
-std::vector<DJMixerChannelModel *> * MixerPanelModel::mixerChannels(){
+std::vector<DJMixerChannelModel *> * MixerPanelModel::mixerChannels() {
 	return &mDJMixerChannels;
 }
 

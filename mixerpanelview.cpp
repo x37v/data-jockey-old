@@ -47,15 +47,15 @@ MixerPanelView::MixerPanelView(unsigned int numMixers, QWidget *parent)
 	setLayout(mLayout);
 }
 
-CrossFadeView * MixerPanelView::crossFade(){
+CrossFadeView * MixerPanelView::crossFade() const {
 	return mXFade;
 }
 
-MasterView * MixerPanelView::master(){
+MasterView * MixerPanelView::master() const {
 	return mMaster;
 }
 
-std::vector<DJMixerChannelView *> * MixerPanelView::mixerChannels(){
+std::vector<DJMixerChannelView *> * MixerPanelView::mixerChannels() {
 	return &mDJMixerChannels;
 }
 
