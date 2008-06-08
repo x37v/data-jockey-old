@@ -6,7 +6,7 @@
 class CrossFadeModel : public QObject {
 	Q_OBJECT
 	public:
-		CrossFadeModel(QObject * parent = NULL);
+		CrossFadeModel(unsigned int numMixers, QObject * parent = NULL);
 	signals:
 		void mixersChanged(unsigned int left, unsigned int right);
 		void disabled();
@@ -14,6 +14,7 @@ class CrossFadeModel : public QObject {
 		void setMixers(unsigned int left, unsigned int right);
 		void disable();
 	private:
+		unsigned int mNumMixers;
 		unsigned int mLeft;
 		unsigned int mRight;
 		bool mEnabled;

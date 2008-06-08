@@ -23,13 +23,14 @@ HEADERS += audioworkdbview.hpp \
            eqmodel.hpp \
            masterview.hpp \
            mastermodel.hpp \
-           mixerchannelmodel.hpp \
            mixerchannelview.hpp \
+           mixerchannelmodel.hpp \
            mixerpanelview.hpp \ 
+           mixerpanelmodel.hpp \ 
            workdetailview.hpp \
 			  tagview.hpp \
 			  treeitem.h \
-			  treemodel.h \
+			  treemodel.h
 
 SOURCES += audioworkdbview.cpp \
            audioworktablemodel.cpp \
@@ -45,11 +46,12 @@ SOURCES += audioworkdbview.cpp \
            main.cpp \
            masterview.cpp \
            mastermodel.cpp \
-           mixerchannelmodel.cpp \
            mixerchannelview.cpp \
+           mixerchannelmodel.cpp \
            mixerpanelview.cpp \
+           mixerpanelmodel.cpp \
            workdetailview.cpp \
 			  tagview.cpp \
 			  treeitem.cpp \
-			  treemodel.cpp \
+			  treemodel.cpp
 
