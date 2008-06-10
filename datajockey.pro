@@ -8,6 +8,7 @@ DEPENDPATH += .
 INCLUDEPATH += include/
 
 QT += sql
+LIBS += -ljackcpp `pkg-config --libs jack` -lsndfile -lslv2 -lmad -lvorbisfile
 
 MOC_DIR = moc
 OBJECTS_DIR = objects
@@ -33,7 +34,15 @@ HEADERS += include/audioworkdbview.hpp \
            include/workdetailview.hpp \
 			  include/tagview.hpp \
 			  include/treeitem.h \
-			  include/treemodel.h
+			  include/treemodel.h \
+			  include/audioio.hpp \
+			  include/buffer.hpp \
+			  include/bufferplayer.hpp \
+			  include/command.hpp \
+			  include/object.hpp \
+			  include/soundfile.hpp \
+			  include/tempo.hpp \
+			  include/utilities.hpp
 
 SOURCES += src/audioworkdbview.cpp \
            src/audioworktablemodel.cpp \
@@ -56,5 +65,13 @@ SOURCES += src/audioworkdbview.cpp \
            src/workdetailview.cpp \
 			  src/tagview.cpp \
 			  src/treeitem.cpp \
-			  src/treemodel.cpp
+			  src/treemodel.cpp \
+			  src/audioio.cpp \
+			  src/buffer.cpp \
+			  src/bufferplayer.cpp \
+			  src/command.cpp \
+			  src/object.cpp \
+			  src/soundfile.cpp \
+			  src/tempo.cpp \
+			  src/utilities.cpp
 
