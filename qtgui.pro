@@ -3,55 +3,55 @@
 ######################################################################
 
 TEMPLATE = app
-TARGET = 
+TARGET = datajockey
 DEPENDPATH += .
-INCLUDEPATH += .
+INCLUDEPATH += include/
 
 QT += sql
 
 # Input
-HEADERS += audioworkdbview.hpp \
-           audioworktablemodel.hpp \
-           crossfadeview.hpp \
-           crossfademodel.hpp \
-           djmixerchannelview.hpp \
-           djmixerchannelmodel.hpp \
-           djmixercontrolview.hpp \
-           djmixercontrolmodel.hpp \
-			  djmixerworkinfoview.hpp \
-           eqview.hpp \
-           eqmodel.hpp \
-           masterview.hpp \
-           mastermodel.hpp \
-           mixerchannelview.hpp \
-           mixerchannelmodel.hpp \
-           mixerpanelview.hpp \ 
-           mixerpanelmodel.hpp \ 
-           workdetailview.hpp \
-			  tagview.hpp \
-			  treeitem.h \
-			  treemodel.h
+HEADERS += include/audioworkdbview.hpp \
+           include/audioworktablemodel.hpp \
+           include/crossfadeview.hpp \
+           include/crossfademodel.hpp \
+           include/djmixerchannelview.hpp \
+           include/djmixerchannelmodel.hpp \
+           include/djmixercontrolview.hpp \
+           include/djmixercontrolmodel.hpp \
+			  include/djmixerworkinfoview.hpp \
+           include/eqview.hpp \
+           include/eqmodel.hpp \
+           include/masterview.hpp \
+           include/mastermodel.hpp \
+           include/mixerchannelview.hpp \
+           include/mixerchannelmodel.hpp \
+           include/mixerpanelview.hpp \ 
+           include/mixerpanelmodel.hpp \ 
+           include/workdetailview.hpp \
+			  include/tagview.hpp \
+			  include/treeitem.h \
+			  include/treemodel.h
 
-SOURCES += audioworkdbview.cpp \
-           audioworktablemodel.cpp \
-           crossfadeview.cpp \
-           crossfademodel.cpp \
-           djmixerchannelview.cpp \
-           djmixerchannelmodel.cpp \
-           djmixercontrolview.cpp \
-           djmixercontrolmodel.cpp \
-			  djmixerworkinfoview.cpp \
-           eqview.cpp \
-           eqmodel.cpp \
-           main.cpp \
-           masterview.cpp \
-           mastermodel.cpp \
-           mixerchannelview.cpp \
-           mixerchannelmodel.cpp \
-           mixerpanelview.cpp \
-           mixerpanelmodel.cpp \
-           workdetailview.cpp \
-			  tagview.cpp \
-			  treeitem.cpp \
-			  treemodel.cpp
+SOURCES += src/audioworkdbview.cpp \
+           src/audioworktablemodel.cpp \
+           src/crossfadeview.cpp \
+           src/crossfademodel.cpp \
+           src/djmixerchannelview.cpp \
+           src/djmixerchannelmodel.cpp \
+           src/djmixercontrolview.cpp \
+           src/djmixercontrolmodel.cpp \
+			  src/djmixerworkinfoview.cpp \
+           src/eqview.cpp \
+           src/eqmodel.cpp \
+           src/main.cpp \
+           src/masterview.cpp \
+           src/mastermodel.cpp \
+           src/mixerchannelview.cpp \
+           src/mixerchannelmodel.cpp \
+           src/mixerpanelview.cpp \
+           src/mixerpanelmodel.cpp \
+           src/workdetailview.cpp \
+			  src/tagview.cpp \
+			  src/treeitem.cpp \
+			  src/treemodel.cpp
 
