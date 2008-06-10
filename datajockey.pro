@@ -9,6 +9,9 @@ INCLUDEPATH += include/
 
 QT += sql
 
+MOC_DIR = moc
+OBJECTS_DIR = objects
+
 # Input
 HEADERS += include/audioworkdbview.hpp \
            include/audioworktablemodel.hpp \
