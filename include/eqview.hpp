@@ -18,9 +18,9 @@ class EQView : public QWidget {
 		float midValue() const;
 		float lowValue() const;
 	signals:
-		void highValueChanged(float high);
-		void midValueChanged(float mid);
-		void lowValueChanged(float low);
+		void highChanged(float high);
+		void midChanged(float mid);
+		void lowChanged(float low);
 	public slots:
 		void setHigh(float val);
 		void setHigh(int val);

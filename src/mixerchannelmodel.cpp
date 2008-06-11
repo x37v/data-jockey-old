@@ -15,6 +15,10 @@ bool MixerChannelModel::muted() const {
 	return mMuted;
 }
 
+EQModel * MixerChannelModel::eq() const {
+	return mEQ;
+}
+
 void MixerChannelModel::setVolume(float volume){
 	if(mVolume != volume){
 		mVolume = volume;

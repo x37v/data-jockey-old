@@ -11,7 +11,7 @@ class MixerChannelModel : public QObject {
 		MixerChannelModel(QObject *parent = NULL);
 		float volume() const;
 		bool muted() const;
-		EQModel * eq();
+		EQModel * eq() const;
 	signals:
 		void volumeChanged(float volume);
 		void mutedChanged(bool muted);

@@ -236,6 +236,40 @@ void DataJockeyApplication::connectMixerPanelModelView(MixerPanelModel * model, 
 				SIGNAL(mutedChanged(bool)),
 				djMixerModel->mixerChannel(),
 				SLOT(setMuted(bool)));
+		//eq
+		EQModel * eqModel = djMixerModel->mixerChannel()->eq();
+		EQView * eqView = djMixerView->mixerChannel()->eq();
+		QObject::connect(
+				eqModel,
+				SIGNAL(highChanged(float)),
+				eqView,
+				SLOT(setHigh(float)));
+		QObject::connect(
+				eqModel,
+				SIGNAL(midChanged(float)),
+				eqView,
+				SLOT(setMid(float)));
+		QObject::connect(
+				eqModel,
+				SIGNAL(lowChanged(float)),
+				eqView,
+				SLOT(setLow(float)));
+		QObject::connect(
+				eqView,
+				SIGNAL(highChanged(float)),
+				eqModel,
+				SLOT(setHigh(float)));
+		QObject::connect(
+				eqView,
+				SIGNAL(midChanged(float)),
+				eqModel,
+				SLOT(setMid(float)));
+		QObject::connect(
+				eqView,
+				SIGNAL(lowChanged(float)),
+				eqModel,
+				SLOT(setLow(float)));
+
 		//cue
 		QObject::connect(
 				djMixerModel->DJMixerControl(),

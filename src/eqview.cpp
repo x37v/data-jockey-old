@@ -87,7 +87,7 @@ void EQView::setHigh(float val){
 	int intVal = 100 * val;
 	if(intVal != mHigh->value()){
 		mHigh->setValue(intVal);
-		emit(highValueChanged(val));
+		emit(highChanged(val));
 	}
 
 	mRecursing = false;
@@ -104,7 +104,7 @@ void EQView::setHigh(int val){
 	}
 	//always need to emit because this could come from
 	//an internal signal
-	emit(highValueChanged(floatVal));
+	emit(highChanged(floatVal));
 
 	mRecursing = false;
 }
@@ -117,7 +117,7 @@ void EQView::setMid(float val){
 	int intVal = 100 * val;
 	if(intVal != mMid->value()){
 		mMid->setValue(intVal);
-		emit(midValueChanged(val));
+		emit(midChanged(val));
 	}
 
 	mRecursing = false;
@@ -134,7 +134,7 @@ void EQView::setMid(int val){
 	}
 	//always need to emit because this could come from
 	//an internal signal
-	emit(midValueChanged(floatVal));
+	emit(midChanged(floatVal));
 
 	mRecursing = false;
 }
@@ -147,7 +147,7 @@ void EQView::setLow(float val){
 	int intVal = 100 * val;
 	if(intVal != mLow->value()){
 		mLow->setValue(intVal);
-		emit(lowValueChanged(val));
+		emit(lowChanged(val));
 	}
 
 	mRecursing = false;
@@ -164,7 +164,7 @@ void EQView::setLow(int val){
 	}
 	//always need to emit because this could come from
 	//an internal signal
-	emit(lowValueChanged(floatVal));
+	emit(lowChanged(floatVal));
 
 	mRecursing = false;
 }
