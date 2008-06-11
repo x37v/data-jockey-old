@@ -132,6 +132,12 @@ void MixerPanelModel::mixerLoad(QObject * ob){
 	emit(mixerLoad(index));
 }
 
+void MixerPanelModel::mixerUpdateProgress(unsigned int mixer, float progress){
+	if(mixer < mDJMixerChannels.size()){
+		mDJMixerChannels[mixer]->DJMixerControl()->setProgress(progress);
+	}
+}
+
 
 CrossFadeModel * MixerPanelModel::crossFade() const {
 	return mXFade;

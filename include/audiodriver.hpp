@@ -12,11 +12,15 @@ class AudioDriver : public QObject {
 		AudioDriver(MixerPanelModel * mixerModel, QObject * parent = NULL);
 	signals:
 		void progressChanged(unsigned int mixer, float value);
+		void tempoChanged(float value);
+		void temoMulChanged(float value);
 	protected:
 		void run();
 	public slots:
 		void start();
 		void stop();
+
+		void processAudioEvents();
 
 		//master
 		void masterSetVolume(float vol, bool wait_for_measure = false);
@@ -44,6 +48,7 @@ class AudioDriver : public QObject {
 	private:
 		DataJockey::AudioIO mAudioIO;
 		MixerPanelModel * mMixerPanel;
+		unsigned int mNumMixers;
 };
 
 #endif

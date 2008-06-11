@@ -43,6 +43,9 @@ class MixerPanelModel : public QObject {
 		void mixerSetPlaybackPos(QObject * ob);
 		void mixerLoad(QObject * ob);
 
+	public slots:
+		void mixerUpdateProgress(unsigned int mixer, float progress);
+
 	private:
 		std::vector<DJMixerChannelModel *> mDJMixerChannels;
 		CrossFadeModel * mXFade;

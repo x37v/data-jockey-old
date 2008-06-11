@@ -11,14 +11,41 @@ AudioDriver::AudioDriver(MixerPanelModel * mixer, QObject * parent) :
 	QObject(parent), mAudioIO(mixer->mixerChannels()->size())
 {
 	mMixerPanel = mixer;
+	mNumMixers = mMixerPanel->mixerChannels()->size();
 }
 
 void AudioDriver::start(){
 	mAudioIO.start();
+	//push a new state request on there
+	AudioIOGetStatePtr stateReq = new AudioIOGetState(mNumMixers);
+	mAudioIO.sendCommand(stateReq);
 }
 
 void AudioDriver::stop(){
 	mAudioIO.stop();
+}
+
+void AudioDriver::processAudioEvents(){
+	AudioIOGetStatePtr state = mAudioIO.consume();
+	if(state){
+		//deal with buffer player states
+		std::vector<BufferPlayer::GetStatePtr> bufferPlayerStates = 
+			state->getBufferPlayerStates();
+		for(unsigned int i = 0; i < bufferPlayerStates.size(); i++){
+			float progress = (float)bufferPlayerStates[i]->getCurBeat() / 
+				(float)bufferPlayerStates[i]->getLastBeat();
+			emit(progressChanged(i, progress));
+		}
+		//deal with tempo changes
+		//it only changes when we're in sync with a buffer
+		if(!state->getSyncToClock()){
+			float tempo = 1.0f / state->getPeriod();
+			emit(tempoChanged(tempo));
+		}
+		//push a new state request on there
+		state = new AudioIOGetState(mNumMixers);
+		mAudioIO.sendCommand(state);
+	}
 }
 
 void AudioDriver::masterSetVolume(float vol, bool wait_for_measure){

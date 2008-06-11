@@ -22,6 +22,8 @@ using std::endl;
 
 #include <QSignalMapper>
 
+#include <QTimer>
+
 #include "audioworktablemodel.hpp"
 #include "audioworkdbview.hpp"
 
@@ -376,6 +378,14 @@ void DataJockeyApplication::connectMixerPanelModelDriver(MixerPanelModel * model
 			SLOT(mixerSetPlaybackPosition(unsigned int, int)),
 			Qt::QueuedConnection);
 
+	//report progress
+	QObject::connect(
+			driver,
+			SIGNAL(progressChanged(unsigned int, float)),
+			model,
+			SLOT(mixerUpdateProgress(unsigned int, float)),
+			Qt::QueuedConnection);
+
 	//master
 	QObject::connect(
 			model->master(),
@@ -414,10 +424,13 @@ void AudioDriverThread::setAudioDriver(AudioDriver * driver){
 }
 
 void AudioDriverThread::run(){
-	if(mDriver)
+	if(mDriver){
 		mDriver->start();
+		QTimer *timer = new QTimer(mDriver);
+		connect(timer, SIGNAL(timeout()), mDriver, SLOT(processAudioEvents()));
+		timer->start(2);
+	}
 	exec();
-	cout << "exec returned" << endl;
 }
 
 QString WorkLoaderProxy::cQueryString(
