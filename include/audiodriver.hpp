@@ -11,6 +11,7 @@ class AudioDriver : public QObject {
 	Q_OBJECT
 	public:
 		AudioDriver(MixerPanelModel * mixerModel, QObject * parent = NULL);
+		void start();
 	signals:
 		void progressChanged(unsigned int mixer, float value);
 	public slots:

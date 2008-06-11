@@ -11,6 +11,10 @@ AudioDriver::AudioDriver(MixerPanelModel * mixer, QObject * parent) :
 	mMixerPanel = mixer;
 }
 
+void AudioDriver::start(){
+	mAudioIO.start();
+}
+
 void AudioDriver::masterSetVolume(float vol, bool wait_for_measure){
 	AudioIOSetVolumePtr cmd = new AudioIOSetVolume(vol, wait_for_measure);
 	mAudioIO.sendCommand(cmd);

@@ -229,6 +229,7 @@ int DataJockeyApplication::run(int argc, char *argv[]){
 		*/
 
 	window->show();
+	audioDriver->start();
 	return app.exec();
 }
 
