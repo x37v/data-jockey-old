@@ -405,5 +405,40 @@ void DataJockeyApplication::connectMixerPanelModelDriver(MixerPanelModel * model
 			driver,
 			SLOT(mixerSetEQVals(unsigned int, float, float, float)),
 			Qt::QueuedConnection);
+	//cue mode
+	QObject::connect(
+			model,
+			SIGNAL(mixerCueModeChanged(unsigned int, bool)),
+			driver,
+			SLOT(mixerSetCue(unsigned int, bool)),
+			Qt::QueuedConnection);
+	//pause
+	QObject::connect(
+			model,
+			SIGNAL(mixerPausedChanged(unsigned int, bool)),
+			driver,
+			SLOT(mixerSetPause(unsigned int, bool)),
+			Qt::QueuedConnection);
+	//sync
+	QObject::connect(
+			model,
+			SIGNAL(mixerSyncModeChanged(unsigned int, bool)),
+			driver,
+			SLOT(mixerSetSync(unsigned int, bool)),
+			Qt::QueuedConnection);
+	//seek
+	QObject::connect(
+			model,
+			SIGNAL(mixerSeek(unsigned int, int)),
+			driver,
+			SLOT(mixerSeek(unsigned int, int)),
+			Qt::QueuedConnection);
+	//playback position
+	QObject::connect(
+			model,
+			SIGNAL(mixerPlaybackPosChanged(unsigned int, int)),
+			driver,
+			SLOT(mixerSetPlaybackPosition(unsigned int, int)),
+			Qt::QueuedConnection);
 		
 }

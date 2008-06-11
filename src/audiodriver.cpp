@@ -87,8 +87,11 @@ void AudioDriver::mixerLoad(unsigned int mixer, std::string audiobufloc, std::st
 	mAudioIO.sendCommand(audioIOcmd);
 }
 
-void AudioDriver::mixerSetPlaybackPosition(unsigned int mixer, unsigned int pos, bool wait_for_measure){
-	BufferPlayer::CmdPtr cmd = new BufferPlayer::SetPlaybackPosition(pos);
+void AudioDriver::mixerSetPlaybackPosition(unsigned int mixer, int pos, bool wait_for_measure){
+	//XXX change this to allow for negative pos so that we can have lead in time
+	if(pos < 0)
+		pos = 0;
+	BufferPlayer::CmdPtr cmd = new BufferPlayer::SetPlaybackPosition((unsigned int)pos);
 	AudioIOBufferPlayerCmdPtr audioIOcmd = new AudioIOBufferPlayerCmd(mixer, cmd, wait_for_measure);
 	mAudioIO.sendCommand(audioIOcmd);
 }
