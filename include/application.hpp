@@ -16,7 +16,7 @@ class MixerProxyObject : public QObject {
 		void syncModeChanged(unsigned int mixer, bool sync, bool wait_for_measure);
 		void beatOffsetChanged(unsigned int mixer, unsigned int offset, bool wait_for_measure);
 		void pausedChanged(unsigned int mixer, bool pause, bool wait_for_measure);
-		//void mixerLoad(unsigned int mixer, std::string audiobufloc, std::string beatbufloc, bool wait_for_measure);
+		void workChanged(unsigned int mixer, std::string audiobufloc, std::string beatbufloc, bool wait_for_measure);
 		void playbackPosChanged(unsigned int mixer, unsigned int pos, bool wait_for_measure);
 		void seekSig(unsigned int mixer, int beats, bool wait_for_measure);
 		void loopPointsChanged(unsigned int mixer, unsigned int start, unsigned int end, bool wait_for_measure);
@@ -29,7 +29,7 @@ class MixerProxyObject : public QObject {
 		void setFree(bool free = true, bool wait_for_measure = false);
 		void setBeatOffset(unsigned int offset, bool wait_for_measure = false);
 		void setPause(bool pause = true, bool wait_for_measure = false);
-		void load(std::string audiobufloc, std::string beatbufloc, bool wait_for_measure = false);
+		void setWork(std::string audiobufloc, std::string beatbufloc, bool wait_for_measure = false);
 		void setPlaybackPosition(unsigned int pos, bool wait_for_measure = false);
 		void seek(int beats, bool wait_for_measure = false);
 		void setLoopPoints(unsigned int start, unsigned int end, bool wait_for_measure = false);

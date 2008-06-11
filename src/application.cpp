@@ -363,6 +363,7 @@ void DataJockeyApplication::connectMixerPanelModelView(MixerPanelModel * model, 
 
 //these are queued connections, as the driver runs in another thread.
 void DataJockeyApplication::connectMixerPanelModelDriver(MixerPanelModel * model, AudioDriver * driver){
+	qRegisterMetaType<std::string>("std::string");
 	for(unsigned int i = 0; i < model->mixerChannels()->size(); i++){
 		DJMixerChannelModel * mixer = model->mixerChannels()->at(i);
 		MixerProxyObject * proxyMixer = new MixerProxyObject(i, model);
@@ -379,6 +380,20 @@ void DataJockeyApplication::connectMixerPanelModelDriver(MixerPanelModel * model
 				driver,
 				SLOT(mixerSetVolume(unsigned int, float, bool)),
 				Qt::QueuedConnection);
+
+		/*
+		QObject::connect(
+				mixer,
+				SIGNAL(workChanged(std::string, std::string, bool)),
+				proxyMixer,
+				SLOT(setWork(std::string, std::string, bool)));
+		QObject::connect(
+				proxyMixer,
+				SIGNAL(workChanged(unsigned int, std::string, std::string, bool)),
+				driver,
+				SLOT(mixerLoad(unsigned int, std::string, std::string, bool)),
+				Qt::QueuedConnection);
+			*/
 
 		//progress report
 		QObject::connect(
@@ -416,8 +431,8 @@ void MixerProxyObject::setPause(bool pause, bool wait_for_measure){
 	emit(pausedChanged(mNum, pause, wait_for_measure));
 }
 
-void MixerProxyObject::load(std::string audiobufloc, std::string beatbufloc, bool wait_for_measure){
-	//XXX what to do?
+void MixerProxyObject::setWork(std::string audiobufloc, std::string beatbufloc, bool wait_for_measure){
+	emit(workChanged(mNum, audiobufloc, beatbufloc, wait_for_measure));
 }
 
 void MixerProxyObject::setPlaybackPosition(unsigned int pos, bool wait_for_measure){
