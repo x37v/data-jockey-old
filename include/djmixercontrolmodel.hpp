@@ -20,6 +20,7 @@ class DJMixerControlModel : public QObject {
 		void setSync(bool sync = true);
 		void setRunFree(bool free = true);
 		void setProgress(float progress);
+		void setLoadProgress(float progress);
 	signals:
 		void cueModeChanged(bool cue);
 		void pausedChanged(bool paused);

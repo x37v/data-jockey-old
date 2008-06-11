@@ -70,3 +70,10 @@ void DJMixerControlModel::setProgress(float progress){
 	}
 }
 
+void DJMixerControlModel::setLoadProgress(float progress){
+	if(mProgress != progress){
+		mProgress = progress;
+		emit(progressChanged(mProgress));
+	}
+}
+

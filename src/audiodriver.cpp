@@ -1,10 +1,14 @@
 #include "audiodriver.hpp"
+#include "mixerpanelmodel.hpp"
+#include "djmixerchannelmodel.hpp"
+#include "djmixercontrolmodel.hpp"
 
 using namespace DataJockey;
 
-AudioDriver::AudioDriver(unsigned int nMixers, QObject * parent) :
-	QObject(parent), mAudioIO(nMixers)
+AudioDriver::AudioDriver(MixerPanelModel * mixer, QObject * parent) :
+	QObject(parent), mAudioIO(mixer->mixerChannels()->size())
 {
+	mMixerPanel = mixer;
 }
 
 void AudioDriver::masterSetVolume(float vol, bool wait_for_measure){
@@ -75,12 +79,12 @@ void AudioDriver::mixerSetPlay(unsigned int mixer, bool play, bool wait_for_meas
 	mixerSetPause(mixer, !play, wait_for_measure);
 }
 
-void AudioDriver::mixerSetWork(unsigned int mixer, unsigned int work, bool wait_for_measure){
-
-	/*
+void AudioDriver::mixerLoad(unsigned int mixer, std::string audiobufloc, std::string beatbufloc, bool wait_for_measure){
+	AudioBufferPtr audio_buffer = new AudioBuffer(audiobufloc);
+	BeatBufferPtr beat_buffer = new BeatBuffer(beatbufloc);
+	BufferPlayer::CmdPtr cmd = new BufferPlayer::SetBuffers(audio_buffer, beat_buffer);
 	AudioIOBufferPlayerCmdPtr audioIOcmd = new AudioIOBufferPlayerCmd(mixer, cmd, wait_for_measure);
 	mAudioIO.sendCommand(audioIOcmd);
-	*/
 }
 
 void AudioDriver::mixerSetPlaybackPosition(unsigned int mixer, unsigned int pos, bool wait_for_measure){
@@ -112,27 +116,17 @@ void AudioDriver::mixerSetVolume(unsigned int mixer, float vol, bool wait_for_me
 	mAudioIO.sendCommand(audioIOcmd);
 }
 
-void AudioDriver::mixerSetEQHigh(unsigned int mixer, float val, bool wait_for_measure){
-
-	/*
+void AudioDriver::mixerSetEQVals(unsigned int mixer, float low, float mid, float high, bool wait_for_measure){
+	BufferPlayer::CmdPtr cmd = new BufferPlayer::SetEQVals(low, mid, high);
 	AudioIOBufferPlayerCmdPtr audioIOcmd = new AudioIOBufferPlayerCmd(mixer, cmd, wait_for_measure);
 	mAudioIO.sendCommand(audioIOcmd);
-	*/
 }
 
-void AudioDriver::mixerSetEQMid(unsigned int mixer, float val, bool wait_for_measure){
-
-	/*
-	AudioIOBufferPlayerCmdPtr audioIOcmd = new AudioIOBufferPlayerCmd(mixer, cmd, wait_for_measure);
-	mAudioIO.sendCommand(audioIOcmd);
-	*/
+void AudioDriver::mixerReportLoadProgress(unsigned int mixer, float progress){
+	//report the load progress
+	if(mixer < mMixerPanel->mixerChannels()->size()){
+		QMetaObject::invokeMethod(mMixerPanel->mixerChannels()->at(mixer)->DJMixerControl(), 
+				"setLoadProgress", 
+				Qt::QueuedConnection, Q_ARG(float, progress));
+	}
 }
-
-void AudioDriver::mixerSetEQLow(unsigned int mixer, float val, bool wait_for_measure){
-
-	/*
-	AudioIOBufferPlayerCmdPtr audioIOcmd = new AudioIOBufferPlayerCmd(mixer, cmd, wait_for_measure);
-	mAudioIO.sendCommand(audioIOcmd);
-	*/
-}
-

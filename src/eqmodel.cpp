@@ -28,6 +28,7 @@ void EQModel::setHigh(float val){
 		mHighLast = mHigh;
 		mHigh = val;
 		emit(highChanged(mHigh));
+		emit(valuesChanged(mLow, mMid, mHigh));
 	}
 }
 
@@ -40,6 +41,7 @@ void EQModel::setMid(float val){
 		mMidLast = mMid;
 		mMid = val;
 		emit(midChanged(mMid));
+		emit(valuesChanged(mLow, mMid, mHigh));
 	}
 }
 
@@ -52,6 +54,7 @@ void EQModel::setLow(float val){
 		mLowLast = mLow;
 		mLow = val;
 		emit(lowChanged(mLow));
+		emit(valuesChanged(mLow, mMid, mHigh));
 	}
 }
 
