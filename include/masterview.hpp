@@ -11,9 +11,9 @@ class MasterView : public QObject {
 	Q_OBJECT
 	public:
 		MasterView(unsigned int numMixers, QWidget *parent = NULL);
-		QSlider * volume();
-		QDoubleSpinBox * tempo();
-		QWidget * tempoWidget();
+		QSlider * volume() const;
+		QDoubleSpinBox * tempo() const;
+		QWidget * tempoWidget() const;
 	signals:
 		void volumeChanged(float vol);
 		void tempoChanged(float tempo);

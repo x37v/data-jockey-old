@@ -24,11 +24,11 @@ MasterView::MasterView(unsigned int numMixers, QWidget *parent) :
 			this, SLOT(syncSrcClicked(bool)));
 
 	//when syncing to the master clock the tempo mul doesn't work, just the master tempo
-	//XXX this should be done by the model
-	//QObject::connect(mSyncSource.front(), SIGNAL(clicked(bool)),
-                      //mTempoMul, SLOT(setDisabled(bool)));
-	//QObject::connect(mSyncSource.front(), SIGNAL(clicked(bool)),
-                      //mTempo, SLOT(setEnabled(bool)));
+	//XXX should be done by the model?
+	QObject::connect(mSyncSource.front(), SIGNAL(clicked(bool)),
+                      mTempoMul, SLOT(setDisabled(bool)));
+	QObject::connect(mSyncSource.front(), SIGNAL(clicked(bool)),
+                      mTempo, SLOT(setEnabled(bool)));
 
 	for(unsigned int i = 0; i < numMixers; i++){
 		QRadioButton * newRadioButton;
@@ -45,13 +45,11 @@ MasterView::MasterView(unsigned int numMixers, QWidget *parent) :
 				this, SLOT(syncSrcClicked(bool)));
 
 		//when syncing to a mixer channel the 'master tempo' doesn't work.. just the tempo mul
-		//XXX this should be done by the model
-		/*
+		//XXX should this should be done by the model?
 		QObject::connect(newRadioButton, SIGNAL(clicked(bool)),
 				mTempoMul, SLOT(setEnabled(bool)));
 		QObject::connect(newRadioButton, SIGNAL(clicked(bool)),
 				mTempo, SLOT(setDisabled(bool)));
-		*/
 	}
 
 	mVolumeSlider->setRange(0,200);
@@ -104,15 +102,15 @@ MasterView::MasterView(unsigned int numMixers, QWidget *parent) :
 			this, SLOT(setTempoMulDouble(double)));
 }
 
-QSlider * MasterView::volume(){
+QSlider * MasterView::volume() const {
 	return mVolumeSlider;
 }
 
-QDoubleSpinBox * MasterView::tempo(){
+QDoubleSpinBox * MasterView::tempo() const {
 	return mTempo;
 }
 
-QWidget * MasterView::tempoWidget(){
+QWidget * MasterView::tempoWidget() const {
 	return mTempoWidget;
 }
 

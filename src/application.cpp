@@ -311,74 +311,52 @@ void DataJockeyApplication::connectMixerPanelModelView(MixerPanelModel * model, 
 				SLOT(setProgress(float)));
 
 	}
-	/*
-	QObject::connect(
-			(*mixerPannel->mixerChannels())[0]->DJMixerControl(),
-			SIGNAL(pausedChanged(bool)),
-			djModel, SLOT(setPaused(bool)));
-	QObject::connect(
-			(*mixerPannel->mixerChannels())[0]->DJMixerControl(),
-			SIGNAL(syncModeChanged(bool)),
-			djModel, SLOT(setRunFree(bool)));
-	QObject::connect(
-			djModel,
-			SIGNAL(progressChanged(float)),
-			(*mixerPannel->mixerChannels())[0]->DJMixerControl(),
-			SLOT(setProgress(float)));
-	djModel->setProgress(0.324);
 
-	EQView * eqView = mixerChan->eq();
-	EQModel * eqModel = new EQModel();
-
+	//master
+	//volume
 	QObject::connect(
-			eqView,
-			SIGNAL(highValueChanged(float)),
-			eqModel, SLOT(setHigh(float)));
-	QObject::connect(
-			eqModel,
-			SIGNAL(highChanged(float)),
-			eqView, SLOT(setHigh(float)));
-
-	QObject::connect(
-			eqView,
-			SIGNAL(midValueChanged(float)),
-			eqModel, SLOT(setMid(float)));
-	QObject::connect(
-			eqModel,
-			SIGNAL(midChanged(float)),
-			eqView, SLOT(setMid(float)));
-
-	QObject::connect(
-			eqView,
-			SIGNAL(lowValueChanged(float)),
-			eqModel, SLOT(setLow(float)));
-	QObject::connect(
-			eqModel,
-			SIGNAL(lowChanged(float)),
-			eqView, SLOT(setLow(float)));
-
-	QObject::connect(
-			mixerChan,
+			model->master(),
 			SIGNAL(volumeChanged(float)),
-			mixerModel, SLOT(setVolume(float)));
-
-	QObject::connect(
-			mixerModel,
-			SIGNAL(volumeChanged(float)),
-			mixerChan,
+			view->master(),
 			SLOT(setVolume(float)));
-
 	QObject::connect(
-			mixerChan,
-			SIGNAL(mutedChanged(bool)),
-			mixerModel,
-			SLOT(setMuted(bool)));
+			view->master(),
+			SIGNAL(volumeChanged(float)),
+			model->master(),
+			SLOT(setVolume(float)));
+	//tempo
 	QObject::connect(
-			mixerModel,
-			SIGNAL(mutedChanged(bool)),
-			mixerChan,
-			SLOT(setMuted(bool)));
-	*/
+			model->master(),
+			SIGNAL(tempoChanged(float)),
+			view->master(),
+			SLOT(setTempo(float)));
+	QObject::connect(
+			view->master(),
+			SIGNAL(tempoChanged(float)),
+			model->master(),
+			SLOT(setTempo(float)));
+	//tempo mul
+	QObject::connect(
+			model->master(),
+			SIGNAL(tempoMulChanged(float)),
+			view->master(),
+			SLOT(setTempoMul(float)));
+	QObject::connect(
+			view->master(),
+			SIGNAL(tempoMulChanged(float)),
+			model->master(),
+			SLOT(setTempoMul(float)));
+	//sync src
+	QObject::connect(
+			model->master(),
+			SIGNAL(syncSourceChanged(unsigned int)),
+			view->master(),
+			SLOT(setSyncSource(unsigned int)));
+	QObject::connect(
+			view->master(),
+			SIGNAL(syncSourceChanged(unsigned int)),
+			model->master(),
+			SLOT(setSyncSource(unsigned int)));
 }
 
 void DataJockeyApplication::connectMixerPanelModelDriver(MixerPanelModel * model, AudioDriver * driver){
