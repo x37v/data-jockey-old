@@ -17,13 +17,9 @@ void AudioDriver::start(){
 	mAudioIO.start();
 }
 
-#include <iostream>
-using namespace std;
-
 void AudioDriver::stop(){
 	mAudioIO.stop();
 }
-
 
 void AudioDriver::masterSetVolume(float vol, bool wait_for_measure){
 	AudioIOSetVolumePtr cmd = new AudioIOSetVolume(vol, wait_for_measure);
@@ -134,6 +130,19 @@ void AudioDriver::mixerSetVolume(unsigned int mixer, float vol, bool wait_for_me
 }
 
 void AudioDriver::mixerSetEQVals(unsigned int mixer, float low, float mid, float high, bool wait_for_measure){
+	//remap the eq values
+	if(low < 0)
+		low *= 70.0f;
+	else
+		low *= 6.0f;
+	if(mid < 0)
+		mid *= 70.0f;
+	else
+		mid *= 6.0f;
+	if(high < 0)
+		high *= 70.0f;
+	else
+		high *= 6.0f;
 	BufferPlayer::CmdPtr cmd = new BufferPlayer::SetEQVals(low, mid, high);
 	AudioIOBufferPlayerCmdPtr audioIOcmd = new AudioIOBufferPlayerCmd(mixer, cmd, wait_for_measure);
 	mAudioIO.sendCommand(audioIOcmd);

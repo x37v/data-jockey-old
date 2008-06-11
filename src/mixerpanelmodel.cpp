@@ -29,6 +29,10 @@ MixerPanelModel::MixerPanelModel(unsigned int numMixers, QObject *parent) :
 				SIGNAL(volumeChanged(QObject *)),
 				this,
 				SLOT(setMixerVolume(QObject *)));
+		QObject::connect(djMixerModel->mixerChannel(),
+				SIGNAL(mutedChanged(QObject *)),
+				this,
+				SLOT(setMixerMuted(QObject *)));
 		//dj mixer control
 		QObject::connect(djMixerModel->DJMixerControl(),
 				SIGNAL(cueModeChanged(QObject *)),
@@ -68,7 +72,8 @@ void MixerPanelModel::setEqVal(QObject * ob){
 void MixerPanelModel::setMixerVolume(QObject * ob){
 	MixerChannelModel * mixer = (MixerChannelModel *)ob;
 	unsigned int index = mMixerObjectIndexMap[mixer];
-	emit(mixerVolumeChanged(index, mixer->volume()));
+	if(!mixer->muted())
+		emit(mixerVolumeChanged(index, mixer->volume()));
 }
 
 void MixerPanelModel::setMixerMuted(QObject * ob){
