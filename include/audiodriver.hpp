@@ -27,7 +27,7 @@ class AudioDriver : public QObject {
 		void mixerSetBeatOffset(unsigned int mixer, unsigned int offset, bool wait_for_measure = false);
 		void mixerSetPause(unsigned int mixer, bool pause = true, bool wait_for_measure = false);
 		void mixerSetPlay(unsigned int mixer, bool play = true, bool wait_for_measure = false);
-		void mixerLoad(unsigned int mixer, std::string audiobufloc, std::string beatbufloc, bool wait_for_measure = false);
+		void mixerLoad(unsigned int mixer, QString audiobufloc, QString beatbufloc, bool wait_for_measure = false);
 		void mixerSetPlaybackPosition(unsigned int mixer, int pos, bool wait_for_measure = false);
 		void mixerSeek(unsigned int mixer, int beats, bool wait_for_measure = false);
 		void mixerSetLoopPoints(unsigned int mixer, unsigned int start, unsigned int end, bool wait_for_measure = false);

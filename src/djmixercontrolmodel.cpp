@@ -15,10 +15,13 @@ DJMixerControlModel::DJMixerControlModel(QObject *parent):
 	QSignalMapper * pauseMapper = new QSignalMapper(this);
 	QSignalMapper * syncMapper = new QSignalMapper(this);
 	QSignalMapper * playposMapper = new QSignalMapper(this);
+	QSignalMapper * loadMapper = new QSignalMapper(this);
 	cueMapper->setMapping(this,this);
 	pauseMapper->setMapping(this,this);
 	syncMapper->setMapping(this,this);
 	playposMapper->setMapping(this,this);
+	loadMapper->setMapping(this,this);
+	//cue
 	QObject::connect(this,
 			SIGNAL(cueModeChanged(bool)),
 			cueMapper,
@@ -27,6 +30,7 @@ DJMixerControlModel::DJMixerControlModel(QObject *parent):
 			SIGNAL(mapped(QObject *)),
 			this,
 			SIGNAL(cueModeChanged(QObject *)));
+	//pause
 	QObject::connect(this,
 			SIGNAL(pausedChanged(bool)),
 			pauseMapper,
@@ -35,6 +39,7 @@ DJMixerControlModel::DJMixerControlModel(QObject *parent):
 			SIGNAL(mapped(QObject *)),
 			this,
 			SIGNAL(pausedChanged(QObject *)));
+	//sync mode
 	QObject::connect(this,
 			SIGNAL(syncModeChanged(bool)),
 			syncMapper,
@@ -43,6 +48,7 @@ DJMixerControlModel::DJMixerControlModel(QObject *parent):
 			SIGNAL(mapped(QObject *)),
 			this,
 			SIGNAL(syncModeChanged(QObject *)));
+	//playback pos
 	QObject::connect(this,
 			SIGNAL(playbackPositionChanged(int)),
 			playposMapper,
@@ -51,6 +57,15 @@ DJMixerControlModel::DJMixerControlModel(QObject *parent):
 			SIGNAL(mapped(QObject *)),
 			this,
 			SIGNAL(playbackPositionChanged(QObject *)));
+	//load
+	QObject::connect(this,
+			SIGNAL(load()),
+			loadMapper,
+			SLOT(map()));
+	QObject::connect(loadMapper,
+			SIGNAL(mapped(QObject *)),
+			this,
+			SIGNAL(load(QObject *)));
 }
 
 bool DJMixerControlModel::paused() const {
@@ -147,5 +162,7 @@ void DJMixerControlModel::reset(){
 	emit(playbackPositionChanged(mBeatOffset));
 }
 
-
+void DJMixerControlModel::loadWork(){
+	emit(load());
+}
 

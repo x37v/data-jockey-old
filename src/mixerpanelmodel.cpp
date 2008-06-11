@@ -50,6 +50,10 @@ MixerPanelModel::MixerPanelModel(unsigned int numMixers, QObject *parent) :
 				SIGNAL(playbackPositionChanged(QObject *)),
 				this,
 				SLOT(mixerSetPlaybackPos(QObject *)));
+		QObject::connect(djMixerModel->DJMixerControl(),
+				SIGNAL(load(QObject *)),
+				this,
+				SLOT(mixerLoad(QObject *)));
 	}
 }
 
@@ -123,6 +127,13 @@ void MixerPanelModel::mixerSetPlaybackPos(QObject * ob){
 	int pos = mixerControl->beatOffset();
 	emit(mixerPlaybackPosChanged(index, pos));
 	cout << index << " jump to " <<  pos << endl;
+}
+
+void MixerPanelModel::mixerLoad(QObject * ob){
+	DJMixerControlModel * mixerControl = (DJMixerControlModel *)ob;
+	unsigned int index = mMixerObjectIndexMap[mixerControl];
+	emit(mixerLoad(index));
+	cout << index << " loading!" << endl;
 }
 
 

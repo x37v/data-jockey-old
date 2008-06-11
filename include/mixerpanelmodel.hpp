@@ -27,6 +27,7 @@ class MixerPanelModel : public QObject {
 		void mixerSyncModeChanged(unsigned int index, bool free);
 		void mixerSeek(unsigned int index, int amt);
 		void mixerPlaybackPosChanged(unsigned int index, int pos);
+		void mixerLoad(unsigned int index);
 
 	//these protected slots are for relaying data from our members out to the above signals
 	protected slots:
@@ -40,6 +41,7 @@ class MixerPanelModel : public QObject {
 		void setMixerSyncMode(QObject * ob);
 		void mixerSeekSlot(QObject * ob, int amt);
 		void mixerSetPlaybackPos(QObject * ob);
+		void mixerLoad(QObject * ob);
 
 	private:
 		std::vector<DJMixerChannelModel *> mDJMixerChannels;

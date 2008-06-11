@@ -79,9 +79,9 @@ void AudioDriver::mixerSetPlay(unsigned int mixer, bool play, bool wait_for_meas
 	mixerSetPause(mixer, !play, wait_for_measure);
 }
 
-void AudioDriver::mixerLoad(unsigned int mixer, std::string audiobufloc, std::string beatbufloc, bool wait_for_measure){
-	AudioBufferPtr audio_buffer = new AudioBuffer(audiobufloc);
-	BeatBufferPtr beat_buffer = new BeatBuffer(beatbufloc);
+void AudioDriver::mixerLoad(unsigned int mixer, QString audiobufloc, QString beatbufloc, bool wait_for_measure){
+	AudioBufferPtr audio_buffer = new AudioBuffer(audiobufloc.toStdString());
+	BeatBufferPtr beat_buffer = new BeatBuffer(beatbufloc.toStdString());
 	BufferPlayer::CmdPtr cmd = new BufferPlayer::SetBuffers(audio_buffer, beat_buffer);
 	AudioIOBufferPlayerCmdPtr audioIOcmd = new AudioIOBufferPlayerCmd(mixer, cmd, wait_for_measure);
 	mAudioIO.sendCommand(audioIOcmd);
