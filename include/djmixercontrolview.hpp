@@ -30,8 +30,8 @@ class DJMixerControlView : public QWidget {
 		void setCueing(bool cueing = true);
 		void setPaused(bool paused = true);
 		void setPlaying(bool playing = true);
-		void setRunningFree(bool free = true); 
-		void setSynced(bool synced = true);
+		void setRunFree(bool free = true); 
+		void setSync(bool synced = true);
 		//0..1
 		void setProgress(float progress);
 		//0..100

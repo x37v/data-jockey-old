@@ -145,13 +145,13 @@ void DJMixerControlView::setPlaying(bool playing){
 	setPaused(!playing);
 }
 
-void DJMixerControlView::setRunningFree(bool free){
+void DJMixerControlView::setRunFree(bool free){
 	if(free != mSyncBtn->isChecked())
 		mSyncBtn->setChecked(free);
 }
 
-void DJMixerControlView::setSynced(bool synced){
-	setRunningFree(!synced);
+void DJMixerControlView::setSync(bool synced){
+	setRunFree(!synced);
 }
 
 void DJMixerControlView::setProgress(float progress){

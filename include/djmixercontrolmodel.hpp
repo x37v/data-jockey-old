@@ -24,7 +24,7 @@ class DJMixerControlModel : public QObject {
 	signals:
 		void cueModeChanged(bool cue);
 		void pausedChanged(bool paused);
-		void runningFreeChanged(bool free);
+		void syncModeChanged(bool free);
 		void progressChanged(float progress);
 	private:
 		float mProgress;
