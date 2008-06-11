@@ -4,7 +4,6 @@
 using std::cout;
 using std::endl;
 
-#include "mixerpanelview.hpp"
 #include <QApplication>
 #include <QWidget>
 #include <QCleanlooksStyle>
@@ -23,12 +22,13 @@ using std::endl;
 
 #include <QSignalMapper>
 
-#include "crossfadeview.hpp"
 #include "audioworktablemodel.hpp"
 #include "audioworkdbview.hpp"
 
 #include "mixerchannelmodel.hpp"
 #include "mixerchannelview.hpp"
+
+#include "crossfadeview.hpp"
 
 #include "djmixerchannelview.hpp"
 #include "djmixerchannelmodel.hpp"
@@ -43,6 +43,7 @@ using std::endl;
 #include "mastermodel.hpp"
 
 #include "mixerpanelmodel.hpp"
+#include "mixerpanelview.hpp"
 
 #include "workdetailview.hpp"
 
@@ -55,6 +56,7 @@ int DataJockeyApplication::run(int argc, char *argv[]){
 	QApplication app(argc, argv);
 	app.setStyle(new QCleanlooksStyle);
 
+	//open up the database
 	QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL");
 	db.setDatabaseName("dj_development");
 	if (!db.open()) {
@@ -64,6 +66,7 @@ int DataJockeyApplication::run(int argc, char *argv[]){
 		return false;
 	}
 
+	//our window
 	QWidget * window = new QWidget;
 
 	//models
@@ -81,19 +84,19 @@ int DataJockeyApplication::run(int argc, char *argv[]){
 	MixerPanelView * mixerPanelView = new MixerPanelView(NUM_MIXERS, window);
 	AudioWorkDBView * tableView = new AudioWorkDBView(&tableModel, window);
 
-	window->setWindowTitle("floatme");
-
-
+	//layouts
 	QSplitter *splitter = new QSplitter(Qt::Vertical, window);
 	QSplitter *splitter2 = new QSplitter(Qt::Horizontal, window);
+	QVBoxLayout * layout = new QVBoxLayout(window);
 
 	splitter->addWidget(mixerPanelView);
 	splitter->addWidget(detailView);
+
 	splitter2->addWidget(splitter);
 	splitter2->addWidget(tableView);
-	QVBoxLayout * layout = new QVBoxLayout(window);
 	splitter2->setStretchFactor(0,0);
 	splitter2->setStretchFactor(1,10);
+
 	layout->addWidget(splitter2);
 	layout->setContentsMargins(2,2,2,2);
 	window->setLayout(layout);
@@ -103,21 +106,6 @@ int DataJockeyApplication::run(int argc, char *argv[]){
 
 	tableModel.setFiltered(true);
 	tableModel.query();
-
-
-	//layout->addWidget(splitter,0,0);
-	//layout->addWidget(tableView,0,1);
-	//layout->addWidget(mixerPannel, 0, 0);
-	//layout->addWidget(tableView, 0, 1, 3, 1);
-	//layout->addWidget(splitter, 1, 0);
-	//layout->addWidget(detailView, 2, 0);
-
-
-	//layout->setColumnStretch(1,10);
-	//layout->setColumnStretch(0,0);
-	//layout->setRowStretch(0,10);
-	//layout->setRowStretch(1,0);
-	
 
 	//connect up our signals
 	connectMixerPanelModelView(mixerPanelModel, mixerPanelView);
@@ -141,101 +129,14 @@ int DataJockeyApplication::run(int argc, char *argv[]){
 			SLOT(mixerLoad(unsigned int, QString, QString, bool)),
 			Qt::QueuedConnection);
 
-
-	/*
-	QObject::connect(
-			(*mixerPannel->mixerChannels())[0]->DJMixerControl(),
-			SIGNAL(pausedChanged(bool)),
-			djModel, SLOT(setPaused(bool)));
-	QObject::connect(
-			(*mixerPannel->mixerChannels())[0]->DJMixerControl(),
-			SIGNAL(syncModeChanged(bool)),
-			djModel, SLOT(setRunFree(bool)));
-	QObject::connect(
-			djModel,
-			SIGNAL(progressChanged(float)),
-			(*mixerPannel->mixerChannels())[0]->DJMixerControl(),
-			SLOT(setProgress(float)));
-	djModel->setProgress(0.324);
-
-	EQView * eqView = mixerChan->eq();
-	EQModel * eqModel = new EQModel();
-
-	QObject::connect(
-			eqView,
-			SIGNAL(highValueChanged(float)),
-			eqModel, SLOT(setHigh(float)));
-	QObject::connect(
-			eqModel,
-			SIGNAL(highChanged(float)),
-			eqView, SLOT(setHigh(float)));
-
-	QObject::connect(
-			eqView,
-			SIGNAL(midValueChanged(float)),
-			eqModel, SLOT(setMid(float)));
-	QObject::connect(
-			eqModel,
-			SIGNAL(midChanged(float)),
-			eqView, SLOT(setMid(float)));
-
-	QObject::connect(
-			eqView,
-			SIGNAL(lowValueChanged(float)),
-			eqModel, SLOT(setLow(float)));
-	QObject::connect(
-			eqModel,
-			SIGNAL(lowChanged(float)),
-			eqView, SLOT(setLow(float)));
-
-	QObject::connect(
-			mixerChan,
-			SIGNAL(volumeChanged(float)),
-			mixerModel, SLOT(setVolume(float)));
-
-	QObject::connect(
-			mixerModel,
-			SIGNAL(volumeChanged(float)),
-			mixerChan,
-			SLOT(setVolume(float)));
-
-	QObject::connect(
-			mixerChan,
-			SIGNAL(mutedChanged(bool)),
-			mixerModel,
-			SLOT(setMuted(bool)));
-	QObject::connect(
-			mixerModel,
-			SIGNAL(mutedChanged(bool)),
-			mixerChan,
-			SLOT(setMuted(bool)));
-	*/
-
-	/*
-	 //just to test cuts
-	QObject::connect(
-			(*mixerPannel->mixerChannels())[0]->DJMixerControl(),
-			SIGNAL(syncModeChanged(bool)),
-			eqModel, SLOT(toggleLowCut()));
-
-	QObject::connect(
-			eqModel, SIGNAL(lowCutChanged(bool)),
-			(*mixerPannel->mixerChannels())[0]->DJMixerControl(),
-			SLOT(setRunningFree(bool)));
-			*/
-	/*
-	MasterView * master = mixerPannelView->master();
-	MasterModel * masterModel = mixerPannelModel->master();
-	QObject::connect(master, SIGNAL(syncSourceChanged(unsigned int)),
-			masterModel, SLOT(setSyncSource(unsigned int)));
-	QObject::connect(masterModel, SIGNAL(syncSourceChanged(unsigned int)),
-			master, SLOT(setSyncSource(unsigned int)));
-		*/
-
+	window->setWindowTitle("data jockey");
 	window->show();
+
+	//set up the audio driver thread and start it
 	AudioDriverThread * audioDriverThread = new AudioDriverThread(window);
 	audioDriverThread->setAudioDriver(audioDriver);
 	audioDriverThread->start();
+
 	return app.exec();
 }
 
