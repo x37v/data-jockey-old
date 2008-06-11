@@ -363,103 +363,19 @@ void DataJockeyApplication::connectMixerPanelModelView(MixerPanelModel * model, 
 
 //these are queued connections, as the driver runs in another thread.
 void DataJockeyApplication::connectMixerPanelModelDriver(MixerPanelModel * model, AudioDriver * driver){
-	qRegisterMetaType<std::string>("std::string");
-	for(unsigned int i = 0; i < model->mixerChannels()->size(); i++){
-		DJMixerChannelModel * mixer = model->mixerChannels()->at(i);
-		MixerProxyObject * proxyMixer = new MixerProxyObject(i, model);
-
-		//volume
-		QObject::connect(
-				mixer->mixerChannel(),
-				SIGNAL(volumeChanged(float)),
-				proxyMixer,
-				SLOT(setVolume(float)));
-		QObject::connect(
-				proxyMixer,
-				SIGNAL(volumeChanged(unsigned int, float, bool)),
-				driver,
-				SLOT(mixerSetVolume(unsigned int, float, bool)),
-				Qt::QueuedConnection);
-
-		/*
-		QObject::connect(
-				mixer,
-				SIGNAL(workChanged(std::string, std::string, bool)),
-				proxyMixer,
-				SLOT(setWork(std::string, std::string, bool)));
-		QObject::connect(
-				proxyMixer,
-				SIGNAL(workChanged(unsigned int, std::string, std::string, bool)),
-				driver,
-				SLOT(mixerLoad(unsigned int, std::string, std::string, bool)),
-				Qt::QueuedConnection);
-			*/
-
-		//progress report
-		QObject::connect(
-				driver,
-				SIGNAL(progressChanged(unsigned int, float)),
-				proxyMixer,
-				SLOT(setProgress(unsigned int, float)),
-				Qt::QueuedConnection);
-		QObject::connect(
-				proxyMixer,
-				SIGNAL(progressChanged(float)),
-				mixer->DJMixerControl(),
-				SLOT(setProgress(float)));
-	}
-}
-
-MixerProxyObject::MixerProxyObject(unsigned int num, QObject * parent):
-	QObject(parent), mNum(num)
-{
-}
-
-void MixerProxyObject::setCue(bool cue, bool wait_for_measure){
-	emit(cueModeChanged(mNum, cue,wait_for_measure));
-}
-
-void MixerProxyObject::setFree(bool free, bool wait_for_measure){
-	emit(syncModeChanged(mNum, free, wait_for_measure));
-}
-
-void MixerProxyObject::setBeatOffset(unsigned int offset, bool wait_for_measure){
-	emit(beatOffsetChanged(mNum, offset, wait_for_measure));
-}
-
-void MixerProxyObject::setPause(bool pause, bool wait_for_measure){
-	emit(pausedChanged(mNum, pause, wait_for_measure));
-}
-
-void MixerProxyObject::setWork(std::string audiobufloc, std::string beatbufloc, bool wait_for_measure){
-	emit(workChanged(mNum, audiobufloc, beatbufloc, wait_for_measure));
-}
-
-void MixerProxyObject::setPlaybackPosition(unsigned int pos, bool wait_for_measure){
-	emit(playbackPosChanged(mNum, pos, wait_for_measure));
-}
-
-void MixerProxyObject::seek(int beats, bool wait_for_measure){
-	emit(seekSig(mNum, beats, wait_for_measure));
-}
-
-void MixerProxyObject::setLoopPoints(unsigned int start, unsigned int end, bool wait_for_measure){
-	emit(loopPointsChanged(mNum, start, end, wait_for_measure));
-}
-
-void MixerProxyObject::setLooping(bool shouldloop, bool wait_for_measure){
-	emit(loop(mNum, shouldloop, wait_for_measure));
-}
-
-void MixerProxyObject::setVolume(float vol, bool wait_for_measure){
-	emit(volumeChanged(mNum, vol, wait_for_measure));
-}
-
-void MixerProxyObject::setEQVals(float low, float mid, float high, bool wait_for_measure){
-	emit(eqChanged(mNum, low, mid, high, wait_for_measure));
-}
-
-void MixerProxyObject::setProgress(unsigned int mixer, float value){
-	if(mixer == mNum)
-		emit(progressChanged(value));
+	//volume + mute
+	QObject::connect(
+			model,
+			SIGNAL(mixerVolumeChanged(unsigned int, float)),
+			driver,
+			SLOT(mixerSetVolume(unsigned int, float)),
+			Qt::QueuedConnection);
+	//eq
+	QObject::connect(
+			model,
+			SIGNAL(mixerEQValuesChanged(unsigned int, float, float, float)),
+			driver,
+			SLOT(mixerSetEQVals(unsigned int, float, float, float)),
+			Qt::QueuedConnection);
+		
 }

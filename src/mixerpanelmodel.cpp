@@ -36,7 +36,7 @@ MixerPanelModel::MixerPanelModel(unsigned int numMixers, QObject *parent) :
 void MixerPanelModel::setEqVal(QObject * ob){
 	EQModel * eq = (EQModel *)ob;
 	unsigned int index = mMixerObjectIndexMap[eq];
-	emit(eqValuesChanged(index, eq->low(), eq->mid(), eq->high()));
+	emit(mixerEQValuesChanged(index, eq->low(), eq->mid(), eq->high()));
 }
 
 void MixerPanelModel::setMixerVolume(QObject * ob){
@@ -48,7 +48,12 @@ void MixerPanelModel::setMixerVolume(QObject * ob){
 void MixerPanelModel::setMixerMuted(QObject * ob){
 	MixerChannelModel * mixer = (MixerChannelModel *)ob;
 	unsigned int index = mMixerObjectIndexMap[mixer];
-	emit(mixerMutedChanged(index, mixer->muted()));
+	//emit(mixerMutedChanged(index, mixer->muted()));
+	if(mixer->muted())
+		emit(mixerVolumeChanged(index, 0.0f));
+	else
+		emit(mixerVolumeChanged(index, mixer->volume()));
+
 }
 
 CrossFadeModel * MixerPanelModel::crossFade() const {

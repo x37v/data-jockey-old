@@ -18,9 +18,10 @@ class MixerPanelModel : public QObject {
 		MasterModel * master() const;
 		std::vector<DJMixerChannelModel *> * mixerChannels();
 	signals:
-		void eqValuesChanged(unsigned int index, float low, float mid, float high);
+		void mixerEQValuesChanged(unsigned int index, float low, float mid, float high);
 		void mixerVolumeChanged(unsigned int index, float vol);
-		void mixerMutedChanged(unsigned int index, bool muted);
+		//void mixerMutedChanged(unsigned int index, bool muted);
+	//these protected slots are for relaying data from our members out to the above signals
 	protected slots:
 		void setEqVal(QObject * ob);
 		void setMixerVolume(QObject * ob);
