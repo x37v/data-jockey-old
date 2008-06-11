@@ -1,15 +1,34 @@
 #include "eqmodel.hpp"
-
-#include <iostream>
-using namespace std;
-
+#include <QSignalMapper>
 
 EQModel::EQModel(QObject *parent) :
 	QObject(parent)
 {
+	QSignalMapper * mapper = new QSignalMapper(this);
 	mLow = mMid = mHigh = 0.0;
 	mLowLast = mMidLast = mHighLast = 0.0;
 	mCuttingHigh = mCuttingMid = mCuttingLow = false;
+	QObject::connect(this,
+			SIGNAL(valuesChanged(float,float,float)),
+			mapper,
+			SLOT(map()));
+	mapper->setMapping(this,this);
+	QObject::connect(mapper,
+			SIGNAL(mapped(QObject *)),
+			this,
+			SIGNAL(valuesChanged(QObject *)));
+}
+
+float EQModel::high(){
+	return mHigh;
+}
+
+float EQModel::mid(){
+	return mMid;
+}
+
+float EQModel::low(){
+	return mLow;
 }
 
 void EQModel::reset(){

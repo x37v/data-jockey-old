@@ -15,6 +15,8 @@ class MixerChannelModel : public QObject {
 	signals:
 		void volumeChanged(float volume);
 		void mutedChanged(bool muted);
+		void volumeChanged(QObject * ob);
+		void mutedChanged(QObject * ob);
 	public slots:
 		void setVolume(float volume);
 		void setMuted(bool muted = true);

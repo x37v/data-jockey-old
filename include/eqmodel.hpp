@@ -18,6 +18,7 @@ class EQModel : public QObject {
 		void midCutChanged(bool cut);
 		void lowCutChanged(bool cut);
 		void valuesChanged(float low, float mid, float high);
+		void valuesChanged(QObject * ob);
 	public slots:
 		void reset();
 		void setHigh(float val);

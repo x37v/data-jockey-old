@@ -1,10 +1,33 @@
 #include "mixerchannelmodel.hpp"
 #include "eqmodel.hpp"
+#include <QSignalMapper>
 
 MixerChannelModel::MixerChannelModel(QObject * parent) : QObject(parent) {
 	mEQ = new EQModel(this);
 	mVolume = 1.0;
 	mMuted = false;
+
+	//set up our internal mappings
+	QSignalMapper * volMapper = new QSignalMapper(this);
+	QSignalMapper * muteMapper = new QSignalMapper(this);
+	volMapper->setMapping(this,this);
+	muteMapper->setMapping(this,this);
+	QObject::connect(this,
+			SIGNAL(volumeChanged(float)),
+			volMapper,
+			SLOT(map()));
+	QObject::connect(volMapper,
+			SIGNAL(mapped(QObject *)),
+			this,
+			SIGNAL(volumeChanged(QObject *)));
+	QObject::connect(this,
+			SIGNAL(mutedChanged(bool)),
+			muteMapper,
+			SLOT(map()));
+	QObject::connect(muteMapper,
+			SIGNAL(mapped(QObject *)),
+			this,
+			SIGNAL(mutedChanged(QObject *)));
 }
 
 float MixerChannelModel::volume() const {

@@ -3,10 +3,12 @@
 
 #include <QObject>
 #include <vector>
+#include <map>
 
 class DJMixerChannelModel;
 class MasterModel;
 class CrossFadeModel;
+class EQModel;
 
 class MixerPanelModel : public QObject {
 	Q_OBJECT
@@ -15,10 +17,19 @@ class MixerPanelModel : public QObject {
 		CrossFadeModel * crossFade() const;
 		MasterModel * master() const;
 		std::vector<DJMixerChannelModel *> * mixerChannels();
+	signals:
+		void eqValuesChanged(unsigned int index, float low, float mid, float high);
+		void mixerVolumeChanged(unsigned int index, float vol);
+		void mixerMutedChanged(unsigned int index, bool muted);
+	protected slots:
+		void setEqVal(QObject * ob);
+		void setMixerVolume(QObject * ob);
+		void setMixerMuted(QObject * ob);
 	private:
 		std::vector<DJMixerChannelModel *> mDJMixerChannels;
 		CrossFadeModel * mXFade;
 		MasterModel * mMaster;
+		std::map<QObject *, unsigned int> mMixerObjectIndexMap;
 };
 
 #endif
