@@ -35,6 +35,7 @@ HEADERS += include/audioworkdbview.hpp \
 			  include/tagview.hpp \
 			  include/treeitem.h \
 			  include/treemodel.h \
+			  include/audiodriver.hpp \
 			  include/audioio.hpp \
 			  include/buffer.hpp \
 			  include/bufferplayer.hpp \
@@ -66,6 +67,7 @@ SOURCES += src/audioworkdbview.cpp \
 			  src/tagview.cpp \
 			  src/treeitem.cpp \
 			  src/treemodel.cpp \
+			  src/audiodriver.cpp \
 			  src/audioio.cpp \
 			  src/buffer.cpp \
 			  src/bufferplayer.cpp \
