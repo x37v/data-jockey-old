@@ -9,14 +9,26 @@ class AudioDriver;
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QString>
+#include <QThread>
 
 class WorkLoaderProxy;
+class AudioDriverThread;
 
 class DataJockeyApplication {
 	public:
 		static int run(int argc, char *argv[]);
 		static void connectMixerPanelModelView(MixerPanelModel * model, MixerPanelView * view);
 		static void connectMixerPanelModelDriver(MixerPanelModel * model, AudioDriver * driver);
+};
+
+class AudioDriverThread : public QThread {
+	Q_OBJECT
+	public:
+		AudioDriverThread(QObject * parent = NULL);
+		void setAudioDriver(AudioDriver * driver);
+		void run();
+	private:
+		AudioDriver * mDriver;
 };
 
 class WorkLoaderProxy : public QObject {

@@ -1,9 +1,8 @@
 #ifndef AUDIO_DRIVER_HPP
 #define AUDIO_DRIVER_HPP
 
-#include <QObject>
 #include "audioio.hpp"
-#include <string>
+#include <QObject>
 
 class MixerPanelModel;
 
@@ -11,10 +10,14 @@ class AudioDriver : public QObject {
 	Q_OBJECT
 	public:
 		AudioDriver(MixerPanelModel * mixerModel, QObject * parent = NULL);
-		void start();
 	signals:
 		void progressChanged(unsigned int mixer, float value);
+	protected:
+		void run();
 	public slots:
+		void start();
+		void stop();
+
 		//master
 		void masterSetVolume(float vol, bool wait_for_measure = false);
 		void masterSetTempo(float tempo, bool wait_for_measure = false);

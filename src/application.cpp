@@ -1,5 +1,9 @@
 #include "application.hpp"
 
+#include <iostream>
+using std::cout;
+using std::endl;
+
 #include "mixerpanelview.hpp"
 #include <QApplication>
 #include <QWidget>
@@ -229,7 +233,9 @@ int DataJockeyApplication::run(int argc, char *argv[]){
 		*/
 
 	window->show();
-	audioDriver->start();
+	AudioDriverThread * audioDriverThread = new AudioDriverThread(window);
+	audioDriverThread->setAudioDriver(audioDriver);
+	audioDriverThread->start();
 	return app.exec();
 }
 
@@ -469,6 +475,23 @@ void DataJockeyApplication::connectMixerPanelModelDriver(MixerPanelModel * model
 			SLOT(mixerSetPlaybackPosition(unsigned int, int)),
 			Qt::QueuedConnection);
 		
+}
+
+AudioDriverThread::AudioDriverThread(QObject * parent) :
+	QThread(parent)
+{
+}
+
+void AudioDriverThread::setAudioDriver(AudioDriver * driver){
+	mDriver = driver;
+	mDriver->moveToThread(this);
+}
+
+void AudioDriverThread::run(){
+	if(mDriver)
+		mDriver->start();
+	exec();
+	cout << "exec returned" << endl;
 }
 
 QString WorkLoaderProxy::cQueryString(

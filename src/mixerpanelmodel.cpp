@@ -82,9 +82,6 @@ void MixerPanelModel::setMixerMuted(QObject * ob){
 
 }
 
-#include <iostream>
-using namespace std;
-
 void MixerPanelModel::setMixerCueMode(QObject * ob){
 	DJMixerControlModel * mixerControl = (DJMixerControlModel *)ob;
 	unsigned int index = mMixerObjectIndexMap[mixerControl];
@@ -92,7 +89,6 @@ void MixerPanelModel::setMixerCueMode(QObject * ob){
 		emit(mixerCueModeChanged(index,true));
 	else
 		emit(mixerCueModeChanged(index,false));
-	cout << "cuemode " << index << " " << mixerControl->cueing() << endl;
 }
 
 void MixerPanelModel::setMixerPaused(QObject * ob){
@@ -102,7 +98,6 @@ void MixerPanelModel::setMixerPaused(QObject * ob){
 		emit(mixerPausedChanged(index, true));
 	else
 		emit(mixerPausedChanged(index, false));
-	cout << "paused" << index << mixerControl->paused() << endl;
 }
 
 void MixerPanelModel::setMixerSyncMode(QObject * ob){
@@ -112,13 +107,11 @@ void MixerPanelModel::setMixerSyncMode(QObject * ob){
 		emit(mixerSyncModeChanged(index, true));
 	else
 		emit(mixerSyncModeChanged(index, false));
-	cout << "syncModeChanged" << index << mixerControl->synced() << endl;
 }
 void MixerPanelModel::mixerSeekSlot(QObject * ob, int amt){
 	DJMixerControlModel * mixerControl = (DJMixerControlModel *)ob;
 	unsigned int index = mMixerObjectIndexMap[mixerControl];
 	emit(mixerSeek(index, amt));
-	cout << "seek " << index << " " << amt << endl;
 }
 
 void MixerPanelModel::mixerSetPlaybackPos(QObject * ob){
@@ -126,14 +119,12 @@ void MixerPanelModel::mixerSetPlaybackPos(QObject * ob){
 	unsigned int index = mMixerObjectIndexMap[mixerControl];
 	int pos = mixerControl->beatOffset();
 	emit(mixerPlaybackPosChanged(index, pos));
-	cout << index << " jump to " <<  pos << endl;
 }
 
 void MixerPanelModel::mixerLoad(QObject * ob){
 	DJMixerControlModel * mixerControl = (DJMixerControlModel *)ob;
 	unsigned int index = mMixerObjectIndexMap[mixerControl];
 	emit(mixerLoad(index));
-	cout << index << " loading!" << endl;
 }
 
 

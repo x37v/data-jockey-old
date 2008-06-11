@@ -3,6 +3,8 @@
 #include "djmixerchannelmodel.hpp"
 #include "djmixercontrolmodel.hpp"
 
+#include <QThread>
+
 using namespace DataJockey;
 
 AudioDriver::AudioDriver(MixerPanelModel * mixer, QObject * parent) :
@@ -14,6 +16,14 @@ AudioDriver::AudioDriver(MixerPanelModel * mixer, QObject * parent) :
 void AudioDriver::start(){
 	mAudioIO.start();
 }
+
+#include <iostream>
+using namespace std;
+
+void AudioDriver::stop(){
+	mAudioIO.stop();
+}
+
 
 void AudioDriver::masterSetVolume(float vol, bool wait_for_measure){
 	AudioIOSetVolumePtr cmd = new AudioIOSetVolume(vol, wait_for_measure);
