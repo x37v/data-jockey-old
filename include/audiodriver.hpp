@@ -11,6 +11,8 @@ class AudioDriver : public QObject {
 	Q_OBJECT
 	public:
 		AudioDriver(MixerPanelModel * mixerModel, QObject * parent = NULL);
+	signals:
+		void progressChanged(unsigned int mixer, float value);
 	public slots:
 		//master
 		void masterSetVolume(float vol, bool wait_for_measure = false);
@@ -30,7 +32,6 @@ class AudioDriver : public QObject {
 		void mixerSeek(unsigned int mixer, int beats, bool wait_for_measure = false);
 		void mixerSetLoopPoints(unsigned int mixer, unsigned int start, unsigned int end, bool wait_for_measure = false);
 		void mixerSetLooping(unsigned int mixer, bool loop, bool wait_for_measure = false);
-
 		void mixerSetVolume(unsigned int mixer, float vol, bool wait_for_measure = false);
 		void mixerSetEQVals(unsigned int mixer, float low, float mid, float high, bool wait_for_measure = false);
 	protected slots:
