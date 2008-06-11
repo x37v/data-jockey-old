@@ -42,7 +42,7 @@ void AudioDriver::masterSetSyncSrc(unsigned int src, bool wait_for_measure){
 		AudioIOSyncToMasterClockPtr cmd = new AudioIOSyncToMasterClock(wait_for_measure);
 		mAudioIO.sendCommand(cmd);
 	} else {
-		AudioIOSyncToBufferPlayerPtr cmd = new AudioIOSyncToBufferPlayer(src, wait_for_measure);
+		AudioIOSyncToBufferPlayerPtr cmd = new AudioIOSyncToBufferPlayer(src - 1, wait_for_measure);
 		mAudioIO.sendCommand(cmd);
 	}
 
