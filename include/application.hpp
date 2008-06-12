@@ -55,7 +55,6 @@ class WorkLoaderProxy : public QObject {
 		void selectWork(int work);
 		void loadWork(unsigned int mixer);
 	signals:
-		void mixerLoad(unsigned int mixer, QString audiobufloc, QString beatbufloc, bool wait_for_measure = false);
 		void mixerLoad(unsigned int mixer, DataJockey::AudioBufferPtr audiobuf, 
 				DataJockey::BeatBufferPtr beatbuf, bool wait_for_measure = false);
 	protected slots:

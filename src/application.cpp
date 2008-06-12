@@ -517,9 +517,8 @@ void WorkLoaderProxy::loadWork(unsigned int mixer){
 					this,
 					SLOT(workLoaded(unsigned int, DataJockey::AudioBufferPtr, DataJockey::BeatBufferPtr)),
 					Qt::QueuedConnection);
+			emit(mixerLoad(mixer, NULL, NULL));
 			loaderThread->start();
-
-			//emit(mixerLoad(mixer, audiobufloc, beatbufloc));
 			
 			mWorkInfoQuery.exec(workQueryStr);
 			if(mWorkInfoQuery.first()){
