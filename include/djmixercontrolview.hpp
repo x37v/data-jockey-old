@@ -8,6 +8,7 @@ class QVBoxLayout;
 class QToolButton;
 class QProgressBar;
 class QSpinBox;
+class QDoubleSpinBox;
 
 class DJMixerControlView : public QWidget {
 	Q_OBJECT
@@ -47,6 +48,7 @@ class DJMixerControlView : public QWidget {
 		QToolButton * mSeekBkwdBtn;
 		QProgressBar * mProgressBar;
 		QSpinBox * mBeatOffset;
+		QDoubleSpinBox * mTempoMul;
 
 		QVBoxLayout * mLayout;
 };

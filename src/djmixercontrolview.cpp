@@ -3,6 +3,7 @@
 #include <QToolButton>
 #include <QProgressBar>
 #include <QSpinBox>
+#include <QDoubleSpinBox>
 
 DJMixerControlView::DJMixerControlView(QWidget *parent)
 	: QWidget(parent)
@@ -25,34 +26,36 @@ DJMixerControlView::DJMixerControlView(QWidget *parent)
 	mSeekBkwdBtn = new QToolButton(this);
 
 	mBeatOffset = new QSpinBox(this);
-	mBeatOffset->setToolTip("beat start offset");
-	mBeatOffset->setMaximum(999);
-	mBeatOffset->setMinimum(-16);
+	mBeatOffset->setToolTip(tr("beat start offset"));
+	mBeatOffset->setRange(-16,99);
 
-	mLoadBtn->setToolTip("load selected file");
-	mResetBtn->setToolTip("reset playback position");
+	mTempoMul = new QDoubleSpinBox(this);
+	mTempoMul->setToolTip(tr("tempo multiplier"));
+	mTempoMul->setRange(0.01,4);
+	mTempoMul->setValue(1.0);
+
+	mLoadBtn->setToolTip(tr("load selected file"));
+	mResetBtn->setToolTip(tr("reset playback position"));
 	mLoadBtn->setArrowType(Qt::UpArrow);
 	mResetBtn->setArrowType(Qt::DownArrow);
 
-	mCueBtn->setToolTip("cue (toggle)");
-	mSyncBtn->setToolTip("sync/free playback (toggle)");
-	mPlayBtn->setToolTip("play/pause (toggle)");
+	mCueBtn->setToolTip(tr("cue (toggle)"));
+	mSyncBtn->setToolTip(tr("sync/free playback (toggle)"));
+	mPlayBtn->setToolTip(tr("play/pause (toggle)"));
 	mCueBtn->setCheckable(true);
 	mSyncBtn->setCheckable(true);
 	mPlayBtn->setCheckable(true);
 
 	mSeekFwdBtn->setArrowType(Qt::RightArrow);
 	mSeekBkwdBtn->setArrowType(Qt::LeftArrow);
-	mSeekFwdBtn->setToolTip("seek forward");
-	mSeekBkwdBtn->setToolTip("seek backward");
+	mSeekFwdBtn->setToolTip(tr("seek forward"));
+	mSeekBkwdBtn->setToolTip(tr("seek backward"));
 
 	QHBoxLayout * loadResetLayout = new QHBoxLayout;
 	loadResetLayout->setContentsMargins(0,0,0,0);
 	loadResetLayout->setSpacing(0);
-	loadResetLayout->addStretch();
-	loadResetLayout->addWidget(mLoadBtn);
-	loadResetLayout->addWidget(mResetBtn);
-	loadResetLayout->addStretch();
+	loadResetLayout->addWidget(mLoadBtn, 0, Qt::AlignHCenter);
+	loadResetLayout->addWidget(mResetBtn, 0, Qt::AlignHCenter);
 
 	QHBoxLayout * playLayout = new QHBoxLayout;
 	playLayout->setContentsMargins(0,0,0,0);
@@ -72,11 +75,20 @@ DJMixerControlView::DJMixerControlView(QWidget *parent)
 	seekLayout->addWidget(mSeekFwdBtn, 0, Qt::AlignHCenter);
 	seekLayout->addStretch();
 
+	QHBoxLayout * tempoAndBeatLayout = new QHBoxLayout;
+	tempoAndBeatLayout->setContentsMargins(0,0,0,0);
+	tempoAndBeatLayout->setSpacing(0);
+	tempoAndBeatLayout->addStretch();
+	tempoAndBeatLayout->addWidget(mBeatOffset, 0, Qt::AlignHCenter);
+	tempoAndBeatLayout->addWidget(mTempoMul, 0, Qt::AlignHCenter);
+	tempoAndBeatLayout->addStretch();
+
 	mLayout->addLayout(loadResetLayout,0);
 	mLayout->addLayout(playLayout,0);
 	mLayout->addLayout(seekLayout,0);
 	mLayout->addWidget(mProgressBar,1, Qt::AlignHCenter);
-	mLayout->addWidget(mBeatOffset, 1, Qt::AlignHCenter);
+	//mLayout->addWidget(mBeatOffset, 1, Qt::AlignHCenter);
+	mLayout->addLayout(tempoAndBeatLayout, 0);
 
 	//connect up our signals
 	QObject::connect(
