@@ -143,6 +143,7 @@ int DataJockeyApplication::run(int argc, char *argv[]){
 	audioDriver->audioIO()->connectToPhysical(0,0);
 	audioDriver->audioIO()->connectToPhysical(1,1);
 
+	//when the app is about to quit, stop our jack client and kill the driver thread
 	QObject::connect(&app,
 			SIGNAL(aboutToQuit()),
 			audioDriverThread,
