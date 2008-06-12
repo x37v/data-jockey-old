@@ -435,22 +435,27 @@ void AudioDriverThread::run(){
 		mDriver->start();
 		QTimer *timer = new QTimer(mDriver);
 		connect(timer, SIGNAL(timeout()), mDriver, SLOT(processAudioEvents()));
-		timer->start(2);
+		//every 5 ms
+		timer->start(5);
 	}
 	exec();
 }
 
-QString WorkLoaderProxy::cQueryString(
+QString WorkLoaderProxy::cFileQueryString(
 	"select audio_files.location audio_file, annotation_files.location beat_file\n"
 	"from audio_works\n"
 	"\tjoin audio_files on audio_files.id = audio_works.audio_file_id\n"
 	"\tjoin annotation_files on annotation_files.audio_work_id = audio_works.id\n"
 	"where audio_works.id = ");
 
-WorkLoaderProxy::WorkLoaderProxy(const QSqlDatabase & db, QObject * parent) : 
-	QObject(parent), mQuery("", db)
+QString WorkLoaderProxy::cWorkInfoQueryString(""
+		);
+
+WorkLoaderProxy::WorkLoaderProxy(const QSqlDatabase & db, MixerPanelModel * model) :
+	QObject(model), mFileQuery("", db), mWorkInfoQuery("",db)
 {
 	mWork = -1;
+	mMixerPanelModel = model;
 }
 
 void WorkLoaderProxy::selectWork(int work){
@@ -460,19 +465,19 @@ void WorkLoaderProxy::selectWork(int work){
 void WorkLoaderProxy::loadWork(unsigned int mixer){
 	if(mWork >= 0){
 		//build up query
-		QString queryStr(cQueryString);
+		QString queryStr(cFileQueryString);
 		QString id;
 		id.setNum(mWork);
 		queryStr.append(id);
 		//execute
-		mQuery.exec(queryStr);
-		QSqlRecord rec = mQuery.record();
+		mFileQuery.exec(queryStr);
+		QSqlRecord rec = mFileQuery.record();
 		int audioFileCol = rec.indexOf("audio_file");
 		int beatFileCol = rec.indexOf("beat_file");
 		//if we can grab it
-		if(mQuery.first()){
-			QString audiobufloc = mQuery.value(audioFileCol).toString();
-			QString beatbufloc = mQuery.value(beatFileCol).toString();
+		if(mFileQuery.first()){
+			QString audiobufloc = mFileQuery.value(audioFileCol).toString();
+			QString beatbufloc = mFileQuery.value(beatFileCol).toString();
 			emit(mixerLoad(mixer, audiobufloc, beatbufloc));
 		} else {
 			//XXX ERROR

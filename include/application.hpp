@@ -34,16 +34,19 @@ class AudioDriverThread : public QThread {
 class WorkLoaderProxy : public QObject {
 	Q_OBJECT
 	public:
-		WorkLoaderProxy(const QSqlDatabase & db = QSqlDatabase(), QObject * parent = NULL);
+		WorkLoaderProxy(const QSqlDatabase & db, MixerPanelModel * mixerModel);
 	public slots:
 		void selectWork(int work);
 		void loadWork(unsigned int mixer);
 	signals:
 		void mixerLoad(unsigned int mixer, QString audiobufloc, QString beatbufloc, bool wait_for_measure = false);
 	private:
-		static QString cQueryString;
+		static QString cFileQueryString;
+		static QString cWorkInfoQueryString;
 		int mWork;
-		QSqlQuery mQuery;
+		MixerPanelModel * mMixerPanelModel;
+		QSqlQuery mFileQuery;
+		QSqlQuery mWorkInfoQuery;
 };
 
 #endif
