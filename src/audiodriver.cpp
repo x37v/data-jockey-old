@@ -12,6 +12,7 @@ AudioDriver::AudioDriver(MixerPanelModel * mixer, QObject * parent) :
 {
 	mMixerPanel = mixer;
 	mNumMixers = mMixerPanel->mixerChannels()->size();
+	mSyncToMaster = true;
 }
 
 void AudioDriver::start(){
@@ -39,7 +40,7 @@ void AudioDriver::processAudioEvents(){
 		//deal with tempo changes
 		//it only changes when we're in sync with a buffer
 		if(!state->getSyncToClock()){
-			float tempo = 1.0f / state->getPeriod();
+			float tempo = 60.0f / state->getPeriod();
 			emit(tempoChanged(tempo));
 		}
 		//push a new state request on there
@@ -54,8 +55,11 @@ void AudioDriver::masterSetVolume(float vol, bool wait_for_measure){
 }
 
 void AudioDriver::masterSetTempo(float tempo, bool wait_for_measure){
-	AudioIOSetBPMPtr cmd = new AudioIOSetBPM(tempo, wait_for_measure);
-	mAudioIO.sendCommand(cmd);
+	//only send if we're syncing to the master
+	if(mSyncToMaster){
+		AudioIOSetBPMPtr cmd = new AudioIOSetBPM(tempo, wait_for_measure);
+		mAudioIO.sendCommand(cmd);
+	}
 }
 
 void AudioDriver::masterSetTempoMul(float mul, bool wait_for_measure){
@@ -67,8 +71,10 @@ void AudioDriver::masterSetTempoMul(float mul, bool wait_for_measure){
 void AudioDriver::masterSetSyncSrc(unsigned int src, bool wait_for_measure){
 	if(src == 0){
 		AudioIOSyncToMasterClockPtr cmd = new AudioIOSyncToMasterClock(wait_for_measure);
+		mSyncToMaster = true;
 		mAudioIO.sendCommand(cmd);
 	} else {
+		mSyncToMaster = false;
 		AudioIOSyncToBufferPlayerPtr cmd = new AudioIOSyncToBufferPlayer(src - 1, wait_for_measure);
 		mAudioIO.sendCommand(cmd);
 	}

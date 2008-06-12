@@ -46,6 +46,7 @@ class AudioDriver : public QObject {
 		void mixerReportLoadProgress(unsigned int mixer, float progress);
 
 	private:
+		bool mSyncToMaster;
 		DataJockey::AudioIO mAudioIO;
 		MixerPanelModel * mMixerPanel;
 		unsigned int mNumMixers;

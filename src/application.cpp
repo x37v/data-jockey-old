@@ -411,6 +411,13 @@ void DataJockeyApplication::connectMixerPanelModelDriver(MixerPanelModel * model
 			driver,
 			SLOT(masterSetSyncSrc(unsigned int)),
 			Qt::QueuedConnection);
+	//report tempo
+	QObject::connect(
+			driver,
+			SIGNAL(tempoChanged(float)),
+			model->master(),
+			SLOT(setTempo(float)),
+			Qt::QueuedConnection);
 }
 
 AudioDriverThread::AudioDriverThread(QObject * parent) :
