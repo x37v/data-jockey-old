@@ -121,12 +121,6 @@ int DataJockeyApplication::run(int argc, char *argv[]){
 			SIGNAL(mixerLoad(unsigned int)),
 			workLoader,
 			SLOT(loadWork(unsigned int)));
-	//QObject::connect(
-			//workLoader,
-			//SIGNAL(mixerLoad(unsigned int, QString, QString, bool)),
-			//audioDriver, 
-			//SLOT(mixerLoad(unsigned int, QString, QString, bool)),
-			//Qt::QueuedConnection);
 	QObject::connect(
 			workLoader,
 			SIGNAL(mixerLoad(unsigned int, DataJockey::AudioBufferPtr, DataJockey::BeatBufferPtr, bool)),

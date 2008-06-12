@@ -73,6 +73,7 @@ MasterView::MasterView(unsigned int numMixers, QWidget *parent) :
 	QLabel * tempoMulLabel = new QLabel(tr("tempo mul"), parent);
 	mTempo->setToolTip("master tempo (bpm)");
 	mTempo->setRange(10.0,300.0);
+	mTempo->setValue(120.0);
 	mTempoMul->setToolTip("master tempo multiply");
 	mTempoMul->setRange(0.1,10.0);
 	mTempoMul->setSingleStep(0.01);
