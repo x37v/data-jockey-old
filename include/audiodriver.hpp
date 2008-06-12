@@ -10,6 +10,7 @@ class AudioDriver : public QObject {
 	Q_OBJECT
 	public:
 		AudioDriver(MixerPanelModel * mixerModel, QObject * parent = NULL);
+		DataJockey::AudioIO * audioIO() const;
 	signals:
 		void progressChanged(unsigned int mixer, float value);
 		void tempoChanged(float value);

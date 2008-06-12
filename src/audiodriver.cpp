@@ -19,6 +19,10 @@ AudioDriver::AudioDriver(MixerPanelModel * mixer, QObject * parent) :
 	mSyncToMaster = true;
 }
 
+DataJockey::AudioIO * AudioDriver::audioIO() const {
+	return const_cast<DataJockey::AudioIO *>(&mAudioIO);
+}
+
 void AudioDriver::start(){
 	mAudioIO.start();
 	//push a new state request on there

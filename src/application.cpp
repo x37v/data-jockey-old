@@ -47,6 +47,8 @@ using std::endl;
 #include "audiodriver.hpp"
 #include "workloader.hpp"
 
+#include "audioio.hpp"
+
 
 //for now we'll just have a gui app
 int DataJockeyApplication::run(int argc, char *argv[]){
@@ -138,7 +140,14 @@ int DataJockeyApplication::run(int argc, char *argv[]){
 	//set up the audio driver thread and start it
 	AudioDriverThread * audioDriverThread = new AudioDriverThread(window);
 	audioDriverThread->setAudioDriver(audioDriver);
+
+	//start the driver and the driver thread
+	audioDriver->start();
 	audioDriverThread->start();
+
+	//XXX just for now, connect to the physical outputs
+	audioDriver->audioIO()->connectToPhysical(0,0);
+	audioDriver->audioIO()->connectToPhysical(1,1);
 
 	QObject::connect(&app,
 			SIGNAL(aboutToQuit()),
@@ -441,7 +450,9 @@ void AudioDriverThread::setAudioDriver(AudioDriver * driver){
 
 void AudioDriverThread::run(){
 	if(mDriver){
-		mDriver->start();
+		//start the driver if it hasn't been started already
+		if(mDriver->audioIO()->getState() != JackCpp::AudioIO::active)
+			mDriver->start();
 		QTimer *timer = new QTimer(mDriver);
 		connect(timer, SIGNAL(timeout()), mDriver, SLOT(processAudioEvents()));
 		//every 5 ms
