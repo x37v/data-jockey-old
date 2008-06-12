@@ -29,3 +29,7 @@ void DJMixerChannelModel::loadWork(int work){
 	}
 }
 
+void DJMixerChannelModel::reset(){
+	mDJMixerControl->reset();
+}
+

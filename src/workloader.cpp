@@ -2,6 +2,7 @@
 #include "mixerpanelmodel.hpp"
 #include "mixerpanelview.hpp"
 #include "djmixerchannelview.hpp"
+#include "djmixerchannelmodel.hpp"
 #include "djmixerworkinfoview.hpp"
 #include <QString>
 #include <QSqlRecord>
@@ -60,6 +61,7 @@ WorkLoader::WorkLoader(const QSqlDatabase & db, MixerPanelModel * model, MixerPa
 {
 	mWork = -1;
 	mMixerPanelView = mixerView;
+	mMixerPanelModel = model;
 	mNumMixers = model->mixerChannels()->size();
 	if(!cTypesRegistered){
 		qRegisterMetaType<DataJockey::AudioBufferPtr>("DataJockey::AudioBufferPtr");
@@ -113,6 +115,8 @@ void WorkLoader::loadWork(unsigned int mixer){
 
 			//emit a signal to unload the buffers of this mixer
 			emit(mixerLoad(mixer, NULL, NULL));
+			//reset the mixer channel
+			mMixerPanelModel->mixerChannels()->at(mixer)->reset();
 			//use a thread to load the stuff!
 			mLoaderThreads[mixer]->start(mixer, mWork, audiobufloc, beatbufloc);
 

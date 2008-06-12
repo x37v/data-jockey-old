@@ -158,11 +158,26 @@ void DJMixerControlModel::setBeatOffset(int offset){
 	}
 }
 
-void DJMixerControlModel::reset(){
+void DJMixerControlModel::setTempoMul(float mul){
+	if(mul != mTempoMul){
+		mTempoMul = mul;
+		emit(tempoMulChanged(mTempoMul));
+	}
+}
+
+void DJMixerControlModel::resetWorkPosition(){
 	emit(playbackPositionChanged(mBeatOffset));
 }
 
 void DJMixerControlModel::loadWork(){
 	emit(load());
+}
+
+void DJMixerControlModel::reset(){
+	setBeatOffset(0);
+	setTempoMul(0.0f);
+	//XXX there should be a setting to decide if we do this or not
+	setCueing(true);
+	setSync(true);
 }
 

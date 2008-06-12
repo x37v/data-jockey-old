@@ -57,6 +57,7 @@ class WorkLoader : public QObject {
 		int mWork;
 		std::vector<BufferLoaderThread *> mLoaderThreads;
 		MixerPanelView * mMixerPanelView;
+		MixerPanelModel * mMixerPanelModel;
 		QSqlQuery mFileQuery;
 		QSqlQuery mWorkInfoQuery;
 };

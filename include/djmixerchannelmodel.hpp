@@ -17,6 +17,7 @@ class DJMixerChannelModel : public QObject {
 		void workChanged(int work);
 	public slots:
 		void loadWork(int work);
+		void reset();
 	private:
 		int mWork;
 		DJMixerControlModel * mDJMixerControl;

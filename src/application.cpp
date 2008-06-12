@@ -274,7 +274,7 @@ void DataJockeyApplication::connectMixerPanelModelView(MixerPanelModel * model, 
 				djMixerView->DJMixerControl(),
 				SIGNAL(resetClicked(bool)),
 				djMixerModel->DJMixerControl(),
-				SLOT(reset()));
+				SLOT(resetWorkPosition()));
 		//load
 		QObject::connect(
 				djMixerView->DJMixerControl(),
