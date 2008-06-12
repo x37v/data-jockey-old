@@ -125,11 +125,17 @@ int DataJockeyApplication::run(int argc, char *argv[]){
 			SIGNAL(mixerLoad(unsigned int)),
 			workLoader,
 			SLOT(loadWork(unsigned int)));
+	//QObject::connect(
+			//workLoader,
+			//SIGNAL(mixerLoad(unsigned int, QString, QString, bool)),
+			//audioDriver, 
+			//SLOT(mixerLoad(unsigned int, QString, QString, bool)),
+			//Qt::QueuedConnection);
 	QObject::connect(
 			workLoader,
-			SIGNAL(mixerLoad(unsigned int, QString, QString, bool)),
+			SIGNAL(mixerLoad(unsigned int, DataJockey::AudioBufferPtr, DataJockey::BeatBufferPtr, bool)),
 			audioDriver, 
-			SLOT(mixerLoad(unsigned int, QString, QString, bool)),
+			SLOT(mixerLoad(unsigned int, DataJockey::AudioBufferPtr, DataJockey::BeatBufferPtr, bool)),
 			Qt::QueuedConnection);
 
 	window->setWindowTitle("data jockey");
@@ -442,6 +448,20 @@ void AudioDriverThread::run(){
 	exec();
 }
 
+BufferLoaderThread::BufferLoaderThread(unsigned int index, QString audiobufloc, QString beatbufloc, QObject * parent) :
+	QThread(parent)
+{
+	mIndex = index;
+	mAudioBufLoc = audiobufloc;
+	mBeatBufLoc = beatbufloc;
+}
+
+void BufferLoaderThread::run(){
+	DataJockey::BeatBufferPtr beat_buffer = new DataJockey::BeatBuffer(mBeatBufLoc.toStdString());
+	DataJockey::AudioBufferPtr audio_file = new DataJockey::AudioBuffer(mAudioBufLoc.toStdString());
+	emit(buffersLoaded(mIndex, audio_file, beat_buffer));
+}
+
 QString WorkLoaderProxy::cFileQueryString(
 	"select audio_files.location audio_file, annotation_files.location beat_file\n"
 	"from audio_works\n"
@@ -462,6 +482,9 @@ WorkLoaderProxy::WorkLoaderProxy(const QSqlDatabase & db, MixerPanelModel * mode
 {
 	mWork = -1;
 	mMixerPanelView = mixerView;
+	mNumMixers = model->mixerChannels()->size();
+qRegisterMetaType<DataJockey::AudioBufferPtr>("DataJockey::AudioBufferPtr");
+qRegisterMetaType<DataJockey::BeatBufferPtr>("DataJockey::BeatBufferPtr");
 }
 
 void WorkLoaderProxy::selectWork(int work){
@@ -469,7 +492,7 @@ void WorkLoaderProxy::selectWork(int work){
 }
 
 void WorkLoaderProxy::loadWork(unsigned int mixer){
-	if(mWork >= 0){
+	if(mWork >= 0 && mixer < mNumMixers){
 		//build up query
 		QString fileQueryStr(cFileQueryString);
 		QString workQueryStr(cWorkInfoQueryString);
@@ -486,20 +509,29 @@ void WorkLoaderProxy::loadWork(unsigned int mixer){
 		if(mFileQuery.first()){
 			QString audiobufloc = mFileQuery.value(audioFileCol).toString();
 			QString beatbufloc = mFileQuery.value(beatFileCol).toString();
-			emit(mixerLoad(mixer, audiobufloc, beatbufloc));
-			if(mixer < mMixerPanelView->mixerChannels()->size()){
-				mWorkInfoQuery.exec(workQueryStr);
-				if(mWorkInfoQuery.first()){
-					rec = mWorkInfoQuery.record();
-					int titleCol = rec.indexOf("title");
-					int artistCol = rec.indexOf("artist");
-					mMixerPanelView->mixerChannels()->at(mixer)->DJMixerWorkInfo()->setArtistText(
-							mWorkInfoQuery.value(artistCol).toString()
-							);
-					mMixerPanelView->mixerChannels()->at(mixer)->DJMixerWorkInfo()->setTitleText(
-							mWorkInfoQuery.value(titleCol).toString()
-							);
-				}
+
+			//use a thread to load the stuff!
+			BufferLoaderThread * loaderThread = new BufferLoaderThread(mixer, audiobufloc, beatbufloc, this);
+			QObject::connect(loaderThread,
+					SIGNAL(buffersLoaded(unsigned int, DataJockey::AudioBufferPtr, DataJockey::BeatBufferPtr)),
+					this,
+					SLOT(workLoaded(unsigned int, DataJockey::AudioBufferPtr, DataJockey::BeatBufferPtr)),
+					Qt::QueuedConnection);
+			loaderThread->start();
+
+			//emit(mixerLoad(mixer, audiobufloc, beatbufloc));
+			
+			mWorkInfoQuery.exec(workQueryStr);
+			if(mWorkInfoQuery.first()){
+				rec = mWorkInfoQuery.record();
+				int titleCol = rec.indexOf("title");
+				int artistCol = rec.indexOf("artist");
+				mMixerPanelView->mixerChannels()->at(mixer)->DJMixerWorkInfo()->setArtistText(
+						mWorkInfoQuery.value(artistCol).toString()
+						);
+				mMixerPanelView->mixerChannels()->at(mixer)->DJMixerWorkInfo()->setTitleText(
+						mWorkInfoQuery.value(titleCol).toString()
+						);
 			}
 		} else {
 			//XXX ERROR
@@ -509,3 +541,9 @@ void WorkLoaderProxy::loadWork(unsigned int mixer){
 	}
 }
 
+
+void WorkLoaderProxy::workLoaded(unsigned int index, 
+		DataJockey::AudioBufferPtr audio_buffer, 
+		DataJockey::BeatBufferPtr beat_buffer){
+	emit(mixerLoad(index, audio_buffer, beat_buffer));
+}

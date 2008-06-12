@@ -10,9 +10,12 @@ class AudioDriver;
 #include <QSqlQuery>
 #include <QString>
 #include <QThread>
+#include <QMetaObject>
+#include "buffer.hpp"
 
 class WorkLoaderProxy;
 class AudioDriverThread;
+
 
 class DataJockeyApplication {
 	public:
@@ -31,6 +34,19 @@ class AudioDriverThread : public QThread {
 		AudioDriver * mDriver;
 };
 
+class BufferLoaderThread : public QThread {
+	Q_OBJECT
+	public:
+		BufferLoaderThread(unsigned int index, QString audiobufloc, QString beatbufloc, QObject * parent = NULL);
+		void run();
+	private:
+		unsigned int mIndex;
+		QString mAudioBufLoc;
+		QString mBeatBufLoc;
+	signals:
+		void buffersLoaded(unsigned int index, DataJockey::AudioBufferPtr audio_buffer, DataJockey::BeatBufferPtr beat_buffer);
+};
+
 class WorkLoaderProxy : public QObject {
 	Q_OBJECT
 	public:
@@ -40,7 +56,14 @@ class WorkLoaderProxy : public QObject {
 		void loadWork(unsigned int mixer);
 	signals:
 		void mixerLoad(unsigned int mixer, QString audiobufloc, QString beatbufloc, bool wait_for_measure = false);
+		void mixerLoad(unsigned int mixer, DataJockey::AudioBufferPtr audiobuf, 
+				DataJockey::BeatBufferPtr beatbuf, bool wait_for_measure = false);
+	protected slots:
+		void workLoaded(unsigned int index, 
+				DataJockey::AudioBufferPtr audio_buffer, 
+				DataJockey::BeatBufferPtr beat_buffer);
 	private:
+		unsigned int mNumMixers;
 		static QString cFileQueryString;
 		static QString cWorkInfoQueryString;
 		int mWork;

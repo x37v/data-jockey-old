@@ -1,8 +1,9 @@
 #include "audioio.hpp"
+#include <sys/mman.h>
 using namespace DataJockey;
 
 #include <iostream>
-using std::cout;
+using std::cerr;
 using std::endl;
 
 SLV2World AudioIO::cLv2World;
@@ -21,6 +22,7 @@ AudioIO::AudioIO(unsigned int num_buf_players) :
 	mMsgBufToAudio(AUDIOIO_MAX_MESSAGES_PER_CALLBACK),
 	mMsgBufFromAudio(AUDIOIO_MAX_MESSAGES_PER_CALLBACK)
 {
+
 	mMasterVolume = 1.0;
 	mCueVolume = 0.8;
 	//reserve as much space as messages we can get
@@ -354,7 +356,7 @@ AudioIOGetStatePtr AudioIO::consume(){
 		AudioIOCmdPtr cmd;
 		mMsgBufFromAudio.read(cmd);
 		if(cmd->getStatus() == Command::rejected){
-			cout << cmd->getGroupName() << " : " << cmd->getTypeID() << " was rejected" << endl;
+			cerr << cmd->getGroupName() << " : " << cmd->getTypeID() << " was rejected" << endl;
 		}
 		if(cmd->getStatus() == Command::completed &&
 				cmd->getTypeID() == AudioIOCmd::get_state){

@@ -2,6 +2,7 @@
 #include "mixerpanelmodel.hpp"
 #include "djmixerchannelmodel.hpp"
 #include "djmixercontrolmodel.hpp"
+#include <sys/mman.h>
 
 #include <QThread>
 
@@ -10,6 +11,9 @@ using namespace DataJockey;
 AudioDriver::AudioDriver(MixerPanelModel * mixer, QObject * parent) :
 	QObject(parent), mAudioIO(mixer->mixerChannels()->size())
 {
+	//unlock memory because we use a lot of it!
+	munlockall();
+
 	mMixerPanel = mixer;
 	mNumMixers = mMixerPanel->mixerChannels()->size();
 	mSyncToMaster = true;
@@ -125,6 +129,14 @@ void AudioDriver::mixerSetPlay(unsigned int mixer, bool play, bool wait_for_meas
 void AudioDriver::mixerLoad(unsigned int mixer, QString audiobufloc, QString beatbufloc, bool wait_for_measure){
 	AudioBufferPtr audio_buffer = new AudioBuffer(audiobufloc.toStdString());
 	BeatBufferPtr beat_buffer = new BeatBuffer(beatbufloc.toStdString());
+	BufferPlayer::CmdPtr cmd = new BufferPlayer::SetBuffers(audio_buffer, beat_buffer);
+	AudioIOBufferPlayerCmdPtr audioIOcmd = new AudioIOBufferPlayerCmd(mixer, cmd, wait_for_measure);
+	mAudioIO.sendCommand(audioIOcmd);
+}
+
+void AudioDriver::mixerLoad(unsigned int mixer, 
+		DataJockey::AudioBufferPtr audio_buffer, 
+		DataJockey::BeatBufferPtr beat_buffer, bool wait_for_measure){
 	BufferPlayer::CmdPtr cmd = new BufferPlayer::SetBuffers(audio_buffer, beat_buffer);
 	AudioIOBufferPlayerCmdPtr audioIOcmd = new AudioIOBufferPlayerCmd(mixer, cmd, wait_for_measure);
 	mAudioIO.sendCommand(audioIOcmd);
