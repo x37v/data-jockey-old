@@ -4,24 +4,17 @@
 using std::cout;
 using std::endl;
 
+#define NUM_MIXERS 4
+
 #include <QApplication>
 #include <QWidget>
 #include <QCleanlooksStyle>
-
-#include <QHBoxLayout>
 #include <QSqlDatabase>
 #include <QSqlError>
-#include <QSqlRecord>
 #include <QMessageBox>
 #include <QTableView>
-
 #include <QSplitter>
-
-#include <QHeaderView>
-#include <QSortFilterProxyModel>
-
-#include <QSignalMapper>
-
+#include <QErrorMessage>
 #include <QTimer>
 
 #include "audioworktablemodel.hpp"
@@ -31,6 +24,7 @@ using std::endl;
 #include "mixerchannelview.hpp"
 
 #include "crossfadeview.hpp"
+#include "crossfademodel.hpp"
 
 #include "djmixerchannelview.hpp"
 #include "djmixerchannelmodel.hpp"
@@ -53,7 +47,6 @@ using std::endl;
 #include "audiodriver.hpp"
 #include "workloader.hpp"
 
-#define NUM_MIXERS 4
 
 //for now we'll just have a gui app
 int DataJockeyApplication::run(int argc, char *argv[]){
@@ -146,6 +139,9 @@ int DataJockeyApplication::run(int argc, char *argv[]){
 	AudioDriverThread * audioDriverThread = new AudioDriverThread(window);
 	audioDriverThread->setAudioDriver(audioDriver);
 	audioDriverThread->start();
+
+	//make the warning messages graphical
+	QErrorMessage::qtHandler();
 
 	return app.exec();
 }

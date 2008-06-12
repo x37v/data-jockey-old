@@ -7,6 +7,7 @@
 #include <QString>
 #include <QSqlQuery>
 #include "buffer.hpp"
+#include <vector>
 
 class MixerPanelModel;
 class MixerPanelView;
@@ -14,14 +15,19 @@ class MixerPanelView;
 class BufferLoaderThread : public QThread {
 	Q_OBJECT
 	public:
-		BufferLoaderThread(unsigned int index, QString audiobufloc, QString beatbufloc, QObject * parent = NULL);
+		BufferLoaderThread(QObject * parent);
+		void start(unsigned int index, int work_id, QString audiobufloc, QString beatbufloc);
+	protected:
 		void run();
 	private:
 		unsigned int mIndex;
+		int mWorkId;
 		QString mAudioBufLoc;
 		QString mBeatBufLoc;
 	signals:
-		void buffersLoaded(unsigned int index, DataJockey::AudioBufferPtr audio_buffer, DataJockey::BeatBufferPtr beat_buffer);
+		void buffersLoaded(unsigned int index, int work_id, 
+				DataJockey::AudioBufferPtr audio_buffer, DataJockey::BeatBufferPtr beat_buffer);
+		void outOfMemory(unsigned int index, int work_id, QString audioFileLoc, QString beatFileLoc);
 };
 
 class WorkLoader : public QObject {
@@ -35,15 +41,21 @@ class WorkLoader : public QObject {
 		void mixerLoad(unsigned int mixer, DataJockey::AudioBufferPtr audiobuf, 
 				DataJockey::BeatBufferPtr beatbuf, bool wait_for_measure = false);
 	protected slots:
-		void workLoaded(unsigned int index, 
+		void workLoaded(unsigned int mixer_index, 
+				int work_id,
 				DataJockey::AudioBufferPtr audio_buffer, 
 				DataJockey::BeatBufferPtr beat_buffer);
+		void outOfMemory(unsigned int index, int work_id, QString audioFileLoc, QString beatFileLoc);
 	private:
 		static bool cTypesRegistered;
-		unsigned int mNumMixers;
 		static QString cFileQueryString;
 		static QString cWorkInfoQueryString;
+
+		//the number of mixers in the model
+		unsigned int mNumMixers;
+		//the currently selected work
 		int mWork;
+		std::vector<BufferLoaderThread *> mLoaderThreads;
 		MixerPanelView * mMixerPanelView;
 		QSqlQuery mFileQuery;
 		QSqlQuery mWorkInfoQuery;

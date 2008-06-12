@@ -7,19 +7,35 @@
 #include <QSqlRecord>
 #include <QVariant>
 #include <QMetaObject>
+#include <QErrorMessage>
 
-BufferLoaderThread::BufferLoaderThread(unsigned int index, QString audiobufloc, QString beatbufloc, QObject * parent) :
+#include <iostream>
+using namespace std;
+
+BufferLoaderThread::BufferLoaderThread(QObject * parent) :
 	QThread(parent)
 {
+}
+
+void BufferLoaderThread::start(unsigned int index, int work_id, QString audiobufloc, QString beatbufloc){
+	//set up our data and run
 	mIndex = index;
+	mWorkId = work_id;
 	mAudioBufLoc = audiobufloc;
 	mBeatBufLoc = beatbufloc;
+	QThread::start();
 }
 
 void BufferLoaderThread::run(){
-	DataJockey::BeatBufferPtr beat_buffer = new DataJockey::BeatBuffer(mBeatBufLoc.toStdString());
-	DataJockey::AudioBufferPtr audio_file = new DataJockey::AudioBuffer(mAudioBufLoc.toStdString());
-	emit(buffersLoaded(mIndex, audio_file, beat_buffer));
+	try {
+		DataJockey::BeatBufferPtr beat_buffer = new DataJockey::BeatBuffer(mBeatBufLoc.toStdString());
+		DataJockey::AudioBufferPtr audio_file = new DataJockey::AudioBuffer(mAudioBufLoc.toStdString());
+		emit(buffersLoaded(mIndex, mWorkId, audio_file, beat_buffer));
+	} catch (std::bad_alloc&) {
+		emit(outOfMemory(mIndex, mWorkId, mAudioBufLoc, mBeatBufLoc));
+	} catch (int e) {
+		std::cerr << "An exception occurred. Exception Nr. " << e << std::endl;
+	}
 }
 
 bool WorkLoader::cTypesRegistered = false;
@@ -50,6 +66,22 @@ WorkLoader::WorkLoader(const QSqlDatabase & db, MixerPanelModel * model, MixerPa
 		qRegisterMetaType<DataJockey::BeatBufferPtr>("DataJockey::BeatBufferPtr");
 		cTypesRegistered = true;
 	}
+	//create our thread pool
+	for(unsigned int i = 0; i < mNumMixers; i++){
+		BufferLoaderThread * newThread = new BufferLoaderThread(this);
+		mLoaderThreads.push_back(newThread);
+		//connect it up to us
+		QObject::connect(newThread,
+				SIGNAL(buffersLoaded(unsigned int, int, DataJockey::AudioBufferPtr, DataJockey::BeatBufferPtr)),
+				this,
+				SLOT(workLoaded(unsigned int, int, DataJockey::AudioBufferPtr, DataJockey::BeatBufferPtr)),
+				Qt::QueuedConnection);
+		QObject::connect(newThread,
+				SIGNAL(outOfMemory(unsigned int, int, QString, QString)),
+				this,
+				SLOT(outOfMemory(unsigned int, int, QString, QString)),
+				Qt::QueuedConnection);
+	}
 }
 
 void WorkLoader::selectWork(int work){
@@ -58,6 +90,10 @@ void WorkLoader::selectWork(int work){
 
 void WorkLoader::loadWork(unsigned int mixer){
 	if(mWork >= 0 && mixer < mNumMixers){
+		if(mLoaderThreads[mixer]->isRunning()){
+			qWarning("Mixer %d is currently loading a file", mixer);
+			return;
+		}
 		//build up query
 		QString fileQueryStr(cFileQueryString);
 		QString workQueryStr(cWorkInfoQueryString);
@@ -75,28 +111,29 @@ void WorkLoader::loadWork(unsigned int mixer){
 			QString audiobufloc = mFileQuery.value(audioFileCol).toString();
 			QString beatbufloc = mFileQuery.value(beatFileCol).toString();
 
-			//use a thread to load the stuff!
-			BufferLoaderThread * loaderThread = new BufferLoaderThread(mixer, audiobufloc, beatbufloc, this);
-			QObject::connect(loaderThread,
-					SIGNAL(buffersLoaded(unsigned int, DataJockey::AudioBufferPtr, DataJockey::BeatBufferPtr)),
-					this,
-					SLOT(workLoaded(unsigned int, DataJockey::AudioBufferPtr, DataJockey::BeatBufferPtr)),
-					Qt::QueuedConnection);
+			//emit a signal to unload the buffers of this mixer
 			emit(mixerLoad(mixer, NULL, NULL));
-			loaderThread->start();
-			
+			//use a thread to load the stuff!
+			mLoaderThreads[mixer]->start(mixer, mWork, audiobufloc, beatbufloc);
+
+			//indicate that we're loading
 			mWorkInfoQuery.exec(workQueryStr);
 			if(mWorkInfoQuery.first()){
 				rec = mWorkInfoQuery.record();
 				int titleCol = rec.indexOf("title");
 				int artistCol = rec.indexOf("artist");
+				QString loadingArtist("loading: ");
+				QString loadingTitle("loading: ");
+
+				loadingArtist.append(mWorkInfoQuery.value(artistCol).toString());
+				loadingTitle.append(mWorkInfoQuery.value(titleCol).toString());
+
 				mMixerPanelView->mixerChannels()->at(mixer)->DJMixerWorkInfo()->setArtistText(
-						mWorkInfoQuery.value(artistCol).toString()
-						);
+						loadingArtist);
 				mMixerPanelView->mixerChannels()->at(mixer)->DJMixerWorkInfo()->setTitleText(
-						mWorkInfoQuery.value(titleCol).toString()
-						);
+						loadingTitle);
 			}
+			
 		} else {
 			//XXX ERROR
 		}
@@ -106,8 +143,39 @@ void WorkLoader::loadWork(unsigned int mixer){
 }
 
 
-void WorkLoader::workLoaded(unsigned int index, 
+void WorkLoader::workLoaded(unsigned int mixer_index, 
+		int work,
 		DataJockey::AudioBufferPtr audio_buffer, 
 		DataJockey::BeatBufferPtr beat_buffer){
-	emit(mixerLoad(index, audio_buffer, beat_buffer));
+	//build up query
+	QSqlRecord rec;
+	QString workQueryStr(cWorkInfoQueryString);
+	QString id;
+	id.setNum(work);
+	workQueryStr.append(id);
+
+	emit(mixerLoad(mixer_index, audio_buffer, beat_buffer));
+	
+	//set the info
+	mWorkInfoQuery.exec(workQueryStr);
+	if(mWorkInfoQuery.first()){
+		rec = mWorkInfoQuery.record();
+		int titleCol = rec.indexOf("title");
+		int artistCol = rec.indexOf("artist");
+		mMixerPanelView->mixerChannels()->at(mixer_index)->DJMixerWorkInfo()->setArtistText(
+				mWorkInfoQuery.value(artistCol).toString()
+				);
+		mMixerPanelView->mixerChannels()->at(mixer_index)->DJMixerWorkInfo()->setTitleText(
+				mWorkInfoQuery.value(titleCol).toString()
+				);
+	}
 }
+
+void WorkLoader::outOfMemory(unsigned int index, int work_id, QString audioFileLoc, QString beatFileLoc){
+	Q_UNUSED (work_id);
+	Q_UNUSED (beatFileLoc);
+	mMixerPanelView->mixerChannels()->at(index)->DJMixerWorkInfo()->setArtistText(tr("artist"));
+	mMixerPanelView->mixerChannels()->at(index)->DJMixerWorkInfo()->setTitleText(tr("title"));
+	qWarning("Not enough memory to load audio file:\n %s", audioFileLoc.toStdString().c_str());
+}
+
