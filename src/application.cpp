@@ -140,6 +140,11 @@ int DataJockeyApplication::run(int argc, char *argv[]){
 	audioDriverThread->setAudioDriver(audioDriver);
 	audioDriverThread->start();
 
+	QObject::connect(&app,
+			SIGNAL(aboutToQuit()),
+			audioDriverThread,
+			SLOT(stop()));
+
 	//make the warning messages graphical
 	QErrorMessage::qtHandler();
 
@@ -444,3 +449,11 @@ void AudioDriverThread::run(){
 	}
 	exec();
 }
+
+void AudioDriverThread::stop(){
+	if(mDriver){
+		mDriver->stop();
+	}
+	quit();
+}
+

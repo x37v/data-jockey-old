@@ -27,6 +27,8 @@ class AudioDriverThread : public QThread {
 		AudioDriverThread(QObject * parent = NULL);
 		void setAudioDriver(AudioDriver * driver);
 		void run();
+	public slots:
+		void stop();
 	private:
 		AudioDriver * mDriver;
 };
