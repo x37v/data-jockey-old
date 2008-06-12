@@ -34,7 +34,7 @@ class AudioDriverThread : public QThread {
 class WorkLoaderProxy : public QObject {
 	Q_OBJECT
 	public:
-		WorkLoaderProxy(const QSqlDatabase & db, MixerPanelModel * mixerModel);
+		WorkLoaderProxy(const QSqlDatabase & db, MixerPanelModel * mixerModel, MixerPanelView * mixerView);
 	public slots:
 		void selectWork(int work);
 		void loadWork(unsigned int mixer);
@@ -44,7 +44,7 @@ class WorkLoaderProxy : public QObject {
 		static QString cFileQueryString;
 		static QString cWorkInfoQueryString;
 		int mWork;
-		MixerPanelModel * mMixerPanelModel;
+		MixerPanelView * mMixerPanelView;
 		QSqlQuery mFileQuery;
 		QSqlQuery mWorkInfoQuery;
 };

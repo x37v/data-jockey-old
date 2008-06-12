@@ -48,6 +48,7 @@ using std::endl;
 #include "mixerpanelview.hpp"
 
 #include "workdetailview.hpp"
+#include "djmixerworkinfoview.hpp"
 
 #include "audiodriver.hpp"
 
@@ -78,13 +79,13 @@ int DataJockeyApplication::run(int argc, char *argv[]){
 	//audio driver
 	AudioDriver * audioDriver = new AudioDriver(mixerPanelModel);
 
-	//WorkLoaderProxy
-	WorkLoaderProxy * workLoader = new WorkLoaderProxy(db, mixerPanelModel);
-
 	//views
 	WorkDetailView * detailView = new WorkDetailView(db, window);
 	MixerPanelView * mixerPanelView = new MixerPanelView(NUM_MIXERS, window);
 	AudioWorkDBView * tableView = new AudioWorkDBView(&tableModel, window);
+
+	//WorkLoaderProxy
+	WorkLoaderProxy * workLoader = new WorkLoaderProxy(db, mixerPanelModel, mixerPanelView);
 
 	//layouts
 	QSplitter *splitter = new QSplitter(Qt::Vertical, window);
@@ -448,14 +449,19 @@ QString WorkLoaderProxy::cFileQueryString(
 	"\tjoin annotation_files on annotation_files.audio_work_id = audio_works.id\n"
 	"where audio_works.id = ");
 
-QString WorkLoaderProxy::cWorkInfoQueryString(""
-		);
+QString WorkLoaderProxy::cWorkInfoQueryString(
+		"select audio_works.name title,\n"
+		"\tartists.name\n"
+		"artist from audio_works"
+		"\tinner join artist_audio_works on artist_audio_works.audio_work_id = audio_works.id\n"
+		"\tinner join artists on artists.id = artist_audio_works.artist_id\n"
+		"where audio_works.id = ");
 
-WorkLoaderProxy::WorkLoaderProxy(const QSqlDatabase & db, MixerPanelModel * model) :
+WorkLoaderProxy::WorkLoaderProxy(const QSqlDatabase & db, MixerPanelModel * model, MixerPanelView * mixerView) :
 	QObject(model), mFileQuery("", db), mWorkInfoQuery("",db)
 {
 	mWork = -1;
-	mMixerPanelModel = model;
+	mMixerPanelView = mixerView;
 }
 
 void WorkLoaderProxy::selectWork(int work){
@@ -465,12 +471,14 @@ void WorkLoaderProxy::selectWork(int work){
 void WorkLoaderProxy::loadWork(unsigned int mixer){
 	if(mWork >= 0){
 		//build up query
-		QString queryStr(cFileQueryString);
+		QString fileQueryStr(cFileQueryString);
+		QString workQueryStr(cWorkInfoQueryString);
 		QString id;
 		id.setNum(mWork);
-		queryStr.append(id);
+		fileQueryStr.append(id);
+		workQueryStr.append(id);
 		//execute
-		mFileQuery.exec(queryStr);
+		mFileQuery.exec(fileQueryStr);
 		QSqlRecord rec = mFileQuery.record();
 		int audioFileCol = rec.indexOf("audio_file");
 		int beatFileCol = rec.indexOf("beat_file");
@@ -479,6 +487,20 @@ void WorkLoaderProxy::loadWork(unsigned int mixer){
 			QString audiobufloc = mFileQuery.value(audioFileCol).toString();
 			QString beatbufloc = mFileQuery.value(beatFileCol).toString();
 			emit(mixerLoad(mixer, audiobufloc, beatbufloc));
+			if(mixer < mMixerPanelView->mixerChannels()->size()){
+				mWorkInfoQuery.exec(workQueryStr);
+				if(mWorkInfoQuery.first()){
+					rec = mWorkInfoQuery.record();
+					int titleCol = rec.indexOf("title");
+					int artistCol = rec.indexOf("artist");
+					mMixerPanelView->mixerChannels()->at(mixer)->DJMixerWorkInfo()->setArtistText(
+							mWorkInfoQuery.value(artistCol).toString()
+							);
+					mMixerPanelView->mixerChannels()->at(mixer)->DJMixerWorkInfo()->setTitleText(
+							mWorkInfoQuery.value(titleCol).toString()
+							);
+				}
+			}
 		} else {
 			//XXX ERROR
 		}
