@@ -49,7 +49,7 @@ MixerPanelModel::MixerPanelModel(unsigned int numMixers, QObject *parent) :
 		QObject::connect(djMixerModel->DJMixerControl(),
 				SIGNAL(seeking(QObject *, int)),
 				this,
-				SLOT(mixerSeekSlot(QObject *, int)));
+				SLOT(mixerSeek(QObject *, int)));
 		QObject::connect(djMixerModel->DJMixerControl(),
 				SIGNAL(playbackPositionChanged(QObject *)),
 				this,
@@ -127,10 +127,10 @@ void MixerPanelModel::setMixerSyncMode(QObject * ob){
 	else
 		emit(mixerSyncModeChanged(index, false));
 }
-void MixerPanelModel::mixerSeekSlot(QObject * ob, int amt){
+void MixerPanelModel::mixerSeek(QObject * ob, int amt){
 	DJMixerControlModel * mixerControl = (DJMixerControlModel *)ob;
 	unsigned int index = mMixerObjectIndexMap[mixerControl];
-	emit(mixerSeek(index, amt));
+	emit(mixerSeeking(index, amt));
 }
 
 void MixerPanelModel::mixerSetPlaybackPos(QObject * ob){

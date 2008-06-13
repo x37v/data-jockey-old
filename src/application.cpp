@@ -379,7 +379,7 @@ void DataJockeyApplication::connectMixerPanelModelDriver(MixerPanelModel * model
 	//seek
 	QObject::connect(
 			model,
-			SIGNAL(mixerSeek(unsigned int, int)),
+			SIGNAL(mixerSeeking(unsigned int, int)),
 			driver,
 			SLOT(mixerSeek(unsigned int, int)),
 			Qt::QueuedConnection);

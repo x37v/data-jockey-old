@@ -28,7 +28,7 @@ class MixerPanelModel : public QObject {
 		void mixerCueModeChanged(unsigned int index, bool cue);
 		void mixerPausedChanged(unsigned int index, bool paused);
 		void mixerSyncModeChanged(unsigned int index, bool free);
-		void mixerSeek(unsigned int index, int amt);
+		void mixerSeeking(unsigned int index, int amt);
 		void mixerPlaybackPosChanged(unsigned int index, int pos);
 		void mixerLoad(unsigned int index);
 
@@ -42,7 +42,7 @@ class MixerPanelModel : public QObject {
 		void setMixerCueMode(QObject * ob);
 		void setMixerPaused(QObject * ob);
 		void setMixerSyncMode(QObject * ob);
-		void mixerSeekSlot(QObject * ob, int amt);
+		void mixerSeek(QObject * ob, int amt);
 		void mixerSetPlaybackPos(QObject * ob);
 		void mixerLoad(QObject * ob);
 
