@@ -96,32 +96,32 @@ DJMixerControlView::DJMixerControlView(QWidget *parent)
 	//connect up our signals
 	QObject::connect(
 			mCueBtn,
-			SIGNAL(clicked(bool)),
+			SIGNAL(toggled(bool)),
 			this, SIGNAL(cueModeChanged(bool)));
 	QObject::connect(
 			mPlayBtn,
-			SIGNAL(clicked(bool)),
+			SIGNAL(toggled(bool)),
 			this, SIGNAL(pausedChanged(bool)));
 	QObject::connect(
 			mSyncBtn,
-			SIGNAL(clicked(bool)),
+			SIGNAL(toggled(bool)),
 			this, SIGNAL(syncModeChanged(bool)));
 	QObject::connect(
 			mSeekFwdBtn,
 			SIGNAL(clicked(bool)),
-			this, SIGNAL(seekFwdClicked(bool)));
+			this, SIGNAL(seekingFwd()));
 	QObject::connect(
 			mSeekBkwdBtn,
 			SIGNAL(clicked(bool)),
-			this, SIGNAL(seekBwdClicked(bool)));
+			this, SIGNAL(seekingBwd()));
 	QObject::connect(
 			mLoadBtn,
 			SIGNAL(clicked(bool)),
-			this, SIGNAL(loadClicked(bool)));
+			this, SIGNAL(loadClicked()));
 	QObject::connect(
 			mResetBtn,
 			SIGNAL(clicked(bool)),
-			this, SIGNAL(resetClicked(bool)));
+			this, SIGNAL(resetClicked()));
 	QObject::connect(
 			mBeatOffset,
 			SIGNAL(valueChanged(int)),

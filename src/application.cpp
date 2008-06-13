@@ -259,12 +259,12 @@ void DataJockeyApplication::connectMixerPanelModelView(MixerPanelModel * model, 
 		//seek [just from view to model]
 		QObject::connect(
 				djMixerView->DJMixerControl(),
-				SIGNAL(seekFwdClicked(bool)),
+				SIGNAL(seekingFwd()),
 				djMixerModel->DJMixerControl(),
 				SLOT(seekFwd()));
 		QObject::connect(
 				djMixerView->DJMixerControl(),
-				SIGNAL(seekBwdClicked(bool)),
+				SIGNAL(seekingBwd()),
 				djMixerModel->DJMixerControl(),
 				SLOT(seekBkwd()));
 		//beat offset
@@ -281,13 +281,13 @@ void DataJockeyApplication::connectMixerPanelModelView(MixerPanelModel * model, 
 		//reset 
 		QObject::connect(
 				djMixerView->DJMixerControl(),
-				SIGNAL(resetClicked(bool)),
+				SIGNAL(resetClicked()),
 				djMixerModel->DJMixerControl(),
 				SLOT(resetWorkPosition()));
 		//load
 		QObject::connect(
 				djMixerView->DJMixerControl(),
-				SIGNAL(loadClicked(bool)),
+				SIGNAL(loadClicked()),
 				djMixerModel->DJMixerControl(),
 				SLOT(loadWork()));
 	}

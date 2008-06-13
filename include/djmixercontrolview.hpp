@@ -22,10 +22,10 @@ class DJMixerControlView : public QWidget {
 		void cueModeChanged(bool cueing);
 		void pausedChanged(bool paused);
 		void syncModeChanged(bool free);
-		void seekFwdClicked(bool clicked);
-		void seekBwdClicked(bool clicked);
-		void loadClicked(bool clicked);
-		void resetClicked(bool reset);
+		void seekingFwd();
+		void seekingBwd();
+		void loadClicked();
+		void resetClicked();
 		void beatOffsetChanged(int offset);
 	public slots:
 		void setCueing(bool cueing = true);
