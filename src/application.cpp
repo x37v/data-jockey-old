@@ -118,9 +118,9 @@ int DataJockeyApplication::run(int argc, char *argv[]){
 			SLOT(selectWork(int)));
 	QObject::connect(
 			mixerPanelModel,
-			SIGNAL(mixerLoad(unsigned int)),
+			SIGNAL(mixerLoading(unsigned int, int)),
 			workLoader,
-			SLOT(loadWork(unsigned int)));
+			SLOT(mixerLoadWork(unsigned int, int)));
 	QObject::connect(
 			workLoader,
 			SIGNAL(mixerLoaded(unsigned int, DataJockey::AudioBufferPtr, DataJockey::BeatBufferPtr, bool)),
@@ -284,12 +284,6 @@ void DataJockeyApplication::connectMixerPanelModelView(MixerPanelModel * model, 
 				SIGNAL(resetClicked()),
 				djMixerModel->DJMixerControl(),
 				SLOT(resetWorkPosition()));
-		//load
-		QObject::connect(
-				djMixerView->DJMixerControl(),
-				SIGNAL(loadClicked()),
-				djMixerModel->DJMixerControl(),
-				SLOT(loadWork()));
 	}
 
 	//master

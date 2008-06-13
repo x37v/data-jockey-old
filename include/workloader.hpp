@@ -36,11 +36,14 @@ class WorkLoader : public QObject {
 		WorkLoader(const QSqlDatabase & db, MixerPanelModel * mixerModel, MixerPanelView * mixerView);
 	public slots:
 		void selectWork(int work);
-		void loadWork(unsigned int mixer);
+		void mixerLoadWork(unsigned int mixer, int work_id);
 	signals:
 		void mixerLoaded(unsigned int mixer, DataJockey::AudioBufferPtr audiobuf, 
 				DataJockey::BeatBufferPtr beatbuf, bool wait_for_measure = false);
 	protected slots:
+		//this is mapped internally (uses an int because the mapper doesn't do unsigned)
+		void mixerLoadWork(int mixer);
+		//these are called by the loaderthread
 		void setWork(unsigned int mixer_index, 
 				int work_id,
 				DataJockey::AudioBufferPtr audio_buffer, 

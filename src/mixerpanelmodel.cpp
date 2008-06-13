@@ -54,10 +54,10 @@ MixerPanelModel::MixerPanelModel(unsigned int numMixers, QObject *parent) :
 				SIGNAL(playbackPositionChanged(QObject *)),
 				this,
 				SLOT(mixerSetPlaybackPos(QObject *)));
-		QObject::connect(djMixerModel->DJMixerControl(),
-				SIGNAL(load(QObject *)),
+		QObject::connect(djMixerModel,
+				SIGNAL(loadingWork(QObject *, int)),
 				this,
-				SLOT(mixerLoad(QObject *)));
+				SLOT(mixerLoad(QObject *, int)));
 	}
 }
 
@@ -139,10 +139,10 @@ void MixerPanelModel::mixerSetPlaybackPos(QObject * ob){
 	emit(mixerPlaybackPosChanged(index, pos));
 }
 
-void MixerPanelModel::mixerLoad(QObject * ob){
+void MixerPanelModel::mixerLoad(QObject * ob, int work_id){
 	DJMixerControlModel * mixerControl = (DJMixerControlModel *)ob;
 	unsigned int index = mMixerObjectIndexMap[mixerControl];
-	emit(mixerLoad(index));
+	emit(mixerLoading(index, work_id));
 }
 
 void MixerPanelModel::mixerUpdateProgress(unsigned int mixer, float progress){

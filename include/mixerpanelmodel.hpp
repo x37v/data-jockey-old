@@ -23,15 +23,15 @@ class MixerPanelModel : public QObject {
 		std::vector<DJMixerChannelModel *> * mixerChannels();
 	signals:
 		//from mixer
-		void mixerEQValuesChanged(unsigned int index, float low, float mid, float high);
-		void mixerVolumeChanged(unsigned int index, float vol);
+		void mixerEQValuesChanged(unsigned int mixer_index, float low, float mid, float high);
+		void mixerVolumeChanged(unsigned int mixer_index, float vol);
 		//from dj mixer control
-		void mixerCueModeChanged(unsigned int index, bool cue);
-		void mixerPausedChanged(unsigned int index, bool paused);
-		void mixerSyncModeChanged(unsigned int index, bool free);
-		void mixerSeeking(unsigned int index, int amt);
-		void mixerPlaybackPosChanged(unsigned int index, int pos);
-		void mixerLoad(unsigned int index);
+		void mixerCueModeChanged(unsigned int mixer_index, bool cue);
+		void mixerPausedChanged(unsigned int mixer_index, bool paused);
+		void mixerSyncModeChanged(unsigned int mixer_index, bool free);
+		void mixerSeeking(unsigned int mixer_index, int amt);
+		void mixerPlaybackPosChanged(unsigned int mixer_index, int pos);
+		void mixerLoading(unsigned int mixer_index, int work_id);
 
 	//these protected slots are for relaying data from our members out to the above signals
 	protected slots:
@@ -45,7 +45,7 @@ class MixerPanelModel : public QObject {
 		void setMixerSyncMode(QObject * ob);
 		void mixerSeek(QObject * ob, int amt);
 		void mixerSetPlaybackPos(QObject * ob);
-		void mixerLoad(QObject * ob);
+		void mixerLoad(QObject * ob, int work_id);
 
 	public slots:
 		void mixerUpdateProgress(unsigned int mixer, float progress);

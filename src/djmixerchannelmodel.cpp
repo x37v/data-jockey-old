@@ -59,6 +59,7 @@ void DJMixerChannelModel::setWork(int work){
 void DJMixerChannelModel::loadWork(int work){
 	if(mWork != work){
 		emit(loadingWork(work));
+		emit(loadingWork(this, work));
 	}
 }
 

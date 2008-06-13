@@ -3,12 +3,14 @@
 #include "mixerpanelview.hpp"
 #include "djmixerchannelview.hpp"
 #include "djmixerchannelmodel.hpp"
+#include "djmixercontrolview.hpp"
 #include "djmixerworkinfoview.hpp"
 #include <QString>
 #include <QSqlRecord>
 #include <QVariant>
 #include <QMetaObject>
 #include <QErrorMessage>
+#include <QSignalMapper>
 
 #include <iostream>
 using namespace std;
@@ -68,7 +70,11 @@ WorkLoader::WorkLoader(const QSqlDatabase & db, MixerPanelModel * model, MixerPa
 		qRegisterMetaType<DataJockey::BeatBufferPtr>("DataJockey::BeatBufferPtr");
 		cTypesRegistered = true;
 	}
-	//create our thread pool
+
+	//we need a signal mapper to map the load() to a mixer id
+	QSignalMapper * mixerToIdMapper = new QSignalMapper(this);
+
+	//create our thread pool and connect up our view's "load()" signal to us
 	for(unsigned int i = 0; i < mNumMixers; i++){
 		BufferLoaderThread * newThread = new BufferLoaderThread(this);
 		mLoaderThreads.push_back(newThread);
@@ -83,15 +89,34 @@ WorkLoader::WorkLoader(const QSqlDatabase & db, MixerPanelModel * model, MixerPa
 				this,
 				SLOT(outOfMemory(unsigned int, int, QString, QString)),
 				Qt::QueuedConnection);
+		//set up our mapper [object -> id]
+		mixerToIdMapper->setMapping(mixerView->mixerChannels()->at(i)->DJMixerControl(), (int)i);
+		//connect the loadClicked signal -> the mapper for this object
+		QObject::connect(
+				mixerView->mixerChannels()->at(i)->DJMixerControl(),
+				SIGNAL(loadClicked()),
+				mixerToIdMapper,
+				SLOT(map()));
 	}
+	//connect the mapped signal to our protected mixerLoadWork slot
+	QObject::connect(
+			mixerToIdMapper,
+			SIGNAL(mapped(int)),
+			this,
+			SLOT(mixerLoadWork(int)));
 }
 
 void WorkLoader::selectWork(int work){
 	mWork = work;
 }
 
-void WorkLoader::loadWork(unsigned int mixer){
-	if(mWork >= 0 && mixer < mNumMixers){
+void WorkLoader::mixerLoadWork(unsigned int mixer, int work_id){
+	mWork = work_id;
+	mixerLoadWork(mixer);
+}
+
+void WorkLoader::mixerLoadWork(int mixer){
+	if(mWork >= 0 && mixer >= 0 && (unsigned int)mixer < mNumMixers){
 		if(mLoaderThreads[mixer]->isRunning()){
 			qWarning("Mixer %d is currently loading a file", mixer);
 			return;
