@@ -244,12 +244,12 @@ void DataJockeyApplication::connectMixerPanelModelView(MixerPanelModel * model, 
 				djMixerModel->DJMixerControl(),
 				SIGNAL(syncModeChanged(bool)),
 				djMixerView->DJMixerControl(),
-				SLOT(setRunFree(bool)));
+				SLOT(setSync(bool)));
 		QObject::connect(
 				djMixerView->DJMixerControl(),
 				SIGNAL(syncModeChanged(bool)),
 				djMixerModel->DJMixerControl(),
-				SLOT(setRunFree(bool)));
+				SLOT(setSync(bool)));
 		//progress
 		QObject::connect(
 				djMixerModel->DJMixerControl(),

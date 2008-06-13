@@ -36,7 +36,7 @@ class DJMixerControlModel : public QObject {
 	signals:
 		void cueModeChanged(bool cue);
 		void pausedChanged(bool paused);
-		void syncModeChanged(bool free);
+		void syncModeChanged(bool sync);
 		void progressChanged(float progress);
 		void playbackPositionChanged(int pos);
 		void beatOffsetChanged(int offset);

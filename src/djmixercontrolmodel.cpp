@@ -158,8 +158,7 @@ void DJMixerControlModel::setPlay(bool play){
 void DJMixerControlModel::setSync(bool sync){
 	if(sync != mSynced){
 		mSynced = sync;
-		bool free = !sync;
-		emit(syncModeChanged(free));
+		emit(syncModeChanged(sync));
 	}
 }
 

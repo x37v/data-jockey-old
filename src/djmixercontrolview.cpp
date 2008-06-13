@@ -46,6 +46,9 @@ DJMixerControlView::DJMixerControlView(QWidget *parent)
 	mSyncBtn->setCheckable(true);
 	mPlayBtn->setCheckable(true);
 
+	//we initially start in sync
+	mSyncBtn->setChecked(true);
+
 	mSeekFwdBtn->setArrowType(Qt::RightArrow);
 	mSeekBkwdBtn->setArrowType(Qt::LeftArrow);
 	mSeekFwdBtn->setToolTip(tr("seek forward"));
@@ -158,12 +161,12 @@ void DJMixerControlView::setPlaying(bool playing){
 }
 
 void DJMixerControlView::setRunFree(bool free){
-	if(free != mSyncBtn->isChecked())
-		mSyncBtn->setChecked(free);
+	setSync(!free);
 }
 
 void DJMixerControlView::setSync(bool synced){
-	setRunFree(!synced);
+	if(synced != mSyncBtn->isChecked())
+		mSyncBtn->setChecked(synced);
 }
 
 void DJMixerControlView::setProgress(float progress){
