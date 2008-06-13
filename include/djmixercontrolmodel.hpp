@@ -7,6 +7,9 @@ class DJMixerControlModel : public QObject {
 	Q_OBJECT
 	public:
 		DJMixerControlModel(QObject * parent = NULL);
+		//connect this model to another model of this same type
+		void connectSignalsTo(DJMixerControlModel * other, Qt::ConnectionType connectionType = Qt::AutoCompatConnection);
+
 		bool paused() const;
 		bool playing() const;
 		bool synced() const;
@@ -21,7 +24,7 @@ class DJMixerControlModel : public QObject {
 		void setSync(bool sync = true);
 		void setRunFree(bool free = true);
 		void setProgress(float progress);
-		void setLoadProgress(float progress);
+		void setPlaybackPosition(int pos);
 		void seekFwd();
 		void seekBkwd();
 		void setBeatOffset(int offset);

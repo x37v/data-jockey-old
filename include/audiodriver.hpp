@@ -45,8 +45,6 @@ class AudioDriver : public QObject {
 		void mixerSetLooping(unsigned int mixer, bool loop, bool wait_for_measure = false);
 		void mixerSetVolume(unsigned int mixer, float vol, bool wait_for_measure = false);
 		void mixerSetEQVals(unsigned int mixer, float low, float mid, float high, bool wait_for_measure = false);
-	protected slots:
-		void mixerReportLoadProgress(unsigned int mixer, float progress);
 
 	private:
 		bool mSyncToMaster;

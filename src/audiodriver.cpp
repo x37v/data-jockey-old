@@ -189,11 +189,3 @@ void AudioDriver::mixerSetEQVals(unsigned int mixer, float low, float mid, float
 	mAudioIO.sendCommand(audioIOcmd);
 }
 
-void AudioDriver::mixerReportLoadProgress(unsigned int mixer, float progress){
-	//report the load progress
-	if(mixer < mMixerPanel->mixerChannels()->size()){
-		QMetaObject::invokeMethod(mMixerPanel->mixerChannels()->at(mixer)->DJMixerControl(), 
-				"setLoadProgress", 
-				Qt::QueuedConnection, Q_ARG(float, progress));
-	}
-}

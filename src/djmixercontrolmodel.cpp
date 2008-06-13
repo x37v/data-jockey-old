@@ -68,6 +68,46 @@ DJMixerControlModel::DJMixerControlModel(QObject *parent):
 			SIGNAL(load(QObject *)));
 }
 
+void DJMixerControlModel::connectSignalsTo(DJMixerControlModel * other, Qt::ConnectionType connectionType){
+	QObject::connect(this,
+			SIGNAL(cueModeChanged(bool)),
+			other,
+			SLOT(setCueing(bool)),
+			connectionType);
+	QObject::connect(this,
+			SIGNAL(pausedChanged(bool)),
+			other,
+			SLOT(setPaused(bool)),
+			connectionType);
+	QObject::connect(this,
+			SIGNAL(syncModeChanged(bool)),
+			other,
+			SLOT(setSync(bool)),
+			connectionType);
+	QObject::connect(this,
+			SIGNAL(progressChanged(float)),
+			other,
+			SLOT(setProgress(float)),
+			connectionType);
+	QObject::connect(this,
+			SIGNAL(playbackPositionChanged(int)),
+			other,
+			SLOT(setPlaybackPosition(int)),
+			connectionType);
+	QObject::connect(this,
+			SIGNAL(beatOffsetChanged(bool)),
+			other,
+			SLOT(setBeatOffset(bool)),
+			connectionType);
+	QObject::connect(this,
+			SIGNAL(tempoMulChanged(bool)),
+			other,
+			SLOT(setTempoMul(bool)),
+			connectionType);
+	//XXX SEEK!
+}
+
+
 bool DJMixerControlModel::paused() const {
 	return mPaused;
 }
@@ -134,11 +174,8 @@ void DJMixerControlModel::setProgress(float progress){
 	}
 }
 
-void DJMixerControlModel::setLoadProgress(float progress){
-	if(mProgress != progress){
-		mProgress = progress;
-		emit(progressChanged(mProgress));
-	}
+void DJMixerControlModel::setPlaybackPosition(int pos){
+	emit(playbackPositionChanged(pos));
 }
 
 void DJMixerControlModel::seekFwd(){
