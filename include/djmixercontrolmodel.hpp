@@ -27,6 +27,7 @@ class DJMixerControlModel : public QObject {
 		void setPlaybackPosition(int pos);
 		void seekFwd();
 		void seekBkwd();
+		void seek(int amt);
 		void setBeatOffset(int offset);
 		void setTempoMul(float mul);
 		void resetWorkPosition();

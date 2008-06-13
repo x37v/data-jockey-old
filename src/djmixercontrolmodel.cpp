@@ -178,11 +178,15 @@ void DJMixerControlModel::setPlaybackPosition(int pos){
 }
 
 void DJMixerControlModel::seekFwd(){
-	emit(seeking(this,1));
+	seek(1);
 }
 
 void DJMixerControlModel::seekBkwd(){
-	emit(seeking(this,-1));
+	seek(-1);
+}
+
+void DJMixerControlModel::seek(int amt){
+	emit(seeking(this,amt));
 }
 
 void DJMixerControlModel::setBeatOffset(int offset){
