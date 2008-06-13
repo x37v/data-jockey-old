@@ -19,8 +19,12 @@ class DJMixerChannelModel : public QObject {
 		int work() const;
 	signals:
 		void workChanged(int work);
+		void loadingWork(int work);
 	public slots:
 		void setWork(int work);
+		//loadWork doesn't set our work.. though, eventually, once the work is
+		//loaded set work will be called
+		void loadWork(int work);
 		void reset();
 	private:
 		int mWork;
