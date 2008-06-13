@@ -19,6 +19,25 @@ EQModel::EQModel(QObject *parent) :
 			SIGNAL(valuesChanged(QObject *)));
 }
 
+void EQModel::connectSignalsTo(EQModel * other, Qt::ConnectionType connectionType){
+	QObject::connect(this,
+			SIGNAL(highChanged(float)),
+			other,
+			SLOT(setHigh(float)),
+			connectionType);
+	QObject::connect(this,
+			SIGNAL(midChanged(float)),
+			other,
+			SLOT(setMid(float)),
+			connectionType);
+	QObject::connect(this,
+			SIGNAL(lowChanged(float)),
+			other,
+			SLOT(setLow(float)),
+			connectionType);
+	//XXX what about cuts?
+}
+
 float EQModel::high(){
 	return mHigh;
 }

@@ -9,6 +9,9 @@ class MixerChannelModel : public QObject {
 	Q_OBJECT
 	public:
 		MixerChannelModel(QObject *parent = NULL);
+		//connect this model to another model of this same type
+		void connectSignalsTo(MixerChannelModel * other, Qt::ConnectionType connectionType = Qt::AutoCompatConnection);
+
 		float volume() const;
 		bool muted() const;
 		EQModel * eq() const;

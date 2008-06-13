@@ -7,6 +7,8 @@ class CrossFadeModel : public QObject {
 	Q_OBJECT
 	public:
 		CrossFadeModel(unsigned int numMixers, QObject * parent = NULL);
+		//connect this model to another model of this same type
+		void connectSignalsTo(CrossFadeModel * other, Qt::ConnectionType connectionType = Qt::AutoCompatConnection);
 	signals:
 		void mixersChanged(unsigned int left, unsigned int right);
 		void disabled();

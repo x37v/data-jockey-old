@@ -7,6 +7,8 @@ class EQModel : public QObject {
 	Q_OBJECT
 	public:
 		EQModel(QObject *parent = NULL);
+		//connect this model to another model of this same type
+		void connectSignalsTo(EQModel * other, Qt::ConnectionType connectionType = Qt::AutoCompatConnection);
 		float high();
 		float mid();
 		float low();

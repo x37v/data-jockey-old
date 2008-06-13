@@ -61,6 +61,20 @@ MixerPanelModel::MixerPanelModel(unsigned int numMixers, QObject *parent) :
 	}
 }
 
+//connect this model to another model of this same type
+void MixerPanelModel::connectSignalsTo(MixerPanelModel * other, Qt::ConnectionType connectionType){
+	//connect up our master, xfade and mixers
+	mMaster->connectSignalsTo(other->master(), connectionType);
+	mXFade->connectSignalsTo(other->crossFade(), connectionType);
+	//make sure not to overstep
+	unsigned int last = mDJMixerChannels.size();
+	if(other->mixerChannels()->size() < last)
+		last = other->mixerChannels()->size();
+	for(unsigned int i = 0; i < last; i++){
+		mDJMixerChannels[i]->connectSignalsTo(other->mixerChannels()->at(i), connectionType);
+	}
+}
+
 //we know the type of the object because these are protected slots and
 //we made the connections
 void MixerPanelModel::setEqVal(QObject * ob){

@@ -10,6 +10,17 @@ DJMixerChannelModel::DJMixerChannelModel(QObject * parent):
 	mWork = -1;
 }
 
+void DJMixerChannelModel::connectSignalsTo(DJMixerChannelModel * other, Qt::ConnectionType connectionType){
+	QObject::connect(this,
+			SIGNAL(workChanged(int)),
+			other,
+			SLOT(setWork(int)),
+			connectionType);
+	//connect our children too
+	mDJMixerControl->connectSignalsTo(other->DJMixerControl(), connectionType);
+	mMixerChannel->connectSignalsTo(other->mixerChannel(), connectionType);
+}
+
 DJMixerControlModel * DJMixerChannelModel::DJMixerControl() const {
 	return mDJMixerControl;
 }
@@ -22,7 +33,7 @@ int DJMixerChannelModel::work() const {
 	return mWork;
 }
 
-void DJMixerChannelModel::loadWork(int work){
+void DJMixerChannelModel::setWork(int work){
 	if(mWork != work){
 		mWork = work;
 		emit(workChanged(mWork));

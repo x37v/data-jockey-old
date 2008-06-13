@@ -9,6 +9,28 @@ MasterModel::MasterModel(unsigned int numMixers, QObject *parent) :
 	mSyncSource = 0;
 	mNumMixers = numMixers;
 }
+void MasterModel::connectSignalsTo(MasterModel * other, Qt::ConnectionType connectionType){
+	QObject::connect(this,
+			SIGNAL(volumeChanged(float)),
+			other,
+			SLOT(setVolume(float)),
+			connectionType);
+	QObject::connect(this,
+			SIGNAL(tempoChanged(float)),
+			other,
+			SLOT(setTempo(float)),
+			connectionType);
+	QObject::connect(this,
+			SIGNAL(tempoMulChanged(float)),
+			other,
+			SLOT(setTempoMul(float)),
+			connectionType);
+	QObject::connect(this,
+			SIGNAL(syncSourceChanged(unsigned int)),
+			other,
+			SLOT(setTempoMul(unsigned int)),
+			connectionType);
+}
 
 void MasterModel::setVolume(float vol){
 	if(vol != mVolume){

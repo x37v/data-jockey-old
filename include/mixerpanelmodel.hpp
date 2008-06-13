@@ -14,6 +14,9 @@ class MixerPanelModel : public QObject {
 	Q_OBJECT
 	public:
 		MixerPanelModel(unsigned int numMixers = 4, QObject *parent = NULL);
+		//connect this model to another model of this same type
+		void connectSignalsTo(MixerPanelModel * other, Qt::ConnectionType connectionType = Qt::AutoCompatConnection);
+
 		CrossFadeModel * crossFade() const;
 		MasterModel * master() const;
 		std::vector<DJMixerChannelModel *> * mixerChannels();

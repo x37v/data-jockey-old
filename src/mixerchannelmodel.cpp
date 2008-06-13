@@ -30,6 +30,22 @@ MixerChannelModel::MixerChannelModel(QObject * parent) : QObject(parent) {
 			SIGNAL(mutedChanged(QObject *)));
 }
 
+//connect this model to another model of this same type
+void MixerChannelModel::connectSignalsTo(MixerChannelModel * other, Qt::ConnectionType connectionType){
+	QObject::connect(this,
+			SIGNAL(volumeChanged(float)),
+			other,
+			SLOT(setVolume(float)),
+			connectionType);
+	QObject::connect(this,
+			SIGNAL(mutedChanged(bool)),
+			other,
+			SLOT(setMuted(bool)),
+			connectionType);
+	//connect up eq
+	mEQ->connectSignalsTo(other->eq(), connectionType);
+}
+
 float MixerChannelModel::volume() const {
 	return mVolume;
 }

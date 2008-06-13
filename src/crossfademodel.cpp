@@ -7,6 +7,20 @@ CrossFadeModel::CrossFadeModel(unsigned int numMixers, QObject * parent) :
 	mEnabled = false;
 }
 
+//connect this model to another model of this same type
+void CrossFadeModel::connectSignalsTo(CrossFadeModel * other, Qt::ConnectionType connectionType){
+	QObject::connect(this,
+			SIGNAL(mixersChanged(unsigned int, unsigned int)),
+			other,
+			SLOT(setMixers(unsigned int, unsigned int)),
+			connectionType);
+	QObject::connect(this,
+			SIGNAL(disabled()),
+			other,
+			SLOT(disable()),
+			connectionType);
+}
+
 void CrossFadeModel::setMixers(unsigned int left, unsigned int right){
 	//make sure we're in range
 	if(left > (mNumMixers + 1) || right > (mNumMixers + 1)){
@@ -26,5 +40,4 @@ void CrossFadeModel::disable(){
 		emit(disabled());
 	}
 }
-
 
