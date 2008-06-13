@@ -44,6 +44,7 @@ class DJMixerControlModel : public QObject {
 		void beatOffsetChanged(int offset);
 		void tempoMulChanged(float mul);
 		void load();
+		void seeking(int amt);
 
 		void cueModeChanged(QObject * ob);
 		void pausedChanged(QObject * ob);

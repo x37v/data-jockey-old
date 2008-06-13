@@ -69,6 +69,7 @@ DJMixerControlModel::DJMixerControlModel(QObject *parent):
 }
 
 void DJMixerControlModel::syncToModel(DJMixerControlModel * other, Qt::ConnectionType connectionType){
+	//this -> other (state changes)
 	QObject::connect(this,
 			SIGNAL(cueModeChanged(bool)),
 			other,
@@ -104,7 +105,49 @@ void DJMixerControlModel::syncToModel(DJMixerControlModel * other, Qt::Connectio
 			other,
 			SLOT(setTempoMul(bool)),
 			connectionType);
-	//XXX SEEK!
+	//other -> this (state changes)
+	QObject::connect(other,
+			SIGNAL(cueModeChanged(bool)),
+			this,
+			SLOT(setCueing(bool)),
+			connectionType);
+	QObject::connect(other,
+			SIGNAL(pausedChanged(bool)),
+			this,
+			SLOT(setPaused(bool)),
+			connectionType);
+	QObject::connect(other,
+			SIGNAL(syncModeChanged(bool)),
+			this,
+			SLOT(setSync(bool)),
+			connectionType);
+	QObject::connect(other,
+			SIGNAL(progressChanged(float)),
+			this,
+			SLOT(setProgress(float)),
+			connectionType);
+	QObject::connect(other,
+			SIGNAL(playbackPositionChanged(int)),
+			this,
+			SLOT(setPlaybackPosition(int)),
+			connectionType);
+	QObject::connect(other,
+			SIGNAL(beatOffsetChanged(bool)),
+			this,
+			SLOT(setBeatOffset(bool)),
+			connectionType);
+	QObject::connect(other,
+			SIGNAL(tempoMulChanged(bool)),
+			this,
+			SLOT(setTempoMul(bool)),
+			connectionType);
+	//this -> other (non state changing)
+	QObject::connect(this,
+			SIGNAL(seeking(int)),
+			other,
+			SLOT(seek(int)),
+			connectionType);
+	//XXX LOAD
 }
 
 
@@ -186,6 +229,7 @@ void DJMixerControlModel::seekBkwd(){
 }
 
 void DJMixerControlModel::seek(int amt){
+	emit(seeking(amt));
 	emit(seeking(this,amt));
 }
 
@@ -194,6 +238,7 @@ void DJMixerControlModel::setBeatOffset(int offset){
 		int offsetDiff = offset - mBeatOffset;
 		mBeatOffset = offset;
 		emit(seeking(this, offsetDiff));
+		emit(seeking(offsetDiff));
 		emit(beatOffsetChanged(mBeatOffset));
 	}
 }

@@ -61,8 +61,6 @@ MixerPanelModel::MixerPanelModel(unsigned int numMixers, QObject *parent) :
 	}
 }
 
-//sync this model's state to another model
-		//signals which don't change the model's state only go from this model to the other, not back
 void MixerPanelModel::syncToModel(MixerPanelModel * other, Qt::ConnectionType connectionType){
 	//connect up our master, xfade and mixers
 	mMaster->syncToModel(other->master(), connectionType);

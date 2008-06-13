@@ -20,6 +20,7 @@ EQModel::EQModel(QObject *parent) :
 }
 
 void EQModel::syncToModel(EQModel * other, Qt::ConnectionType connectionType){
+	//this -> other
 	QObject::connect(this,
 			SIGNAL(highChanged(float)),
 			other,
@@ -33,6 +34,22 @@ void EQModel::syncToModel(EQModel * other, Qt::ConnectionType connectionType){
 	QObject::connect(this,
 			SIGNAL(lowChanged(float)),
 			other,
+			SLOT(setLow(float)),
+			connectionType);
+	//other -> this
+	QObject::connect(other,
+			SIGNAL(highChanged(float)),
+			this,
+			SLOT(setHigh(float)),
+			connectionType);
+	QObject::connect(other,
+			SIGNAL(midChanged(float)),
+			this,
+			SLOT(setMid(float)),
+			connectionType);
+	QObject::connect(other,
+			SIGNAL(lowChanged(float)),
+			this,
 			SLOT(setLow(float)),
 			connectionType);
 	//XXX what about cuts?

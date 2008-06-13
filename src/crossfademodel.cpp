@@ -10,6 +10,7 @@ CrossFadeModel::CrossFadeModel(unsigned int numMixers, QObject * parent) :
 //sync this model's state to another model
 		//signals which don't change the model's state only go from this model to the other, not back
 void CrossFadeModel::syncToModel(CrossFadeModel * other, Qt::ConnectionType connectionType){
+	//this -> other
 	QObject::connect(this,
 			SIGNAL(mixersChanged(unsigned int, unsigned int)),
 			other,
@@ -18,6 +19,17 @@ void CrossFadeModel::syncToModel(CrossFadeModel * other, Qt::ConnectionType conn
 	QObject::connect(this,
 			SIGNAL(disabled()),
 			other,
+			SLOT(disable()),
+			connectionType);
+	//other -> this
+	QObject::connect(other,
+			SIGNAL(mixersChanged(unsigned int, unsigned int)),
+			this,
+			SLOT(setMixers(unsigned int, unsigned int)),
+			connectionType);
+	QObject::connect(other,
+			SIGNAL(disabled()),
+			this,
 			SLOT(disable()),
 			connectionType);
 }
