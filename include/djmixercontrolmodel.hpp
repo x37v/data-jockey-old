@@ -46,7 +46,7 @@ class DJMixerControlModel : public QObject {
 		void cueModeChanged(QObject * ob);
 		void pausedChanged(QObject * ob);
 		void syncModeChanged(QObject * ob);
-		void seek(QObject * ob, int amt);
+		void seeking(QObject * ob, int amt);
 		void playbackPositionChanged(QObject * ob);
 		void load(QObject * ob);
 	private:

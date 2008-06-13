@@ -47,7 +47,7 @@ MixerPanelModel::MixerPanelModel(unsigned int numMixers, QObject *parent) :
 				this,
 				SLOT(setMixerSyncMode(QObject *)));
 		QObject::connect(djMixerModel->DJMixerControl(),
-				SIGNAL(seek(QObject *, int)),
+				SIGNAL(seeking(QObject *, int)),
 				this,
 				SLOT(mixerSeekSlot(QObject *, int)));
 		QObject::connect(djMixerModel->DJMixerControl(),
