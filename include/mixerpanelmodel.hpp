@@ -14,8 +14,9 @@ class MixerPanelModel : public QObject {
 	Q_OBJECT
 	public:
 		MixerPanelModel(unsigned int numMixers = 4, QObject *parent = NULL);
-		//connect this model to another model of this same type
-		void connectSignalsTo(MixerPanelModel * other, Qt::ConnectionType connectionType = Qt::AutoCompatConnection);
+		//sync this model's state to another model
+		//signals which don't change the model's state only go from this model to the other, not back
+		void syncToModel(MixerPanelModel * other, Qt::ConnectionType connectionType = Qt::AutoCompatConnection);
 
 		CrossFadeModel * crossFade() const;
 		MasterModel * master() const;

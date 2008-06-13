@@ -10,8 +10,9 @@ class DJMixerChannelModel : public QObject {
 	Q_OBJECT
 	public:
 		DJMixerChannelModel(QObject * parent = NULL);
-		//connect this model to another model of this same type
-		void connectSignalsTo(DJMixerChannelModel * other, Qt::ConnectionType connectionType = Qt::AutoCompatConnection);
+		//sync this model's state to another model
+		//signals which don't change the model's state only go from this model to the other, not back
+		void syncToModel(DJMixerChannelModel * other, Qt::ConnectionType connectionType = Qt::AutoCompatConnection);
 
 		DJMixerControlModel * DJMixerControl() const;
 		MixerChannelModel * mixerChannel() const;

@@ -9,7 +9,7 @@ MasterModel::MasterModel(unsigned int numMixers, QObject *parent) :
 	mSyncSource = 0;
 	mNumMixers = numMixers;
 }
-void MasterModel::connectSignalsTo(MasterModel * other, Qt::ConnectionType connectionType){
+void MasterModel::syncToModel(MasterModel * other, Qt::ConnectionType connectionType){
 	QObject::connect(this,
 			SIGNAL(volumeChanged(float)),
 			other,

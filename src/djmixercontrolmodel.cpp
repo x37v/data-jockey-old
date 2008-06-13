@@ -68,7 +68,7 @@ DJMixerControlModel::DJMixerControlModel(QObject *parent):
 			SIGNAL(load(QObject *)));
 }
 
-void DJMixerControlModel::connectSignalsTo(DJMixerControlModel * other, Qt::ConnectionType connectionType){
+void DJMixerControlModel::syncToModel(DJMixerControlModel * other, Qt::ConnectionType connectionType){
 	QObject::connect(this,
 			SIGNAL(cueModeChanged(bool)),
 			other,

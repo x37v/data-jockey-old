@@ -61,17 +61,18 @@ MixerPanelModel::MixerPanelModel(unsigned int numMixers, QObject *parent) :
 	}
 }
 
-//connect this model to another model of this same type
-void MixerPanelModel::connectSignalsTo(MixerPanelModel * other, Qt::ConnectionType connectionType){
+//sync this model's state to another model
+		//signals which don't change the model's state only go from this model to the other, not back
+void MixerPanelModel::syncToModel(MixerPanelModel * other, Qt::ConnectionType connectionType){
 	//connect up our master, xfade and mixers
-	mMaster->connectSignalsTo(other->master(), connectionType);
-	mXFade->connectSignalsTo(other->crossFade(), connectionType);
+	mMaster->syncToModel(other->master(), connectionType);
+	mXFade->syncToModel(other->crossFade(), connectionType);
 	//make sure not to overstep
 	unsigned int last = mDJMixerChannels.size();
 	if(other->mixerChannels()->size() < last)
 		last = other->mixerChannels()->size();
 	for(unsigned int i = 0; i < last; i++){
-		mDJMixerChannels[i]->connectSignalsTo(other->mixerChannels()->at(i), connectionType);
+		mDJMixerChannels[i]->syncToModel(other->mixerChannels()->at(i), connectionType);
 	}
 }
 

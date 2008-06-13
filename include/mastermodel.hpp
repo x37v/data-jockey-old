@@ -7,8 +7,9 @@ class MasterModel : public QObject {
 	Q_OBJECT
 	public:
 		MasterModel(unsigned int numMixers, QObject *parent = NULL);
-		//connect this model to another model of this same type
-		void connectSignalsTo(MasterModel * other, Qt::ConnectionType connectionType = Qt::AutoCompatConnection);
+		//sync this model's state to another model
+		//signals which don't change the model's state only go from this model to the other, not back
+		void syncToModel(MasterModel * other, Qt::ConnectionType connectionType = Qt::AutoCompatConnection);
 	signals:
 		void volumeChanged(float vol);
 		void tempoChanged(float tempo);

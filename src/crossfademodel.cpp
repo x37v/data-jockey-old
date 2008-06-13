@@ -7,8 +7,9 @@ CrossFadeModel::CrossFadeModel(unsigned int numMixers, QObject * parent) :
 	mEnabled = false;
 }
 
-//connect this model to another model of this same type
-void CrossFadeModel::connectSignalsTo(CrossFadeModel * other, Qt::ConnectionType connectionType){
+//sync this model's state to another model
+		//signals which don't change the model's state only go from this model to the other, not back
+void CrossFadeModel::syncToModel(CrossFadeModel * other, Qt::ConnectionType connectionType){
 	QObject::connect(this,
 			SIGNAL(mixersChanged(unsigned int, unsigned int)),
 			other,

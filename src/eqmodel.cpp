@@ -19,7 +19,7 @@ EQModel::EQModel(QObject *parent) :
 			SIGNAL(valuesChanged(QObject *)));
 }
 
-void EQModel::connectSignalsTo(EQModel * other, Qt::ConnectionType connectionType){
+void EQModel::syncToModel(EQModel * other, Qt::ConnectionType connectionType){
 	QObject::connect(this,
 			SIGNAL(highChanged(float)),
 			other,

@@ -30,8 +30,9 @@ MixerChannelModel::MixerChannelModel(QObject * parent) : QObject(parent) {
 			SIGNAL(mutedChanged(QObject *)));
 }
 
-//connect this model to another model of this same type
-void MixerChannelModel::connectSignalsTo(MixerChannelModel * other, Qt::ConnectionType connectionType){
+//sync this model's state to another model
+		//signals which don't change the model's state only go from this model to the other, not back
+void MixerChannelModel::syncToModel(MixerChannelModel * other, Qt::ConnectionType connectionType){
 	QObject::connect(this,
 			SIGNAL(volumeChanged(float)),
 			other,
@@ -43,7 +44,7 @@ void MixerChannelModel::connectSignalsTo(MixerChannelModel * other, Qt::Connecti
 			SLOT(setMuted(bool)),
 			connectionType);
 	//connect up eq
-	mEQ->connectSignalsTo(other->eq(), connectionType);
+	mEQ->syncToModel(other->eq(), connectionType);
 }
 
 float MixerChannelModel::volume() const {
