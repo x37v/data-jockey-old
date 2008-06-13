@@ -76,7 +76,7 @@ WorkLoader::WorkLoader(const QSqlDatabase & db, MixerPanelModel * model, MixerPa
 		QObject::connect(newThread,
 				SIGNAL(buffersLoaded(unsigned int, int, DataJockey::AudioBufferPtr, DataJockey::BeatBufferPtr)),
 				this,
-				SLOT(workLoaded(unsigned int, int, DataJockey::AudioBufferPtr, DataJockey::BeatBufferPtr)),
+				SLOT(setWork(unsigned int, int, DataJockey::AudioBufferPtr, DataJockey::BeatBufferPtr)),
 				Qt::QueuedConnection);
 		QObject::connect(newThread,
 				SIGNAL(outOfMemory(unsigned int, int, QString, QString)),
@@ -114,7 +114,7 @@ void WorkLoader::loadWork(unsigned int mixer){
 			QString beatbufloc = mFileQuery.value(beatFileCol).toString();
 
 			//emit a signal to unload the buffers of this mixer
-			emit(mixerLoad(mixer, NULL, NULL));
+			emit(mixerLoaded(mixer, NULL, NULL));
 			//reset the mixer channel
 			mMixerPanelModel->mixerChannels()->at(mixer)->reset();
 			//use a thread to load the stuff!
@@ -147,7 +147,7 @@ void WorkLoader::loadWork(unsigned int mixer){
 }
 
 
-void WorkLoader::workLoaded(unsigned int mixer_index, 
+void WorkLoader::setWork(unsigned int mixer_index, 
 		int work,
 		DataJockey::AudioBufferPtr audio_buffer, 
 		DataJockey::BeatBufferPtr beat_buffer){
@@ -158,7 +158,7 @@ void WorkLoader::workLoaded(unsigned int mixer_index,
 	id.setNum(work);
 	workQueryStr.append(id);
 
-	emit(mixerLoad(mixer_index, audio_buffer, beat_buffer));
+	emit(mixerLoaded(mixer_index, audio_buffer, beat_buffer));
 	
 	//set the info
 	mWorkInfoQuery.exec(workQueryStr);

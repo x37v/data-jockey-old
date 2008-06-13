@@ -38,10 +38,10 @@ class WorkLoader : public QObject {
 		void selectWork(int work);
 		void loadWork(unsigned int mixer);
 	signals:
-		void mixerLoad(unsigned int mixer, DataJockey::AudioBufferPtr audiobuf, 
+		void mixerLoaded(unsigned int mixer, DataJockey::AudioBufferPtr audiobuf, 
 				DataJockey::BeatBufferPtr beatbuf, bool wait_for_measure = false);
 	protected slots:
-		void workLoaded(unsigned int mixer_index, 
+		void setWork(unsigned int mixer_index, 
 				int work_id,
 				DataJockey::AudioBufferPtr audio_buffer, 
 				DataJockey::BeatBufferPtr beat_buffer);
