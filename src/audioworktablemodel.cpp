@@ -52,7 +52,9 @@ void AudioWorkTableModel::init(const QSqlDatabase & db){
 		"\taudio_works.name as title," << std::endl <<
 		"\talbums.name as album, " << std::endl <<
 		"\talbum_audio_works.track as track, " << std::endl <<
-		"\taudio_files.milliseconds as duration, " << std::endl;
+		"\taudio_files.milliseconds as duration, " << std::endl <<
+		"\taudio_file_types.name as \"file type\", " << std::endl;
+
 	for(unsigned int i = 0; i < descriptorFieldNames.size() - 1; i++)
 		queryBeforeFilter << "\t" << descriptorFieldNames[i] << ", " << std::endl;
 	queryBeforeFilter << "\t" << descriptorFieldNames.back() << " " << std::endl;
@@ -60,6 +62,7 @@ void AudioWorkTableModel::init(const QSqlDatabase & db){
 	queryBeforeFilter << "from audio_works " << std::endl;
 	queryAfterFilter <<
 		"\tinner join audio_files on audio_files.id = audio_works.audio_file_id " << std::endl <<
+		"\tinner join audio_file_types on audio_file_types.id = audio_files.audio_file_type_id " << std::endl <<
 		"\tinner join artist_audio_works on artist_audio_works.audio_work_id = audio_works.id  " << std::endl <<
 		"\tinner join artists on artists.id = artist_audio_works.artist_id " << std::endl <<
 		"\tinner join album_audio_works on audio_works.id = album_audio_works.audio_work_id " << std::endl <<
