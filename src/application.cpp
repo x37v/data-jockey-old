@@ -45,6 +45,7 @@ using std::endl;
 #include "djmixerworkinfoview.hpp"
 
 #include "tagmodel.hpp"
+#include "tageditor.hpp"
 
 #include "audiodriver.hpp"
 #include "workloader.hpp"
@@ -82,6 +83,18 @@ int DataJockeyApplication::run(int argc, char *argv[]){
 	WorkDetailView * detailView = new WorkDetailView(tagModel, db, window);
 	MixerPanelView * mixerPanelView = new MixerPanelView(NUM_MIXERS, window);
 	AudioWorkDBView * tableView = new AudioWorkDBView(&tableModel, window);
+	TagEditor * tagEditorView = new TagEditor(tagModel, window);
+
+	QObject::connect(
+			tagEditorView,
+			SIGNAL(tagAdded(int,QString)),
+			tagModel,
+			SLOT(addTag(int,QString)));
+	QObject::connect(
+			tagEditorView,
+			SIGNAL(tagAdded(QString,QString)),
+			tagModel,
+			SLOT(addClassAndTag(QString,QString)));
 
 	//WorkLoader
 	WorkLoader * workLoader = new WorkLoader(db, mixerPanelModel, mixerPanelView);
@@ -96,6 +109,7 @@ int DataJockeyApplication::run(int argc, char *argv[]){
 
 	splitter2->addWidget(splitter);
 	splitter2->addWidget(tableView);
+	splitter2->addWidget(tagEditorView);
 	splitter2->setStretchFactor(0,0);
 	splitter2->setStretchFactor(1,10);
 

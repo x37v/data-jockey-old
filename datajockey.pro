@@ -34,6 +34,7 @@ HEADERS += include/audioworkdbview.hpp \
            include/workdetailview.hpp \
            include/worktagmodelfilter.hpp \
            include/workloader.hpp \
+			  include/tageditor.hpp \
 			  include/tagview.hpp \
 			  include/tagmodel.hpp \
 			  include/treeitem.h \
@@ -70,6 +71,7 @@ SOURCES += src/audioworkdbview.cpp \
            src/workdetailview.cpp \
            src/worktagmodelfilter.cpp \
            src/workloader.cpp \
+			  src/tageditor.cpp \
 			  src/tagview.cpp \
 			  src/tagmodel.cpp \
 			  src/treeitem.cpp \
@@ -84,4 +86,3 @@ SOURCES += src/audioworkdbview.cpp \
 			  src/tempo.cpp \
 			  src/utilities.cpp \
 			  src/application.cpp
-

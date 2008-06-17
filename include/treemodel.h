@@ -70,6 +70,8 @@ public:
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
 	 void setRoot(TreeItem *root);
+	protected:
+	 TreeItem * root() const;
 
 private:
     //void setupModelData(const QStringList &lines, TreeItem *parent);

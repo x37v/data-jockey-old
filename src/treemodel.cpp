@@ -180,6 +180,11 @@ void TreeModel::setRoot(TreeItem *root){
 	reset();
 }
 
+//added by alex
+TreeItem * TreeModel::root() const {
+	return rootItem;
+}
+
 /*
 void TreeModel::setupModelData(const QStringList &lines, TreeItem *parent)
 {
