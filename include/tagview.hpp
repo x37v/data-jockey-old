@@ -8,23 +8,15 @@
 #include "treemodel.h"
 
 class TreeModel;
+class QAbstractItemModel;
 
 class TagView : public QTreeView {
 	Q_OBJECT
 	public:
-		TagView(const QSqlDatabase & db = QSqlDatabase(),
+		TagView(QAbstractItemModel * model,
 				QWidget * parent = NULL);
-	public slots:
-		void setWork(int work_id);
-		void setShowAll();
-		void clear();
 	private:
-		void buildFromQuery();
-		TreeModel * mModel;
-		static const QString cAllTagsStr;
-		static const QString cSingleWorkStr;
-		static const QString cOrderStr;
-		QSqlQuery mQuery;
+		QAbstractItemModel * mModel;
 };
 
 #endif

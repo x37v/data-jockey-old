@@ -32,8 +32,10 @@ HEADERS += include/audioworkdbview.hpp \
            include/mixerpanelview.hpp \ 
            include/mixerpanelmodel.hpp \ 
            include/workdetailview.hpp \
+           include/worktagmodelfilter.hpp \
            include/workloader.hpp \
 			  include/tagview.hpp \
+			  include/tagmodel.hpp \
 			  include/treeitem.h \
 			  include/treemodel.h \
 			  include/audiodriver.hpp \
@@ -66,8 +68,10 @@ SOURCES += src/audioworkdbview.cpp \
            src/mixerpanelview.cpp \
            src/mixerpanelmodel.cpp \
            src/workdetailview.cpp \
+           src/worktagmodelfilter.cpp \
            src/workloader.cpp \
 			  src/tagview.cpp \
+			  src/tagmodel.cpp \
 			  src/treeitem.cpp \
 			  src/treemodel.cpp \
 			  src/audiodriver.cpp \

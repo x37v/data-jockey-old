@@ -6,6 +6,9 @@
 #include <QSqlQuery>
 #include <QSqlRecord>
 
+#include "tagmodel.hpp"
+#include "worktagmodelfilter.hpp"
+
 const QString WorkDetailView::cWorkQuery(
 		"select audio_works.id id, audio_works.name title, artists.name artist\n"
 		"from audio_works\n"
@@ -22,7 +25,8 @@ WorkDetailView::WorkDetailView(
 	mLayout = new QGridLayout(this);
 	mArtist = new QLineEdit(tr("artist"), this);
 	mTitle = new QLineEdit(tr("title"), this);
-	mTagView = new TagView(db,this);
+	mTagModel = new WorkTagModelFilter(new TagModel(db, this));
+	mTagView = new TagView(mTagModel, this);
 
 	mArtist->setReadOnly(true);
 	mTitle->setReadOnly(true);
@@ -57,7 +61,7 @@ void WorkDetailView::setWork(int work_id){
 		int artistCol = rec.indexOf("artist");
 		mTitle->setText(mWorkQuery.value(titleCol).toString());
 		mArtist->setText(mWorkQuery.value(artistCol).toString());
-		mTagView->setWork(work_id);
+		mTagModel->setWork(work_id);
 		mTagView->expandAll();
 	} else {
 		clear();
@@ -67,7 +71,7 @@ void WorkDetailView::setWork(int work_id){
 void WorkDetailView::clear(){
 	mArtist->setText(tr("artist"));
 	mTitle->setText(tr("title"));
-	mTagView->clear();
+	mTagModel->setWork(-1);
 }
 
 void WorkDetailView::expandTags(bool expand){

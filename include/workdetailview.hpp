@@ -9,6 +9,7 @@
 class QLineEdit;
 class QGridLayout;
 class TagView;
+class WorkTagModelFilter;
 
 class WorkDetailView : public QWidget {
 	Q_OBJECT
@@ -27,6 +28,8 @@ class WorkDetailView : public QWidget {
 		QLineEdit * mArtist;
 		QLineEdit * mTitle;
 		TagView * mTagView;
+
+		WorkTagModelFilter * mTagModel;
 
 		QSqlQuery mWorkQuery;
 };
