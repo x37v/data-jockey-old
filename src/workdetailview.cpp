@@ -71,7 +71,7 @@ void WorkDetailView::setWork(int work_id){
 void WorkDetailView::clear(){
 	mArtist->setText(tr("artist"));
 	mTitle->setText(tr("title"));
-	mTagModel->setWork(-1);
+	mTagModel->clear();
 }
 
 void WorkDetailView::expandTags(bool expand){
