@@ -13,18 +13,19 @@ class MasterModel : public QObject {
 	signals:
 		void volumeChanged(float vol);
 		void tempoChanged(float tempo);
-		void tempoMulChanged(float mul);
+		void tempoMulChanged(double mul);
 		void syncSourceChanged(unsigned int src);
 	public slots:
 		void setVolume(float vol);
 		void setTempo(float tempo);
-		void setTempoMul(float mul);
+		void setTempoMul(double mul);
 		//0 is master, 1 is mixer 0, 2 is mixer 1..
 		void setSyncSource(unsigned int src);
 	private:
+		bool mRecursing;
 		float mVolume;
 		float mTempo;
-		float mTempoMul;
+		double mTempoMul;
 		unsigned int mSyncSource;
 		unsigned int mNumMixers;
 };

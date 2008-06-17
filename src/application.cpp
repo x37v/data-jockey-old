@@ -312,14 +312,14 @@ void DataJockeyApplication::connectMixerPanelModelView(MixerPanelModel * model, 
 	//tempo mul
 	QObject::connect(
 			model->master(),
-			SIGNAL(tempoMulChanged(float)),
+			SIGNAL(tempoMulChanged(double)),
 			view->master(),
-			SLOT(setTempoMul(float)));
+			SLOT(setTempoMul(double)));
 	QObject::connect(
 			view->master(),
-			SIGNAL(tempoMulChanged(float)),
+			SIGNAL(tempoMulChanged(double)),
 			model->master(),
-			SLOT(setTempoMul(float)));
+			SLOT(setTempoMul(double)));
 	//sync src
 	QObject::connect(
 			model->master(),
@@ -408,9 +408,9 @@ void DataJockeyApplication::connectMixerPanelModelDriver(MixerPanelModel * model
 			Qt::QueuedConnection);
 	QObject::connect(
 			model->master(),
-			SIGNAL(tempoMulChanged(float)),
+			SIGNAL(tempoMulChanged(double)),
 			driver,
-			SLOT(masterSetTempoMul(float)),
+			SLOT(masterSetTempoMul(double)),
 			Qt::QueuedConnection);
 	QObject::connect(
 			model->master(),
@@ -424,6 +424,12 @@ void DataJockeyApplication::connectMixerPanelModelDriver(MixerPanelModel * model
 			SIGNAL(tempoChanged(float)),
 			model->master(),
 			SLOT(setTempo(float)),
+			Qt::QueuedConnection);
+	QObject::connect(
+			driver,
+			SIGNAL(tempoMulChanged(double)),
+			model->master(),
+			SLOT(setTempoMul(double)),
 			Qt::QueuedConnection);
 }
 

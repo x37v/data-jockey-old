@@ -14,7 +14,7 @@ class AudioDriver : public QObject {
 	signals:
 		void progressChanged(unsigned int mixer, float value);
 		void tempoChanged(float value);
-		void temoMulChanged(float value);
+		void tempoMulChanged(double value);
 	protected:
 		void run();
 	public slots:
@@ -26,7 +26,7 @@ class AudioDriver : public QObject {
 		//master
 		void masterSetVolume(float vol, bool wait_for_measure = false);
 		void masterSetTempo(float tempo, bool wait_for_measure = false);
-		void masterSetTempoMul(float mul, bool wait_for_measure = false);
+		void masterSetTempoMul(double mul, bool wait_for_measure = false);
 		void masterSetSyncSrc(unsigned int src, bool wait_for_measure = false);
 
 		//mixers
@@ -47,10 +47,12 @@ class AudioDriver : public QObject {
 		void mixerSetEQVals(unsigned int mixer, float low, float mid, float high, bool wait_for_measure = false);
 
 	private:
+		double mTempoMul;
 		bool mSyncToMaster;
 		DataJockey::AudioIO mAudioIO;
 		MixerPanelModel * mMixerPanel;
 		unsigned int mNumMixers;
+		bool mReportTempoMul;
 };
 
 #endif

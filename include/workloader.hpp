@@ -28,6 +28,7 @@ class BufferLoaderThread : public QThread {
 		void buffersLoaded(unsigned int index, int work_id, 
 				DataJockey::AudioBufferPtr audio_buffer, DataJockey::BeatBufferPtr beat_buffer);
 		void outOfMemory(unsigned int index, int work_id, QString audioFileLoc, QString beatFileLoc);
+		void cannotLoad(unsigned int index, int work_id, QString audioFileLoc, QString beatFileLoc, QString why);
 };
 
 class WorkLoader : public QObject {
@@ -49,6 +50,7 @@ class WorkLoader : public QObject {
 				DataJockey::AudioBufferPtr audio_buffer, 
 				DataJockey::BeatBufferPtr beat_buffer);
 		void outOfMemory(unsigned int index, int work_id, QString audioFileLoc, QString beatFileLoc);
+		void cannotLoad(unsigned int index, int work_id, QString audioFileLoc, QString beatFileLoc, QString why);
 	private:
 		static bool cTypesRegistered;
 		static QString cFileQueryString;

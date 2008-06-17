@@ -17,6 +17,10 @@ AudioDriver::AudioDriver(MixerPanelModel * mixer, QObject * parent) :
 	mMixerPanel = mixer;
 	mNumMixers = mMixerPanel->mixerChannels()->size();
 	mSyncToMaster = true;
+	mTempoMul = 1.0;
+	//we only report the tempo mul when we've changed sync states
+	//before a user sets the tempo mul
+	mReportTempoMul = true;
 }
 
 DataJockey::AudioIO * AudioDriver::audioIO() const {
@@ -45,12 +49,19 @@ void AudioDriver::processAudioEvents(){
 				(float)bufferPlayerStates[i]->getLastBeat();
 			emit(progressChanged(i, progress));
 		}
+
 		//deal with tempo changes
 		//it only changes when we're in sync with a buffer
 		if(!state->getSyncToClock()){
 			float tempo = 60.0f / state->getPeriod();
 			emit(tempoChanged(tempo));
 		}
+
+		if(state->getTempoScale() != mTempoMul && mReportTempoMul){
+			mTempoMul = state->getTempoScale();
+			emit(tempoMulChanged(mTempoMul));
+		}
+
 		//push a new state request on there
 		state = new AudioIOGetState(mNumMixers);
 		mAudioIO.sendCommand(state);
@@ -70,13 +81,19 @@ void AudioDriver::masterSetTempo(float tempo, bool wait_for_measure){
 	}
 }
 
-void AudioDriver::masterSetTempoMul(float mul, bool wait_for_measure){
-	AudioIOSetTempoScalePtr cmd = new AudioIOSetTempoScale(mul, wait_for_measure);
-	mAudioIO.sendCommand(cmd);
+void AudioDriver::masterSetTempoMul(double mul, bool wait_for_measure){
+	if(!mSyncToMaster){
+		//since the user has set the tempo mul then we'll no longer send reports about it
+		mReportTempoMul = false;
+		AudioIOSetTempoScalePtr cmd = new AudioIOSetTempoScale(mul, wait_for_measure);
+		mTempoMul = mul;
+		mAudioIO.sendCommand(cmd);
+	}
 
 }
 
 void AudioDriver::masterSetSyncSrc(unsigned int src, bool wait_for_measure){
+	mReportTempoMul = true;
 	if(src == 0){
 		AudioIOSyncToMasterClockPtr cmd = new AudioIOSyncToMasterClock(wait_for_measure);
 		mSyncToMaster = true;

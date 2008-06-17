@@ -100,7 +100,7 @@ MasterView::MasterView(unsigned int numMixers, QWidget *parent) :
 	QObject::connect(
 			mTempoMul,
 			SIGNAL(valueChanged(double)),
-			this, SLOT(setTempoMulDouble(double)));
+			this, SLOT(setTempoMulSelf(double)));
 }
 
 QSlider * MasterView::volume() const {
@@ -135,12 +135,24 @@ void MasterView::setTempo(float tempo){
 	mRecursing = false;
 }
 
-void MasterView::setTempoMul(float mul){
+void MasterView::setTempoMul(double mul){
 	if(mRecursing)
 		return;
 	mRecursing = true;
 
 	mTempoMul->setValue(mul);
+
+	mRecursing = false;
+}
+
+void MasterView::setTempoMulSelf(double mul){
+	if(mRecursing)
+		return;
+	mRecursing = true;
+
+	//always emit because this is interal, will never happen unless there is a
+	//change
+	emit(tempoMulChanged(mul));
 
 	mRecursing = false;
 }
@@ -170,17 +182,6 @@ void MasterView::setTempoDouble(double tempo){
 	mRecursing = true;
 
 	emit(tempoChanged(tempo));
-
-	mRecursing = false;
-}
-
-//this is only called internally so it simply emits the value
-void MasterView::setTempoMulDouble(double mul){
-	if(mRecursing)
-		return;
-	mRecursing = true;
-
-	emit(tempoMulChanged(mul));
 
 	mRecursing = false;
 }

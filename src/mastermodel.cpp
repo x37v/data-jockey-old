@@ -8,6 +8,7 @@ MasterModel::MasterModel(unsigned int numMixers, QObject *parent) :
 	mTempoMul = 1.0f;
 	mSyncSource = 0;
 	mNumMixers = numMixers;
+	mRecursing = false;
 }
 void MasterModel::syncToModel(MasterModel * other, Qt::ConnectionType connectionType){
 	//this -> other
@@ -22,9 +23,9 @@ void MasterModel::syncToModel(MasterModel * other, Qt::ConnectionType connection
 			SLOT(setTempo(float)),
 			connectionType);
 	QObject::connect(this,
-			SIGNAL(tempoMulChanged(float)),
+			SIGNAL(tempoMulChanged(double)),
 			other,
-			SLOT(setTempoMul(float)),
+			SLOT(setTempoMul(double)),
 			connectionType);
 	QObject::connect(this,
 			SIGNAL(syncSourceChanged(unsigned int)),
@@ -68,11 +69,19 @@ void MasterModel::setTempo(float tempo){
 	}
 }
 
-void MasterModel::setTempoMul(float mul){
+
+#include <iostream>
+using namespace std;
+
+void MasterModel::setTempoMul(double mul){
+	if(mRecursing)
+		return;
+	mRecursing = true;
 	if(mul != mTempoMul){
 		mTempoMul = mul;
 		emit(tempoMulChanged(mTempoMul));
 	}
+	mRecursing = false;
 }
 
 void MasterModel::setSyncSource(unsigned int src){

@@ -36,6 +36,8 @@ void BufferLoaderThread::run(){
 		emit(buffersLoaded(mIndex, mWorkId, audio_file, beat_buffer));
 	} catch (std::bad_alloc&) {
 		emit(outOfMemory(mIndex, mWorkId, mAudioBufLoc, mBeatBufLoc));
+	} catch (std::runtime_error e){
+		emit(cannotLoad(mIndex, mWorkId, mAudioBufLoc, mBeatBufLoc, QString(e.what())));
 	} catch (int e) {
 		std::cerr << "An exception occurred. Exception Nr. " << e << std::endl;
 	}
@@ -88,6 +90,11 @@ WorkLoader::WorkLoader(const QSqlDatabase & db, MixerPanelModel * model, MixerPa
 				SIGNAL(outOfMemory(unsigned int, int, QString, QString)),
 				this,
 				SLOT(outOfMemory(unsigned int, int, QString, QString)),
+				Qt::QueuedConnection);
+		QObject::connect(newThread,
+				SIGNAL(cannotLoad(unsigned int, int, QString, QString, QString)),
+				this,
+				SLOT(cannotLoad(unsigned int, int, QString, QString, QString)),
 				Qt::QueuedConnection);
 		//set up our mapper [object -> id]
 		mixerToIdMapper->setMapping(mixerView->mixerChannels()->at(i)->DJMixerControl(), (int)i);
@@ -206,5 +213,14 @@ void WorkLoader::outOfMemory(unsigned int index, int work_id, QString audioFileL
 	mMixerPanelView->mixerChannels()->at(index)->DJMixerWorkInfo()->setArtistText(tr("artist"));
 	mMixerPanelView->mixerChannels()->at(index)->DJMixerWorkInfo()->setTitleText(tr("title"));
 	qWarning("Not enough memory to load audio file:\n %s", audioFileLoc.toStdString().c_str());
+}
+
+void WorkLoader::cannotLoad(unsigned int index, int work_id, QString audioFileLoc, QString beatFileLoc, QString why){
+	Q_UNUSED (work_id);
+	Q_UNUSED (beatFileLoc);
+	Q_UNUSED (audioFileLoc);
+	mMixerPanelView->mixerChannels()->at(index)->DJMixerWorkInfo()->setArtistText(tr("artist"));
+	mMixerPanelView->mixerChannels()->at(index)->DJMixerWorkInfo()->setTitleText(tr("title"));
+	qWarning("%s", why.toStdString().c_str());
 }
 
