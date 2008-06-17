@@ -47,6 +47,8 @@ void WorkTagModelFilter::clear() {
 }
 
 bool WorkTagModelFilter::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const {
+	if(!sourceParent.isValid())
+		return true;
 	//if my parent's model is the source model then this is a tag not a tag class
 	if(sourceParent.model() == sourceModel()){
 		QModelIndex rowIndex = sourceModel()->index(sourceRow, TagModel::idColumn(), sourceParent);

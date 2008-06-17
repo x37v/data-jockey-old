@@ -47,8 +47,14 @@ QList<QPair<int, QString> *> * TagModel::classList() const {
 using namespace std;
 
 void TagModel::addTag(int classId, QString tagName){
-
 	QString queryStr;
+
+	//don't add a dup tag
+	queryStr.sprintf("select * from tags where name = \"%s\" and tag_class_id = %d", tagName.toStdString().c_str(), classId);
+	mAddTagQuery.exec(queryStr);
+	if(mAddTagQuery.first())
+		return;
+
 	queryStr.sprintf("insert into tags (name, tag_class_id) values(\"%s\", %d)", tagName.toStdString().c_str(), classId);
 	mAddTagQuery.exec(queryStr);
 
@@ -129,6 +135,7 @@ void TagModel::addClassAndTag(QString className, QString tagName){
 
 		//endInsertRows();
 		reset();
+
 		QPair<int, QString> classInfo(mAddTagQuery.value(1).toInt(), className);
 		emit(classAdded(classInfo));
 	}
