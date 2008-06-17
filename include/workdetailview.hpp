@@ -10,14 +10,15 @@ class QLineEdit;
 class QGridLayout;
 class TagView;
 class WorkTagModelFilter;
+class TagModel;
 
 class WorkDetailView : public QWidget {
 	Q_OBJECT
 	public:
 		WorkDetailView(
+				TagModel * tagModel,
 				const QSqlDatabase & db = QSqlDatabase(),
-				QWidget * parent = NULL
-				);
+				QWidget * parent = NULL);
 	public slots:
 		void setWork(int work_id);
 		void clear();

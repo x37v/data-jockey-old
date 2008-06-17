@@ -17,6 +17,7 @@ const QString WorkDetailView::cWorkQuery(
 		"\twhere audio_works.id = ");
 
 WorkDetailView::WorkDetailView(
+		TagModel * tagModel,
 		const QSqlDatabase & db,
 		QWidget * parent) :
 	QWidget(parent), 
@@ -25,7 +26,7 @@ WorkDetailView::WorkDetailView(
 	mLayout = new QGridLayout(this);
 	mArtist = new QLineEdit(tr("artist"), this);
 	mTitle = new QLineEdit(tr("title"), this);
-	mTagModel = new WorkTagModelFilter(new TagModel(db, this));
+	mTagModel = new WorkTagModelFilter(tagModel);
 	mTagView = new TagView(mTagModel, this);
 
 	mArtist->setReadOnly(true);

@@ -44,6 +44,8 @@ using std::endl;
 #include "workdetailview.hpp"
 #include "djmixerworkinfoview.hpp"
 
+#include "tagmodel.hpp"
+
 #include "audiodriver.hpp"
 #include "workloader.hpp"
 
@@ -71,12 +73,13 @@ int DataJockeyApplication::run(int argc, char *argv[]){
 	//models
 	AudioWorkTableModel tableModel(db);
 	MixerPanelModel * mixerPanelModel = new MixerPanelModel(NUM_MIXERS);
+	TagModel * tagModel = new TagModel(db);
 
 	//audio driver
 	AudioDriver * audioDriver = new AudioDriver(mixerPanelModel);
 
 	//views
-	WorkDetailView * detailView = new WorkDetailView(db, window);
+	WorkDetailView * detailView = new WorkDetailView(tagModel, db, window);
 	MixerPanelView * mixerPanelView = new MixerPanelView(NUM_MIXERS, window);
 	AudioWorkDBView * tableView = new AudioWorkDBView(&tableModel, window);
 
