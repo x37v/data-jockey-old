@@ -1,7 +1,11 @@
 #include "audiodriver.hpp"
-#include "mixerpanelmodel.hpp"
+
+//models
 #include "djmixerchannelmodel.hpp"
 #include "djmixercontrolmodel.hpp"
+#include "mastermodel.hpp"
+#include "mixerpanelmodel.hpp"
+
 #include <sys/mman.h>
 
 #include <QThread>
@@ -21,6 +25,11 @@ AudioDriver::AudioDriver(MixerPanelModel * mixer, QObject * parent) :
 	//we only report the tempo mul when we've changed sync states
 	//before a user sets the tempo mul
 	mReportTempoMul = true;
+	for(unsigned int i = 0; i < mNumMixers; i++)
+		mReportPlayerTempoMul.push_back(true);
+
+	//connect
+	connectToMixerPanel();
 }
 
 DataJockey::AudioIO * AudioDriver::audioIO() const {
@@ -48,6 +57,11 @@ void AudioDriver::processAudioEvents(){
 			float progress = (float)bufferPlayerStates[i]->getCurBeat() / 
 				(float)bufferPlayerStates[i]->getLastBeat();
 			emit(progressChanged(i, progress));
+			//report the mixer's tempo mul if we should
+			if(i < mNumMixers && mReportPlayerTempoMul[i]){
+				double mixerTempoMul = bufferPlayerStates[i]->getTempoMultiplier();
+				emit(mixerTempoMulChanged(i, mixerTempoMul));
+			}
 		}
 
 		//deal with tempo changes
@@ -117,6 +131,9 @@ void AudioDriver::mixerSetCue(unsigned int mixer, bool cue, bool wait_for_measur
 }
 
 void AudioDriver::mixerSetSync(unsigned int mixer, bool sync, bool wait_for_measure){
+	//after changing the sync mode we report the tempo mul
+	if(mixer < mNumMixers)
+		mReportPlayerTempoMul[mixer] = true;
 	BufferPlayer::CmdPtr cmd;
 	if(sync)
 		cmd = new BufferPlayer::SetPlayMode(BufferPlayer::syncPlayback);
@@ -125,6 +142,16 @@ void AudioDriver::mixerSetSync(unsigned int mixer, bool sync, bool wait_for_meas
 	AudioIOBufferPlayerCmdPtr audioIOcmd = new AudioIOBufferPlayerCmd(mixer, cmd, wait_for_measure);
 	mAudioIO.sendCommand(audioIOcmd);
 }
+
+void AudioDriver::mixerSetTempoMul(unsigned int mixer, double mul, bool wait_for_measure){
+	//once the user sets the tempo mul we don't report it
+	if(mixer < mNumMixers)
+		mReportPlayerTempoMul[mixer] = false;
+	BufferPlayer::CmdPtr cmd= new BufferPlayer::SetTempoMultiplier(mul);
+	AudioIOBufferPlayerCmdPtr audioIOcmd = new AudioIOBufferPlayerCmd(mixer, cmd, wait_for_measure);
+	mAudioIO.sendCommand(audioIOcmd);
+}
+
 
 void AudioDriver::mixerSetFree(unsigned int mixer, bool free, bool wait_for_measure){
 	mixerSetSync(mixer, !free, wait_for_measure);
@@ -206,3 +233,115 @@ void AudioDriver::mixerSetEQVals(unsigned int mixer, float low, float mid, float
 	mAudioIO.sendCommand(audioIOcmd);
 }
 
+void AudioDriver::connectToMixerPanel(){
+	//volume + mute
+	QObject::connect(
+			mMixerPanel,
+			SIGNAL(mixerVolumeChanged(unsigned int, float)),
+			this,
+			SLOT(mixerSetVolume(unsigned int, float)),
+			Qt::QueuedConnection);
+	//eq
+	QObject::connect(
+			mMixerPanel,
+			SIGNAL(mixerEQValuesChanged(unsigned int, float, float, float)),
+			this,
+			SLOT(mixerSetEQVals(unsigned int, float, float, float)),
+			Qt::QueuedConnection);
+	//cue mode
+	QObject::connect(
+			mMixerPanel,
+			SIGNAL(mixerCueModeChanged(unsigned int, bool)),
+			this,
+			SLOT(mixerSetCue(unsigned int, bool)),
+			Qt::QueuedConnection);
+	//pause
+	QObject::connect(
+			mMixerPanel,
+			SIGNAL(mixerPausedChanged(unsigned int, bool)),
+			this,
+			SLOT(mixerSetPause(unsigned int, bool)),
+			Qt::QueuedConnection);
+	//sync
+	QObject::connect(
+			mMixerPanel,
+			SIGNAL(mixerSyncModeChanged(unsigned int, bool)),
+			this,
+			SLOT(mixerSetSync(unsigned int, bool)),
+			Qt::QueuedConnection);
+	//tempo mul
+	QObject::connect(
+			mMixerPanel,
+			SIGNAL(mixerTempoMulChanged(unsigned int, double)),
+			this,
+			SLOT(mixerSetTempoMul(unsigned int, double)),
+			Qt::QueuedConnection);
+	//seek
+	QObject::connect(
+			mMixerPanel,
+			SIGNAL(mixerSeeking(unsigned int, int)),
+			this,
+			SLOT(mixerSeek(unsigned int, int)),
+			Qt::QueuedConnection);
+	//playback position
+	QObject::connect(
+			mMixerPanel,
+			SIGNAL(mixerPlaybackPosChanged(unsigned int, int)),
+			this,
+			SLOT(mixerSetPlaybackPosition(unsigned int, int)),
+			Qt::QueuedConnection);
+
+	//report progress
+	QObject::connect(
+			this,
+			SIGNAL(progressChanged(unsigned int, float)),
+			mMixerPanel,
+			SLOT(mixerUpdateProgress(unsigned int, float)),
+			Qt::QueuedConnection);
+	//report mixer tempo mul
+	QObject::connect(
+			this,
+			SIGNAL(mixerTempoMulChanged(unsigned int, double)),
+			mMixerPanel,
+			SLOT(mixerSetTempoMul(unsigned int, double)),
+			Qt::QueuedConnection);
+
+	//master
+	QObject::connect(
+			mMixerPanel->master(),
+			SIGNAL(volumeChanged(float)),
+			this,
+			SLOT(masterSetVolume(float)),
+			Qt::QueuedConnection);
+	QObject::connect(
+			mMixerPanel->master(),
+			SIGNAL(tempoChanged(float)),
+			this,
+			SLOT(masterSetTempo(float)),
+			Qt::QueuedConnection);
+	QObject::connect(
+			mMixerPanel->master(),
+			SIGNAL(tempoMulChanged(double)),
+			this,
+			SLOT(masterSetTempoMul(double)),
+			Qt::QueuedConnection);
+	QObject::connect(
+			mMixerPanel->master(),
+			SIGNAL(syncSourceChanged(unsigned int)),
+			this,
+			SLOT(masterSetSyncSrc(unsigned int)),
+			Qt::QueuedConnection);
+	//report tempo
+	QObject::connect(
+			this,
+			SIGNAL(tempoChanged(float)),
+			mMixerPanel->master(),
+			SLOT(setTempo(float)),
+			Qt::QueuedConnection);
+	QObject::connect(
+			this,
+			SIGNAL(tempoMulChanged(double)),
+			mMixerPanel->master(),
+			SLOT(setTempoMul(double)),
+			Qt::QueuedConnection);
+}

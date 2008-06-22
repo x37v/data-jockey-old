@@ -101,9 +101,9 @@ void DJMixerControlModel::syncToModel(DJMixerControlModel * other, Qt::Connectio
 			SLOT(setBeatOffset(bool)),
 			connectionType);
 	QObject::connect(this,
-			SIGNAL(tempoMulChanged(bool)),
+			SIGNAL(tempoMulChanged(double)),
 			other,
-			SLOT(setTempoMul(bool)),
+			SLOT(setTempoMul(double)),
 			connectionType);
 	//other -> this (state changes)
 	QObject::connect(other,
@@ -137,9 +137,9 @@ void DJMixerControlModel::syncToModel(DJMixerControlModel * other, Qt::Connectio
 			SLOT(setBeatOffset(bool)),
 			connectionType);
 	QObject::connect(other,
-			SIGNAL(tempoMulChanged(bool)),
+			SIGNAL(tempoMulChanged(double)),
 			this,
-			SLOT(setTempoMul(bool)),
+			SLOT(setTempoMul(double)),
 			connectionType);
 	//this -> other (non state changing)
 	QObject::connect(this,
@@ -177,6 +177,10 @@ float DJMixerControlModel::progress() const {
 
 int DJMixerControlModel::beatOffset() const {
 	return mBeatOffset;
+}
+
+double DJMixerControlModel::tempoMul() const {
+	return mTempoMul;
 }
 
 //slots
@@ -243,10 +247,11 @@ void DJMixerControlModel::setBeatOffset(int offset){
 	}
 }
 
-void DJMixerControlModel::setTempoMul(float mul){
+void DJMixerControlModel::setTempoMul(double mul){
 	if(mul != mTempoMul){
 		mTempoMul = mul;
 		emit(tempoMulChanged(mTempoMul));
+		emit(tempoMulChanged(this));
 	}
 }
 
@@ -260,7 +265,7 @@ void DJMixerControlModel::loadWork(){
 
 void DJMixerControlModel::reset(){
 	setBeatOffset(0);
-	setTempoMul(0.0f);
+	setTempoMul(1.0);
 	//XXX there should be a setting to decide if we do this or not
 	setCueing(true);
 	setSync(true);

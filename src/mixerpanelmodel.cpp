@@ -47,6 +47,10 @@ MixerPanelModel::MixerPanelModel(unsigned int numMixers, QObject *parent) :
 				this,
 				SLOT(setMixerSyncMode(QObject *)));
 		QObject::connect(djMixerModel->DJMixerControl(),
+				SIGNAL(tempoMulChanged(QObject *)),
+				this,
+				SLOT(setMixerTempoMul(QObject *)));
+		QObject::connect(djMixerModel->DJMixerControl(),
 				SIGNAL(seeking(QObject *, int)),
 				this,
 				SLOT(mixerSeek(QObject *, int)));
@@ -126,6 +130,13 @@ void MixerPanelModel::setMixerSyncMode(QObject * ob){
 	else
 		emit(mixerSyncModeChanged(index, false));
 }
+
+void MixerPanelModel::setMixerTempoMul(QObject * ob){
+	DJMixerControlModel * mixerControl = (DJMixerControlModel *)ob;
+	unsigned int index = mMixerObjectIndexMap[mixerControl];
+	emit(mixerTempoMulChanged(index, mixerControl->tempoMul()));
+}
+
 void MixerPanelModel::mixerSeek(QObject * ob, int amt){
 	DJMixerControlModel * mixerControl = (DJMixerControlModel *)ob;
 	unsigned int index = mMixerObjectIndexMap[mixerControl];
@@ -142,13 +153,23 @@ void MixerPanelModel::mixerSetPlaybackPos(QObject * ob){
 void MixerPanelModel::mixerLoad(QObject * ob, int work_id){
 	DJMixerControlModel * mixerControl = (DJMixerControlModel *)ob;
 	unsigned int index = mMixerObjectIndexMap[mixerControl];
+
+	//if we're syncing to a mixer that is loading, stop syncing to it
+	if(mMaster->syncSource() == (index + 1)){
+		mMaster->setSyncSource(0);
+	}
+
 	emit(mixerLoading(index, work_id));
 }
 
 void MixerPanelModel::mixerUpdateProgress(unsigned int mixer, float progress){
-	if(mixer < mDJMixerChannels.size()){
+	if(mixer < mDJMixerChannels.size())
 		mDJMixerChannels[mixer]->DJMixerControl()->setProgress(progress);
-	}
+}
+
+void MixerPanelModel::mixerSetTempoMul(unsigned int mixer, double mul){
+	if(mixer < mDJMixerChannels.size())
+		mDJMixerChannels[mixer]->DJMixerControl()->setTempoMul(mul);
 }
 
 
@@ -162,5 +183,9 @@ MasterModel * MixerPanelModel::master() const {
 
 std::vector<DJMixerChannelModel *> * MixerPanelModel::mixerChannels() {
 	return &mDJMixerChannels;
+}
+
+unsigned int MixerPanelModel::numMixerChannels() const {
+	return mDJMixerChannels.size();
 }
 

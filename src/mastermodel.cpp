@@ -10,6 +10,11 @@ MasterModel::MasterModel(unsigned int numMixers, QObject *parent) :
 	mNumMixers = numMixers;
 	mRecursing = false;
 }
+
+unsigned int MasterModel::syncSource() const {
+	return mSyncSource;
+}
+
 void MasterModel::syncToModel(MasterModel * other, Qt::ConnectionType connectionType){
 	//this -> other
 	QObject::connect(this,

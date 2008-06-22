@@ -1,6 +1,7 @@
 #include "workloader.hpp"
 #include "mixerpanelmodel.hpp"
 #include "mixerpanelview.hpp"
+#include "mastermodel.hpp"
 #include "djmixerchannelview.hpp"
 #include "djmixerchannelmodel.hpp"
 #include "djmixercontrolview.hpp"
@@ -144,6 +145,10 @@ void WorkLoader::mixerLoadWork(int mixer){
 		if(mFileQuery.first()){
 			QString audiobufloc = mFileQuery.value(audioFileCol).toString();
 			QString beatbufloc = mFileQuery.value(beatFileCol).toString();
+
+			//if we're syncing to this mixer then change the sync source
+			if(mMixerPanelModel->master()->syncSource() == (unsigned int)(mixer + 1))
+				mMixerPanelModel->master()->setSyncSource(0);
 
 			//emit a signal to unload the buffers of this mixer
 			emit(mixerLoaded(mixer, NULL, NULL));

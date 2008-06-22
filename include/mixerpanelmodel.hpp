@@ -21,6 +21,7 @@ class MixerPanelModel : public QObject {
 		CrossFadeModel * crossFade() const;
 		MasterModel * master() const;
 		std::vector<DJMixerChannelModel *> * mixerChannels();
+		unsigned int numMixerChannels() const;
 	signals:
 		//from mixer
 		void mixerEQValuesChanged(unsigned int mixer_index, float low, float mid, float high);
@@ -29,6 +30,7 @@ class MixerPanelModel : public QObject {
 		void mixerCueModeChanged(unsigned int mixer_index, bool cue);
 		void mixerPausedChanged(unsigned int mixer_index, bool paused);
 		void mixerSyncModeChanged(unsigned int mixer_index, bool free);
+		void mixerTempoMulChanged(unsigned int mixer_index, double mul);
 		void mixerSeeking(unsigned int mixer_index, int amt);
 		void mixerPlaybackPosChanged(unsigned int mixer_index, int pos);
 		void mixerLoading(unsigned int mixer_index, int work_id);
@@ -43,12 +45,14 @@ class MixerPanelModel : public QObject {
 		void setMixerCueMode(QObject * ob);
 		void setMixerPaused(QObject * ob);
 		void setMixerSyncMode(QObject * ob);
+		void setMixerTempoMul(QObject * ob);
 		void mixerSeek(QObject * ob, int amt);
 		void mixerSetPlaybackPos(QObject * ob);
 		void mixerLoad(QObject * ob, int work_id);
 
 	public slots:
 		void mixerUpdateProgress(unsigned int mixer, float progress);
+		void mixerSetTempoMul(unsigned int mixer, double mul);
 
 	private:
 		std::vector<DJMixerChannelModel *> mDJMixerChannels;

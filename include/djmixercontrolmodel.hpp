@@ -18,6 +18,7 @@ class DJMixerControlModel : public QObject {
 		bool cueing() const;
 		float progress() const;
 		int beatOffset() const;
+		double tempoMul() const;
 	public slots:
 		void setCueing(bool cue = true);
 		void setPaused(bool paused = true);
@@ -30,7 +31,7 @@ class DJMixerControlModel : public QObject {
 		void seekBkwd();
 		void seek(int amt);
 		void setBeatOffset(int offset);
-		void setTempoMul(float mul);
+		void setTempoMul(double mul);
 		void resetWorkPosition();
 		void loadWork();
 		//this resets the settings.. beat offset, etc.
@@ -42,7 +43,7 @@ class DJMixerControlModel : public QObject {
 		void progressChanged(float progress);
 		void playbackPositionChanged(int pos);
 		void beatOffsetChanged(int offset);
-		void tempoMulChanged(float mul);
+		void tempoMulChanged(double mul);
 		void load();
 		void seeking(int amt);
 
@@ -52,13 +53,14 @@ class DJMixerControlModel : public QObject {
 		void seeking(QObject * ob, int amt);
 		void playbackPositionChanged(QObject * ob);
 		void load(QObject * ob);
+		void tempoMulChanged(QObject * ob);
 	private:
 		float mProgress;
 		bool mPaused;
 		bool mSynced;
 		bool mCueing;
 		int mBeatOffset;
-		float mTempoMul;
+		double mTempoMul;
 };
 
 #endif

@@ -48,6 +48,8 @@ HEADERS += include/audioworkdbview.hpp \
 			  include/soundfile.hpp \
 			  include/tempo.hpp \
 			  include/utilities.hpp \
+			  include/applicationmodel.hpp \
+			  include/applicationview.hpp \
 			  include/application.hpp
 
 SOURCES += src/audioworkdbview.cpp \
@@ -85,4 +87,6 @@ SOURCES += src/audioworkdbview.cpp \
 			  src/soundfile.cpp \
 			  src/tempo.cpp \
 			  src/utilities.cpp \
+			  src/applicationmodel.cpp \
+			  src/applicationview.cpp \
 			  src/application.cpp

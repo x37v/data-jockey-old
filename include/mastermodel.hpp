@@ -10,6 +10,8 @@ class MasterModel : public QObject {
 		//sync this model's state to another model
 		//signals which don't change the model's state only go from this model to the other, not back
 		void syncToModel(MasterModel * other, Qt::ConnectionType connectionType = Qt::AutoCompatConnection);
+		//zero means sync to clock, 1 means sync to mixer 0..
+		unsigned int syncSource() const ;
 	signals:
 		void volumeChanged(float vol);
 		void tempoChanged(float tempo);

@@ -13,6 +13,7 @@ class AudioDriver : public QObject {
 		DataJockey::AudioIO * audioIO() const;
 	signals:
 		void progressChanged(unsigned int mixer, float value);
+		void mixerTempoMulChanged(unsigned int mixer, double value);
 		void tempoChanged(float value);
 		void tempoMulChanged(double value);
 	protected:
@@ -32,6 +33,7 @@ class AudioDriver : public QObject {
 		//mixers
 		void mixerSetCue(unsigned int mixer, bool cue = true, bool wait_for_measure = false);
 		void mixerSetSync(unsigned int mixer, bool sync = true, bool wait_for_measure = false);
+		void mixerSetTempoMul(unsigned int mixer, double mul, bool wait_for_measure = false);
 		void mixerSetFree(unsigned int mixer, bool free = true, bool wait_for_measure = false);
 		void mixerSetBeatOffset(unsigned int mixer, unsigned int offset, bool wait_for_measure = false);
 		void mixerSetPause(unsigned int mixer, bool pause = true, bool wait_for_measure = false);
@@ -47,12 +49,14 @@ class AudioDriver : public QObject {
 		void mixerSetEQVals(unsigned int mixer, float low, float mid, float high, bool wait_for_measure = false);
 
 	private:
+		void connectToMixerPanel();
 		double mTempoMul;
 		bool mSyncToMaster;
 		DataJockey::AudioIO mAudioIO;
 		MixerPanelModel * mMixerPanel;
 		unsigned int mNumMixers;
 		bool mReportTempoMul;
+		std::vector<bool> mReportPlayerTempoMul;
 };
 
 #endif

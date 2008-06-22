@@ -4,6 +4,30 @@
 #include <QProgressBar>
 #include <QSpinBox>
 #include <QDoubleSpinBox>
+#include <QLineEdit>
+
+#include <math.h>
+
+PowerOfTwoSpinBox::PowerOfTwoSpinBox(QWidget * parent) :
+	QSpinBox(parent)
+{
+	lineEdit()->setReadOnly(true);
+}
+
+QString PowerOfTwoSpinBox::textFromValue(int val) const {
+	QString powerOfTwoVal;
+	//if we're greater than or equal to zero then we just print out the power of
+	//two value. otherwise, we print out 1 / (2**-val)
+	if(val >= 0.0)
+		powerOfTwoVal.setNum(pow(2.0,(double)val));
+	else {
+		QString denom;
+		denom.setNum((int)pow(2.0,(double)-val));
+		powerOfTwoVal.append("1/");
+		powerOfTwoVal.append(denom);
+	}
+	return powerOfTwoVal;
+}
 
 DJMixerControlView::DJMixerControlView(QWidget *parent)
 	: QWidget(parent)
@@ -29,10 +53,16 @@ DJMixerControlView::DJMixerControlView(QWidget *parent)
 	mBeatOffset->setToolTip(tr("beat start offset"));
 	mBeatOffset->setRange(-16,99);
 
-	mTempoMul = new QDoubleSpinBox(this);
-	mTempoMul->setToolTip(tr("tempo multiplier"));
-	mTempoMul->setRange(0.01,4);
-	mTempoMul->setValue(1.0);
+	mTempoMulFree = new QDoubleSpinBox(this);
+	mTempoMulFree->setToolTip(tr("tempo multiplier"));
+	mTempoMulFree->setRange(0.01,4);
+	mTempoMulFree->setValue(1.0);
+	mTempoMulFree->setSingleStep(0.01);
+
+	mTempoMulSynced = new PowerOfTwoSpinBox(this);
+	mTempoMulSynced->setToolTip(tr("tempo multiplier"));
+	mTempoMulSynced->setRange(-2,2);
+	mTempoMulSynced->setValue(0);
 
 	mLoadBtn->setToolTip(tr("load selected file"));
 	mResetBtn->setToolTip(tr("reset playback position"));
@@ -83,15 +113,18 @@ DJMixerControlView::DJMixerControlView(QWidget *parent)
 	tempoAndBeatLayout->setSpacing(0);
 	tempoAndBeatLayout->addStretch();
 	tempoAndBeatLayout->addWidget(mBeatOffset, 0, Qt::AlignHCenter);
-	tempoAndBeatLayout->addWidget(mTempoMul, 0, Qt::AlignHCenter);
+	tempoAndBeatLayout->addWidget(mTempoMulSynced, 0, Qt::AlignHCenter);
+	tempoAndBeatLayout->addWidget(mTempoMulFree, 0, Qt::AlignHCenter);
 	tempoAndBeatLayout->addStretch();
 
 	mLayout->addLayout(loadResetLayout,0);
 	mLayout->addLayout(playLayout,0);
 	mLayout->addLayout(seekLayout,0);
 	mLayout->addWidget(mProgressBar,1, Qt::AlignHCenter);
-	//mLayout->addWidget(mBeatOffset, 1, Qt::AlignHCenter);
 	mLayout->addLayout(tempoAndBeatLayout, 0);
+
+	//hide the free tempo mul
+	mTempoMulFree->setVisible(false);
 
 	//connect up our signals
 	QObject::connect(
@@ -106,6 +139,13 @@ DJMixerControlView::DJMixerControlView(QWidget *parent)
 			mSyncBtn,
 			SIGNAL(toggled(bool)),
 			this, SIGNAL(syncModeChanged(bool)));
+	
+	//when the sync mode changes the tempo mul step changes too
+	QObject::connect(
+			mSyncBtn,
+			SIGNAL(toggled(bool)),
+			this, SLOT(changeTempoMulStep(bool)));
+
 	QObject::connect(
 			mSeekFwdBtn,
 			SIGNAL(clicked(bool)),
@@ -126,6 +166,14 @@ DJMixerControlView::DJMixerControlView(QWidget *parent)
 			mBeatOffset,
 			SIGNAL(valueChanged(int)),
 			this, SIGNAL(beatOffsetChanged(int)));
+	QObject::connect(
+			mTempoMulFree,
+			SIGNAL(valueChanged(double)),
+			this, SLOT(tempoMulFreeChanged(double)));
+	QObject::connect(
+			mTempoMulSynced,
+			SIGNAL(valueChanged(int)),
+			this, SLOT(tempoMulSyncedChanged(int)));
 }
 
 bool DJMixerControlView::cueMode() const {
@@ -179,5 +227,35 @@ void DJMixerControlView::setProgress(int progress){
 
 void DJMixerControlView::setBeatOffset(int offset){
 	mBeatOffset->setValue(offset);
+}
+
+void DJMixerControlView::setTempoMul(double mul){
+	mTempoMulFree->setValue(mul);
+	//XXX set power of two value as well..
+}
+
+void DJMixerControlView::tempoMulFreeChanged(double mul){
+	if(!mSyncBtn->isChecked())
+		emit(tempoMulChanged(mul));
+}
+
+void DJMixerControlView::tempoMulSyncedChanged(int mul){
+	if(mSyncBtn->isChecked()){
+		double mulDouble = pow(2.0, (double)mul);
+		emit(tempoMulChanged(mulDouble));
+	}
+}
+
+//we change the tempo mul step based on syncing..
+//if we're running free we have a small step, if not we should jump
+//by integer values.
+void DJMixerControlView::changeTempoMulStep(bool sync){
+	if(sync){
+		mTempoMulFree->setVisible(false);
+		mTempoMulSynced->setVisible(true);
+	} else {
+		mTempoMulSynced->setVisible(false);
+		mTempoMulFree->setVisible(true);
+	}
 }
 

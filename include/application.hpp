@@ -17,8 +17,6 @@ class AudioDriverThread;
 class DataJockeyApplication {
 	public:
 		static int run(int argc, char *argv[]);
-		static void connectMixerPanelModelView(MixerPanelModel * model, MixerPanelView * view);
-		static void connectMixerPanelModelDriver(MixerPanelModel * model, AudioDriver * driver);
 };
 
 class AudioDriverThread : public QThread {

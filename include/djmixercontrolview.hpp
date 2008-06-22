@@ -3,12 +3,19 @@
 
 #include <QWidget>
 #include <QHBoxLayout>
+#include <QSpinBox>
 
 class QVBoxLayout;
 class QToolButton;
 class QProgressBar;
-class QSpinBox;
 class QDoubleSpinBox;
+
+class PowerOfTwoSpinBox : public QSpinBox {
+	Q_OBJECT
+	public:
+		PowerOfTwoSpinBox(QWidget * parent = NULL);
+		virtual QString textFromValue(int val) const;
+};
 
 class DJMixerControlView : public QWidget {
 	Q_OBJECT
@@ -27,6 +34,7 @@ class DJMixerControlView : public QWidget {
 		void loadClicked();
 		void resetClicked();
 		void beatOffsetChanged(int offset);
+		void tempoMulChanged(double mul);
 	public slots:
 		void setCueing(bool cueing = true);
 		void setPaused(bool paused = true);
@@ -38,6 +46,11 @@ class DJMixerControlView : public QWidget {
 		//0..100
 		void setProgress(int progress);
 		void setBeatOffset(int offset);
+		void setTempoMul(double mul);
+	protected slots:
+		void changeTempoMulStep(bool sync);
+		void tempoMulFreeChanged(double mul);
+		void tempoMulSyncedChanged(int mul);
 	private:
 		QToolButton * mLoadBtn;
 		QToolButton * mResetBtn;
@@ -48,7 +61,8 @@ class DJMixerControlView : public QWidget {
 		QToolButton * mSeekBkwdBtn;
 		QProgressBar * mProgressBar;
 		QSpinBox * mBeatOffset;
-		QDoubleSpinBox * mTempoMul;
+		QDoubleSpinBox * mTempoMulFree;
+		PowerOfTwoSpinBox * mTempoMulSynced;
 
 		QVBoxLayout * mLayout;
 };
