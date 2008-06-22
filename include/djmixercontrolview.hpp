@@ -15,6 +15,12 @@ class PowerOfTwoSpinBox : public QSpinBox {
 	public:
 		PowerOfTwoSpinBox(QWidget * parent = NULL);
 		virtual QString textFromValue(int val) const;
+	signals:
+		void valueChanged(double);
+	public slots:
+		void setValue(double val);
+	protected slots:
+		void setValue(int val);
 };
 
 class DJMixerControlView : public QWidget {

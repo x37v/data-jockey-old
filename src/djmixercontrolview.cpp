@@ -12,6 +12,11 @@ PowerOfTwoSpinBox::PowerOfTwoSpinBox(QWidget * parent) :
 	QSpinBox(parent)
 {
 	lineEdit()->setReadOnly(true);
+	//connect up our internal signals and slots
+	QObject::connect(this,
+			SIGNAL(valueChanged(int)),
+			this,
+			SLOT(setValue(int)));
 }
 
 QString PowerOfTwoSpinBox::textFromValue(int val) const {
@@ -27,6 +32,22 @@ QString PowerOfTwoSpinBox::textFromValue(int val) const {
 		powerOfTwoVal.append(denom);
 	}
 	return powerOfTwoVal;
+}
+
+void PowerOfTwoSpinBox::setValue(double val){
+	if(val == 0.0)
+		QSpinBox::setValue(0);
+	else {
+		int intVal = (int)(log(val) / log(2.0));
+		QSpinBox::setValue(intVal);
+	}
+}
+
+//this is a protected function just so we emit the correct value
+void PowerOfTwoSpinBox::setValue(int val){
+	//convert to power of two!
+	double powerOfTwoVal = pow(2.0,(double)val);
+	emit(valueChanged(powerOfTwoVal));
 }
 
 DJMixerControlView::DJMixerControlView(QWidget *parent)
@@ -62,7 +83,7 @@ DJMixerControlView::DJMixerControlView(QWidget *parent)
 	mTempoMulSynced = new PowerOfTwoSpinBox(this);
 	mTempoMulSynced->setToolTip(tr("tempo multiplier"));
 	mTempoMulSynced->setRange(-2,2);
-	mTempoMulSynced->setValue(0);
+	mTempoMulSynced->setValue(0.0);
 
 	mLoadBtn->setToolTip(tr("load selected file"));
 	mResetBtn->setToolTip(tr("reset playback position"));
