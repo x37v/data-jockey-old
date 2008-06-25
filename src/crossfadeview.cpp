@@ -50,6 +50,16 @@ CrossFadeView::CrossFadeView(unsigned int numMixers, QWidget *parent) :
 
 	//set this widgets layout to mLayout
 	setLayout(mLayout);
+
+	//connect our internal signals
+	QObject::connect(mSlider,
+			SIGNAL(valueChanged(int)),
+			this,
+			SLOT(setPosition(int)));
+	QObject::connect(mSelection,
+			SIGNAL(currentIndexChanged(int)),
+			this,
+			SLOT(setIndex(int)));
 }
 
 CrossFadeView::~CrossFadeView(){
@@ -76,9 +86,9 @@ void CrossFadeView::disable(){
 	}
 }
 
-void CrossFadeView::currentIndexChanged(int index){
+void CrossFadeView::setIndex(int index){
 	if(index == 0){
-		disable();
+		emit(disabled());
 	} else if (index > 0 && (index - 1) < (int)mPairList.size()){
 		int left, right;
 		left = mPairList[index - 1][0];
@@ -87,5 +97,18 @@ void CrossFadeView::currentIndexChanged(int index){
 	} else {
 		//XXX this shouldn't ever happen
 	}
+}
+
+void CrossFadeView::setPosition(float val){
+	if(val < 0.0)
+		val = 0.0f;
+	else if(val > 1.0f)
+		val = 1.0f;
+	mSlider->setValue((int)(val * 100));
+}
+
+void CrossFadeView::setPosition(int val){
+	float floatVal = (float)val / 100.0f;
+	emit(positionChanged(floatVal));
 }
 

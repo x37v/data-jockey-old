@@ -269,6 +269,38 @@ void ApplicationView::connectToModel(){
 			mixerModel->master(),
 			SLOT(setSyncSource(unsigned int)));
 
+	//cross fade
+	QObject::connect(
+			mixerModel->crossFade(),
+			SIGNAL(mixersChanged(unsigned int, unsigned int)),
+			mMixerPanel->crossFade(),
+			SLOT(setMixers(unsigned int, unsigned int)));
+	QObject::connect(
+			mMixerPanel->crossFade(),
+			SIGNAL(mixersChanged(unsigned int, unsigned int)),
+			mixerModel->crossFade(),
+			SLOT(setMixers(unsigned int, unsigned int)));
+	QObject::connect(
+			mixerModel->crossFade(),
+			SIGNAL(disabled()),
+			mMixerPanel->crossFade(),
+			SLOT(disable()));
+	QObject::connect(
+			mMixerPanel->crossFade(),
+			SIGNAL(disabled()),
+			mixerModel->crossFade(),
+			SLOT(disable()));
+	QObject::connect(
+			mixerModel->crossFade(),
+			SIGNAL(positionChanged(float)),
+			mMixerPanel->crossFade(),
+			SLOT(setPosition(float)));
+	QObject::connect(
+			mMixerPanel->crossFade(),
+			SIGNAL(positionChanged(float)),
+			mixerModel->crossFade(),
+			SLOT(setPosition(float)));
+
 	//tag editor + tag model
 	QObject::connect(
 			mTagEditor,

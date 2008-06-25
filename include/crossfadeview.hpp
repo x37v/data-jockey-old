@@ -16,11 +16,14 @@ class CrossFadeView : public QWidget {
 	signals:
 		void mixersChanged(unsigned int left, unsigned int right);
 		void disabled();
+		void positionChanged(float val);
 	public slots:
 		void setMixers(unsigned int left, unsigned int right);
 		void disable();
+		void setPosition(float val);
 	protected slots:
-		void currentIndexChanged(int index);
+		void setIndex(int index);
+		void setPosition(int pos);
 	private:
 		QVBoxLayout * mLayout;
 		QSlider * mSlider;

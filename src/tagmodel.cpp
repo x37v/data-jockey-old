@@ -3,8 +3,40 @@
 #include "tagmodel.hpp"
 #include "treeitem.h"
 #include <QSqlRecord>
+#include <QStringList>
 
 #define ID_COL 1
+
+TagModelItemMimeData::TagModelItemMimeData(){
+}
+
+QStringList TagModelItemMimeData::formats() const {
+	QStringList types;
+	types << "application/tag-id-list";
+	return types;
+}
+
+bool TagModelItemMimeData::hasFormat(const QString & mimeType ) const {
+	if(mimeType == "application/tag-id-list")
+		return true;
+	else
+		return false;
+}
+
+QVariant TagModelItemMimeData::retrieveData ( const QString & mimeType, QVariant::Type type ) const {
+	if(mimeType == "application/tag-id-list" && type == QVariant::List){
+		QList<QVariant> intList;
+		for(int i = 0; i < mData.size(); i++)
+			intList.push_back(mData[i]);
+		return QVariant::fromValue(intList);
+	} else 
+		return QVariant();
+}
+
+void TagModelItemMimeData::addItem(int id){
+	mData.push_back(id);
+}
+
 
 const QString TagModel::cQueryStr(
 		"select tags.id id,\n"
@@ -25,6 +57,7 @@ TagModel::TagModel(const QSqlDatabase & db, QObject * parent) :
 	rootData << "empty";
 	setRoot(new TreeItem(rootData));
 	buildFromQuery();
+	setSupportedDragActions(Qt::ActionMask);
 }
 
 TagModel::~TagModel(){
@@ -43,8 +76,53 @@ QList<QPair<int, QString> *> * TagModel::classList() const {
 	return mClassList;
 }
 
+Qt::ItemFlags TagModel::flags(const QModelIndex &index) const {
+	Qt::ItemFlags defaultFlags = TreeModel::flags(index);
+
+	if (index.isValid()) {
+		//if it isn't a tag class then it can be dragged
+		if(index.parent().isValid() && index.parent().internalPointer() != root())
+			return Qt::ItemIsDragEnabled | defaultFlags;
+		else
+			return defaultFlags;
+	} else
+		return defaultFlags;
+}
+
+QStringList TagModel::mimeTypes() const {
+	QStringList types;
+	types << "application/tag-id-list";
+	return types;
+}
+
+QMimeData * TagModel::mimeData ( const QModelIndexList & indexes ) const {
+	TagModelItemMimeData * data = new TagModelItemMimeData;
+	foreach(QModelIndex index, indexes){
+		//add the index to our data list, only if it isn't a class
+		if(index.isValid() && 
+				index.parent().isValid() &&
+				index.parent().internalPointer() != root())
+			data->addItem(index.sibling(index.row(), ID_COL).data().toInt());
+	}
+	return data;
+}
+
 #include <iostream>
 using namespace std;
+
+void TagModel::addWorkTagAssociation(int work_id, int tag_id){
+	QString queryStr;
+	//first make sure this association doesn't already exist
+	queryStr.sprintf("select * from tags\n"
+			"\tjoin audio_work_tags on tags.id = audio_work_tags.tag_id\n"
+			"where tags.id = %d AND audio_work_tags.audio_work_id = %d", tag_id, work_id);
+	mAddTagQuery.exec(queryStr);
+	//if it doesn't exist, then insert it
+	if(!mAddTagQuery.first()){
+		queryStr.sprintf("insert into audio_work_tags (audio_work_id, tag_id) values(%d, %d)", work_id, tag_id);
+		mAddTagQuery.exec(queryStr);
+	}
+}
 
 void TagModel::addTag(int classId, QString tagName){
 	QString queryStr;

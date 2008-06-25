@@ -92,33 +92,3 @@ int DataJockeyApplication::run(int argc, char *argv[]){
 	return app.exec();
 }
 
-AudioDriverThread::AudioDriverThread(QObject * parent) :
-	QThread(parent)
-{
-}
-
-void AudioDriverThread::setAudioDriver(AudioDriver * driver){
-	mDriver = driver;
-	mDriver->moveToThread(this);
-}
-
-void AudioDriverThread::run(){
-	if(mDriver){
-		//start the driver if it hasn't been started already
-		if(mDriver->audioIO()->getState() != JackCpp::AudioIO::active)
-			mDriver->start();
-		QTimer *timer = new QTimer(mDriver);
-		connect(timer, SIGNAL(timeout()), mDriver, SLOT(processAudioEvents()));
-		//every 5 ms
-		timer->start(5);
-	}
-	exec();
-}
-
-void AudioDriverThread::stop(){
-	if(mDriver){
-		mDriver->stop();
-	}
-	quit();
-}
-

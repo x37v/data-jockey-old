@@ -26,6 +26,7 @@ AudioWorkDBView::AudioWorkDBView(AudioWorkTableModel * model,
 	mTableView->setModel(model);
 	mTableView->setColumnHidden(0, true);
 	mTableView->horizontalHeader()->setMovable(true);
+	mTableView->horizontalHeader()->resizeSections(QHeaderView::ResizeToContents);
 	mTableView->verticalHeader()->setVisible(false);
 	mTableView->setSelectionBehavior(QAbstractItemView::SelectRows);
 	mTableView->setSelectionMode(QAbstractItemView::SingleSelection);

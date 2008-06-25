@@ -18,6 +18,10 @@ TagEditor::TagEditor(TagModel * model, QWidget * parent) :
 	mTagClassSelect = new QComboBox(this);
 	mTagNameInput = new QLineEdit(this);
 
+	//allow for dragging from the tagview
+	mTagView->setSelectionMode(QAbstractItemView::ExtendedSelection);
+	mTagView->setDragEnabled(true);
+
 	inputLayout->addWidget(mTagClassSelect, 0);
 	inputLayout->addWidget(mTagNameInput, 0);
 	inputLayout->setContentsMargins(0,0,0,0);

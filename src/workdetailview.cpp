@@ -28,6 +28,10 @@ WorkDetailView::WorkDetailView(
 	mTitle = new QLineEdit(tr("title"), this);
 	mTagModel = new WorkTagModelFilter(tagModel);
 	mTagView = new TagView(mTagModel, this);
+	
+	//allow dropping into the tag view
+	mTagView->viewport()->setAcceptDrops(true);
+	mTagView->setDropIndicatorShown(true);
 
 	mArtist->setReadOnly(true);
 	mTitle->setReadOnly(true);

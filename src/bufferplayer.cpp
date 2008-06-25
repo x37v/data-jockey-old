@@ -476,7 +476,8 @@ void BufferPlayer::GetState::operateOnPlayer(BufferPlayerPtr player){
 		mBeatOffset = player->getBeatOffset();
 		mTempoMul = player->getTempoMultiplier();
 		if(player->getPlayMode() == syncPlayback){
-			mCurBeat = (unsigned int)(player->getBeatIndex() * mTempoMul);
+			//mCurBeat = (unsigned int)(player->getBeatIndex() * mTempoMul);
+			mCurBeat = (unsigned int)(player->getBeatIndex());
 			mPlayMode = syncPlayback;
 		} else {
 			mCurBeat = (unsigned int)(player->getBeatIndex());

@@ -2,12 +2,57 @@
 #include "tagmodel.hpp"
 #include <QSqlQuery>
 #include <QSqlRecord>
+#include <QMimeData>
+#include <QStringList>
+#include <QString>
 
 WorkTagModelFilter::WorkTagModelFilter(TagModel * model):
 	QSortFilterProxyModel(model), mWorkTagsQuery("", model->db())
 {
 	setSourceModel(model);
+	mModel = model;
 	mWork = -1;
+}
+
+Qt::DropActions WorkTagModelFilter::supportedDropActions() const {
+	return Qt::CopyAction;
+}
+
+Qt::ItemFlags WorkTagModelFilter::flags(const QModelIndex &index) const {
+	Qt::ItemFlags defaultFlags = sourceModel()->flags(index);
+	return Qt::ItemIsDropEnabled | defaultFlags;
+}
+
+//accept the drop data!
+bool WorkTagModelFilter::dropMimeData( const QMimeData * data, 
+		Qt::DropAction action, int row, int column, 
+		const QModelIndex & parent ){
+	Q_UNUSED(row);
+	Q_UNUSED(column);
+	Q_UNUSED(parent);
+
+	if(mWork < 0)
+		return false;
+
+	if(action == Qt::IgnoreAction)
+		return true;
+
+	if(!data->hasFormat("application/tag-id-list"))
+		return false;
+	//cast it!
+	const TagModelItemMimeData *tagModelData = qobject_cast<const TagModelItemMimeData *>(data);
+	if(tagModelData){
+		//iterate over our data
+		foreach(QVariant id, tagModelData->retrieveData("application/tag-id-list", QVariant::List).toList()){
+			mModel->addWorkTagAssociation(mWork, id.toInt());
+		}
+		//hack for now, just set the work again.. this will update the filter
+		int work = mWork;
+		mWork = 0;
+		setWork(work);
+		return true;
+	} else
+		return false;
 }
 
 void WorkTagModelFilter::setWork(int work){

@@ -15,6 +15,12 @@ class WorkTagModelFilter : public QSortFilterProxyModel {
 		int work();
 		bool filterAcceptsRow(int sourceRow,
 				const QModelIndex &sourceParent) const;
+		//the below are here to allow for droping of drag data
+		Qt::DropActions supportedDropActions() const;
+		Qt::ItemFlags flags(const QModelIndex &index) const;
+		virtual bool dropMimeData( const QMimeData * data, 
+				Qt::DropAction action, int row, int column, 
+				const QModelIndex & parent );
 	signals:
 		void workChanged(int);
 	public slots:
@@ -25,6 +31,7 @@ class WorkTagModelFilter : public QSortFilterProxyModel {
 		int mWork;
 		std::set<int> mTagClassIds;
 		std::set<int> mTagIds;
+		TagModel * mModel;
 };
 
 #endif

@@ -3,8 +3,10 @@
 
 #include "audioio.hpp"
 #include <QObject>
+#include <QThread>
 
 class MixerPanelModel;
+class AudioDriverThread;
 
 class AudioDriver : public QObject {
 	Q_OBJECT
@@ -57,6 +59,18 @@ class AudioDriver : public QObject {
 		unsigned int mNumMixers;
 		bool mReportTempoMul;
 		std::vector<bool> mReportPlayerTempoMul;
+};
+
+class AudioDriverThread : public QThread {
+	Q_OBJECT
+	public:
+		AudioDriverThread(QObject * parent = NULL);
+		void setAudioDriver(AudioDriver * driver);
+		void run();
+	public slots:
+		void stop();
+	private:
+		AudioDriver * mDriver;
 };
 
 #endif

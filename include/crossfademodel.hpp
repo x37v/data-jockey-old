@@ -10,13 +10,23 @@ class CrossFadeModel : public QObject {
 		//sync this model's state to another model
 		//signals which don't change the model's state only go from this model to the other, not back
 		void syncToModel(CrossFadeModel * other, Qt::ConnectionType connectionType = Qt::AutoCompatConnection);
+		float valueLeft() const;
+		float valueRight() const;
+		bool enabled() const;
+		unsigned int mixerLeft() const;
+		unsigned int mixerRight() const;
+		float scaleVolume(unsigned int index, float mixer_volume);
 	signals:
 		void mixersChanged(unsigned int left, unsigned int right);
 		void disabled();
+		void positionChanged(float val);
 	public slots:
 		void setMixers(unsigned int left, unsigned int right);
 		void disable();
+		void setPosition(float val);
 	private:
+		bool mRecursing;
+		float mPosition;
 		unsigned int mNumMixers;
 		unsigned int mLeft;
 		unsigned int mRight;
