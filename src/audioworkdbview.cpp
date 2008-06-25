@@ -7,15 +7,12 @@
 #include <QHeaderView>
 #include <QSqlRecord>
 #include <QSqlTableModel>
+#include <QAbstractItemModel>
 
-#define WORK_ID_COL 0
-
-AudioWorkDBView::AudioWorkDBView(AudioWorkTableModel * model, 
+AudioWorkDBView::AudioWorkDBView(QAbstractItemModel * model, 
 		QWidget *parent) :
 	QWidget(parent)
 {
-	mModel = model;
-
 	//create the layouts
 	QVBoxLayout * layout = new QVBoxLayout(this);
 	QHBoxLayout * buttonLayout = new QHBoxLayout;
@@ -26,7 +23,7 @@ AudioWorkDBView::AudioWorkDBView(AudioWorkTableModel * model,
 	mTableView->setModel(model);
 	mTableView->setColumnHidden(0, true);
 	mTableView->horizontalHeader()->setMovable(true);
-	mTableView->horizontalHeader()->resizeSections(QHeaderView::ResizeToContents);
+	//mTableView->horizontalHeader()->resizeSections(QHeaderView::ResizeToContents);
 	mTableView->verticalHeader()->setVisible(false);
 	mTableView->setSelectionBehavior(QAbstractItemView::SelectRows);
 	mTableView->setSelectionMode(QAbstractItemView::SingleSelection);
@@ -35,10 +32,10 @@ AudioWorkDBView::AudioWorkDBView(AudioWorkTableModel * model,
 	mApplyFilterButton = new QPushButton("apply filter", this);
 	mRemoveFilterButton = new QPushButton("remove filter", this);
 
-	QObject::connect(mApplyFilterButton, SIGNAL(clicked(bool)),
-			this, SLOT(setFiltered()));
-	QObject::connect(mRemoveFilterButton, SIGNAL(clicked(bool)),
-			this, SLOT(setUnFiltered()));
+	//QObject::connect(mApplyFilterButton, SIGNAL(clicked(bool)),
+			//this, SLOT(setFiltered()));
+	//QObject::connect(mRemoveFilterButton, SIGNAL(clicked(bool)),
+			//this, SLOT(setUnFiltered()));
 
 	//add items to the buttonLayout
 	buttonLayout->addWidget(mApplyFilterButton, 0);
@@ -50,9 +47,6 @@ AudioWorkDBView::AudioWorkDBView(AudioWorkTableModel * model,
 	layout->addWidget(mTableView, 10);
 	layout->addLayout(buttonLayout, 0);
 	setLayout(layout);
-
-	//QObject::connect(mTableView, SIGNAL(clicked(const QModelIndex)),
-			//this, SLOT(selectWork(const QModelIndex)));
 
 	QObject::connect(mTableView->selectionModel(), 
 			SIGNAL(selectionChanged(const QItemSelection, const QItemSelection)),
@@ -74,7 +68,7 @@ QPushButton * AudioWorkDBView::removeFilterButton(){
 
 void AudioWorkDBView::selectWork(const QModelIndex & index ){
 	QSqlRecord record = ((QSqlTableModel *)mTableView->model())->record(index.row());
-	QVariant itemData = record.value(WORK_ID_COL);
+	QVariant itemData = record.value(AudioWorkTableModel::idColumn);
 	//find the id of the work and emit that
 	if(itemData.isValid() && itemData.canConvert(QVariant::Int)){
 		int work = itemData.toInt();
@@ -83,11 +77,13 @@ void AudioWorkDBView::selectWork(const QModelIndex & index ){
 }
 
 void AudioWorkDBView::selectionChanged( const QItemSelection & selected){
-	//if valid, otherwise send a -1 for work selected
-	if(selected.indexes().size() > 0)
-		selectWork(selected.indexes()[0]);
-	else 
-		emit(workSelected(-1));
+	Q_UNUSED(selected);
+	QModelIndex index = mTableView->selectionModel()->currentIndex(); 
+	index = index.sibling(index.row(), AudioWorkTableModel::idColumn);
+	int work_id = -1;
+	if(index.isValid())
+		work_id = mTableView->model()->data(index).toInt();
+	emit(workSelected(work_id));
 }
 
 void AudioWorkDBView::setFiltered(){
@@ -100,13 +96,13 @@ void AudioWorkDBView::setFiltered(){
 		//work_index = itemData.toInt();
 		//selected = true;
 	//}
-	mModel->setFiltered();
+	//mModel->setFiltered();
 	//if(selected){
 	//XXX what to do now?
 	//}
 }
 
 void AudioWorkDBView::setUnFiltered(){
-	mModel->setUnFiltered();
+	//mModel->setUnFiltered();
 }
 

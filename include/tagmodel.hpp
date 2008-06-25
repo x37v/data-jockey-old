@@ -31,6 +31,7 @@ class TagModel : public TreeModel {
 				QObject * parent = NULL);
 		virtual ~TagModel();
 		static int idColumn();
+		static int countColumn();
 		QSqlDatabase db() const;
 		QList<QPair<int, QString> *> * classList() const;
 		//this is how you associate a tag with a work
@@ -56,5 +57,6 @@ class TagModel : public TreeModel {
 		const static QString cQueryStr;
 		QSqlQuery mQuery;
 		QSqlQuery mAddTagQuery;
+		void updateTagCount(int tag_id);
 };
 #endif

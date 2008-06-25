@@ -23,6 +23,7 @@
 #include "mixerchannelmodel.hpp"
 #include "mixerpanelmodel.hpp"
 #include "tagmodel.hpp"
+#include "workfiltermodel.hpp"
 
 //qt stuff
 #include <QSplitter>
@@ -37,7 +38,7 @@ ApplicationView::ApplicationView(ApplicationModel * model):
 
 	//create subviews
 	mWorkDetail = new WorkDetailView(mModel->tagModel(), mModel->db(), this);
-	mAudioWorkDB = new AudioWorkDBView(mModel->audioWorkTable(), this);
+	mAudioWorkDB = new AudioWorkDBView(mModel->filteredWorkTable(), this);
 	mMixerPanel = new MixerPanelView(mModel->mixerPanel()->numMixerChannels(), this);
 	mTagEditor = new TagEditor(mModel->tagModel(), this);
 

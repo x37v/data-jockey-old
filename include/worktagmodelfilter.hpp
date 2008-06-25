@@ -14,7 +14,7 @@ class WorkTagModelFilter : public QSortFilterProxyModel {
 		WorkTagModelFilter(TagModel * model);
 		int work();
 		TagModel * sourceTagModel();
-		bool filterAcceptsRow(int sourceRow,
+		virtual bool filterAcceptsRow(int sourceRow,
 				const QModelIndex &sourceParent) const;
 		//the below are here to allow for droping of drag data
 		Qt::DropActions supportedDropActions() const;

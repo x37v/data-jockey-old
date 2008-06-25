@@ -6,23 +6,20 @@
 
 #include <iostream>
 
+const unsigned int AudioWorkTableModel::idColumn = 0;
+const unsigned int AudioWorkTableModel::artistColumn = 1;
+const unsigned int AudioWorkTableModel::titleColumn = 2;
+const unsigned int AudioWorkTableModel::albumColumn = 3;
+const unsigned int AudioWorkTableModel::trackColumn = 4;
+
 bool AudioWorkTableModel::cInited = false;
-std::string AudioWorkTableModel::cFilteredQuery;
-std::string AudioWorkTableModel::cUnFilteredQuery;
-std::string AudioWorkTableModel::cSortByArtistASC = "order by artists.name ASC, albums.name ASC, track ASC, audio_works.name ASC";
-std::string AudioWorkTableModel::cSortByArtistDESC = "order by artists.name DESC, albums.name ASC, track ASC, audio_works.name ASC";
-std::string AudioWorkTableModel::cSortByAlbumASC = "order by albums.name ASC, track ASC, artists.name ASC, audio_works.name ASC";
-std::string AudioWorkTableModel::cSortByAlbumDESC = "order by albums.name DESC, track ASC, artists.name ASC, audio_works.name ASC";
-std::string AudioWorkTableModel::cSortByTitleASC = "order by audio_works.name ASC, artists.name ASC, albums.name ASC, track ASC ";
-std::string AudioWorkTableModel::cSortByTitleDESC = "order by audio_works.name DESC, artists.name ASC, albums.name ASC, track ASC";
-std::string AudioWorkTableModel::cSortByOther = ", artists.name ASC, albums.name ASC, track ASC, audio_works.name ASC";
+QString AudioWorkTableModel::cQuery;
 
 void AudioWorkTableModel::init(const QSqlDatabase & db){
 	if(cInited)
 		return;
-	std::stringstream queryBeforeFilter, queryAfterFilter;
-	std::vector<std::string> descriptorJoinClauses;
-	std::vector<std::string> descriptorFieldNames;
+	std::vector<QString> descriptorJoinClauses;
+	std::vector<QString> descriptorFieldNames;
 	int nameCol;
 	int idCol;
 	//grab the descriptor types
@@ -35,54 +32,52 @@ void AudioWorkTableModel::init(const QSqlDatabase & db){
 	while(descriptorTypeTable.next()){
 		std::stringstream fieldName;
 		std::stringstream join;
-		std::string name(descriptorTypeTable.value(nameCol).toString().toStdString());
+		QString name(descriptorTypeTable.value(nameCol).toString());
 		int id = descriptorTypeTable.value(idCol).toInt();
-		fieldName << "d" << id << ".float_value as '" << name << "'";
+		fieldName << "d" << id << ".float_value as '" << name.toStdString() << "'";
 		join << "left join descriptors as d" << id << 
 			" on audio_works.id = d" << id << 
 			".audio_work_id and d" << id << ".descriptor_type_id = " << id; 
-		descriptorFieldNames.push_back(fieldName.str());
-		descriptorJoinClauses.push_back(join.str());
+		descriptorFieldNames.push_back(QString(fieldName.str().c_str()));
+		descriptorJoinClauses.push_back(QString(join.str().c_str()));
 	}
 
-	std::stringstream mainQuery;
-	queryBeforeFilter << "select " <<  std::endl <<
-		"\taudio_works.id as id," << std::endl <<
-		"\tartists.name as artist," << std::endl <<
-		"\taudio_works.name as title," << std::endl <<
-		"\talbums.name as album, " << std::endl <<
-		"\talbum_audio_works.track as track, " << std::endl <<
-		"\taudio_files.milliseconds as duration, " << std::endl <<
-		"\taudio_file_types.name as \"file type\", " << std::endl;
+	QString queryStr;
+	queryStr.append("select\n"
+		"\taudio_works.id as id,\n"
+		"\tartists.name as artist,\n"
+		"\taudio_works.name as title,\n"
+		"\talbums.name as album, \n"
+		"\talbum_audio_works.track as track, \n"
+		"\taudio_files.milliseconds as duration, \n"
+		"\taudio_file_types.name as \"file type\", ");
 
-	for(unsigned int i = 0; i < descriptorFieldNames.size() - 1; i++)
-		queryBeforeFilter << "\t" << descriptorFieldNames[i] << ", " << std::endl;
-	queryBeforeFilter << "\t" << descriptorFieldNames.back() << " " << std::endl;
+	for(unsigned int i = 0; i < descriptorFieldNames.size() - 1; i++){
+		queryStr.append("\t");
+		queryStr.append(descriptorFieldNames[i]);
+		queryStr.append(", \n");
+	}
+	queryStr.append("\t");
+	queryStr.append(descriptorFieldNames.back());
+	queryStr.append(" \n");
 
-	queryBeforeFilter << "from audio_works " << std::endl;
-	queryAfterFilter <<
-		"\tinner join audio_files on audio_files.id = audio_works.audio_file_id " << std::endl <<
-		"\tinner join audio_file_types on audio_file_types.id = audio_files.audio_file_type_id " << std::endl <<
-		"\tinner join artist_audio_works on artist_audio_works.audio_work_id = audio_works.id  " << std::endl <<
-		"\tinner join artists on artists.id = artist_audio_works.artist_id " << std::endl <<
-		"\tinner join album_audio_works on audio_works.id = album_audio_works.audio_work_id " << std::endl <<
-		"\tinner join albums on album_audio_works.album_id = albums.id " << std::endl;
-	for(unsigned int i = 0; i < descriptorJoinClauses.size(); i++)
-		queryAfterFilter << "\t" << descriptorJoinClauses[i] << std::endl;
+	queryStr.append("from audio_works \n"
+		"\tinner join audio_files on audio_files.id = audio_works.audio_file_id \n"
+		"\tinner join audio_file_types on audio_file_types.id = audio_files.audio_file_type_id \n"
+		"\tinner join artist_audio_works on artist_audio_works.audio_work_id = audio_works.id  \n"
+		"\tinner join artists on artists.id = artist_audio_works.artist_id \n"
+		"\tinner join album_audio_works on audio_works.id = album_audio_works.audio_work_id \n"
+		"\tinner join albums on album_audio_works.album_id = albums.id \n");
+	for(unsigned int i = 0; i < descriptorJoinClauses.size(); i++){
+		queryStr.append("\t");
+		queryStr.append(descriptorJoinClauses[i]);
+		queryStr.append("\n");
+	}
 
-	queryAfterFilter << "group by audio_works.id";
-		//<< std::endl <<
-			//"order by artists.name, albums.name, audio_works.name";
+	queryStr.append("group by audio_works.id\n");
+	queryStr.append("order by artists.name ASC, albums.name ASC, track ASC, audio_works.name ASC\n");
 
-	std::stringstream tmpUnfiltered;
-	tmpUnfiltered << queryBeforeFilter.str() << queryAfterFilter.str();
-	cUnFilteredQuery = tmpUnfiltered.str();
-
-	std::stringstream tmpFiltered;
-	tmpFiltered << queryBeforeFilter.str() <<
-		"\tjoin filtered_audio_works on audio_works.id = filtered_audio_works.audio_work_id" << std::endl <<
-		queryAfterFilter.str();
-	cFilteredQuery = tmpFiltered.str();
+	cQuery = queryStr;
 	cInited = true;
 }
 
@@ -94,12 +89,10 @@ AudioWorkTableModel::AudioWorkTableModel(
 	std::stringstream query;
 	if(!cInited)
 		init(db);
-	mSortString = cSortByArtistASC;
-	query << cFilteredQuery.c_str() << std::endl << mSortString << std::endl;
-	setQuery(query.str().c_str(), db);
-	mFiltered = true;
+	setQuery(cQuery, db);
 }
 
+/*
 //XXX this is sort of a hack..
 void AudioWorkTableModel::sort(int column, Qt::SortOrder order){
 	std::stringstream queryStr;
@@ -146,6 +139,7 @@ void AudioWorkTableModel::sort(int column, Qt::SortOrder order){
 	setQuery(queryStr.str().c_str());
 	query();
 }
+*/
 
 //reformat the time display role so that it is in MM:SS not milliseconds
 QVariant AudioWorkTableModel::data( const QModelIndex & index, int role) const {
@@ -166,18 +160,3 @@ QVariant AudioWorkTableModel::data( const QModelIndex & index, int role) const {
 	return ret;
 }
 
-void AudioWorkTableModel::setFiltered(bool filtered){
-	std::stringstream queryStr;
-	mFiltered = filtered;
-	if(filtered)
-		queryStr << cFilteredQuery;
-	else
-		queryStr << cUnFilteredQuery;
-	queryStr << std::endl << mSortString << std::endl;
-	setQuery(queryStr.str().c_str());
-}
-
-void AudioWorkTableModel::setUnFiltered(){
-	mFiltered = false;
-	setFiltered(false);
-}

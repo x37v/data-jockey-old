@@ -5,7 +5,7 @@
 
 #include <QSqlQueryModel>
 #include <QSqlQuery>
-#include <string>
+#include <QString>
 
 class QSqlDatabase;
 class QSqlRecord;
@@ -14,29 +14,21 @@ class QSqlRecord;
 class AudioWorkTableModel : public QSqlQueryModel {
 	Q_OBJECT
 	public:
-		static void init(const QSqlDatabase & db = QSqlDatabase());
 		AudioWorkTableModel(
 				const QSqlDatabase & db = QSqlDatabase(),
 				QObject * parent = NULL
 				);
-		virtual void sort ( int column, Qt::SortOrder order = Qt::AscendingOrder );
 		virtual QVariant data ( const QModelIndex & index, int role = Qt::DisplayRole ) const;
-	public slots:
-		void setFiltered(bool filtered = true);
-		void setUnFiltered();
+
+		const static unsigned int idColumn;
+		const static unsigned int artistColumn;
+		const static unsigned int albumColumn;
+		const static unsigned int titleColumn;
+		const static unsigned int trackColumn;
 	private:
+		static void init(const QSqlDatabase & db = QSqlDatabase());
 		static bool cInited;
-		static std::string cFilteredQuery;
-		static std::string cUnFilteredQuery;
-		static std::string cSortByArtistASC;
-		static std::string cSortByArtistDESC;
-		static std::string cSortByAlbumASC;
-		static std::string cSortByAlbumDESC;
-		static std::string cSortByTitleASC;
-		static std::string cSortByTitleDESC;
-		static std::string cSortByOther;
-		bool mFiltered;
-		std::string mSortString;
+		static QString cQuery;
 };
 
 #endif

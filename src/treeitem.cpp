@@ -101,6 +101,14 @@ QVariant TreeItem::data(int column) const
 }
 //! [6]
 
+bool TreeItem::setData(int column, QVariant newData){
+	if(column >= 0 && column < itemData.size()){
+		itemData[column] = newData;
+		return true;
+	} else
+		return false;
+}
+
 //! [7]
 TreeItem *TreeItem::parent()
 {

@@ -7,6 +7,7 @@
 class AudioWorkTableModel;
 class MixerPanelModel;
 class TagModel;
+class WorkFilterModelProxy;
 
 class ApplicationModel : public QObject {
 	Q_OBJECT
@@ -16,10 +17,12 @@ class ApplicationModel : public QObject {
 		AudioWorkTableModel * audioWorkTable();
 		MixerPanelModel * mixerPanel();
 		TagModel * tagModel();
+		WorkFilterModelProxy * filteredWorkTable();
 	private:
 		AudioWorkTableModel * mAudioWorkTable;
 		MixerPanelModel * mMixerPanel;
 		TagModel * mTagModel;
+		WorkFilterModelProxy * mFilterProxy;
 		QSqlDatabase mDB;
 };
 

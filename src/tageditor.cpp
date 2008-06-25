@@ -7,6 +7,7 @@
 #include <QHBoxLayout>
 #include <QComboBox>
 #include <QRegExp>
+#include <QHeaderView>
 
 TagEditor::TagEditor(TagModel * model, QWidget * parent) :
 	QWidget(parent) 
@@ -21,6 +22,9 @@ TagEditor::TagEditor(TagModel * model, QWidget * parent) :
 	//allow for dragging from the tagview
 	mTagView->setSelectionMode(QAbstractItemView::ExtendedSelection);
 	mTagView->setDragEnabled(true);
+
+	//resize the headers to fit the data
+	mTagView->header()->resizeSections(QHeaderView::ResizeToContents);
 
 	inputLayout->addWidget(mTagClassSelect, 0);
 	inputLayout->addWidget(mTagNameInput, 0);

@@ -60,6 +60,7 @@ public:
     int childCount() const;
     int columnCount() const;
     QVariant data(int column) const;
+	 bool setData(int column, QVariant newData);
     int row() const;
     TreeItem *parent();
 

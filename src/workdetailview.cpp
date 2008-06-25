@@ -29,6 +29,9 @@ WorkDetailView::WorkDetailView(
 	mTitle = new QLineEdit(tr("title"), this);
 	mTagModel = new WorkTagModelFilter(tagModel);
 	mTagView = new TagView(mTagModel, this);
+
+	//don't show count in tagview
+	mTagView->setColumnHidden(TagModel::countColumn(),true);
 	
 	//allow dropping into the tag view
 	mTagView->viewport()->setAcceptDrops(true);

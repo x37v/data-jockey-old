@@ -11,7 +11,7 @@ TagView::TagView(QAbstractItemModel * model, QWidget * parent) :
 {
 	mModel = model;
 	setModel(mModel);
-	setColumnHidden(1,true);
+	setColumnHidden(TagModel::idColumn(),true);
 }
 
 QList<int> TagView::selectedTagIds() const {

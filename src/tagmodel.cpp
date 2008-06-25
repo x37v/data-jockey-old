@@ -6,6 +6,22 @@
 #include <QStringList>
 
 #define ID_COL 1
+#define COUNT_COL 2
+
+
+/*
+select tags.id id,
+        tag_classes.id class_id,
+        tag_classes.name class,
+        tags.name name,
+        count(audio_work_tags.id) count
+from tags
+        inner join tag_classes on tags.tag_class_id = tag_classes.id
+        left join audio_work_tags on audio_work_tags.tag_id = tags.id
+group by tags.name
+order by class, name
+*/
+
 
 TagModelItemMimeData::TagModelItemMimeData(){
 }
@@ -42,9 +58,12 @@ const QString TagModel::cQueryStr(
 		"select tags.id id,\n"
 		"\ttag_classes.id class_id,\n"
 		"\ttag_classes.name class,\n"
-		"\ttags.name name\n"
+		"\ttags.name name,\n"
+		"\tcount(audio_work_tags.id) count\n"
 		"from tags\n"
 		"\tinner join tag_classes on tags.tag_class_id = tag_classes.id\n"
+		"\tleft join audio_work_tags on audio_work_tags.tag_id = tags.id\n"
+		"group by tags.name\n"
 		"order by class, name\n");
 
 TagModel::TagModel(const QSqlDatabase & db, QObject * parent) :
@@ -70,6 +89,10 @@ QSqlDatabase TagModel::db() const {
 
 int TagModel::idColumn(){
 	return ID_COL;
+}
+
+int TagModel::countColumn(){
+	return COUNT_COL;
 }
 
 QList<QPair<int, QString> *> * TagModel::classList() const {
@@ -125,6 +148,8 @@ void TagModel::addWorkTagAssociation(int work_id, int tag_id){
 	if(!mAddTagQuery.first()){
 		queryStr.sprintf("insert into audio_work_tags (audio_work_id, tag_id) values(%d, %d)", work_id, tag_id);
 		mAddTagQuery.exec(queryStr);
+		//update association count
+		updateTagCount(tag_id);
 	}
 }
 
@@ -132,6 +157,9 @@ void TagModel::removeWorkTagAssociation(int work_id, int tag_id){
 	QString queryStr;
 	queryStr.sprintf("delete from audio_work_tags where tag_id = %d AND audio_work_id = %d", tag_id, work_id);
 	mAddTagQuery.exec(queryStr);
+
+	//update association count
+	updateTagCount(tag_id);
 }
 
 void TagModel::removeWorkTagAssociation(int work_id, QModelIndex tag_index){
@@ -173,6 +201,8 @@ void TagModel::addTag(int classId, QString tagName){
 			beginInsertRows(createIndex(parent->row(), 0, parent), parent->childCount(), parent->childCount());
 			QList<QVariant> itemData;
 			itemData << tagName << mAddTagQuery.value(0).toInt();
+			//this tag was just added, so there are zero associations
+			itemData << 0;
 			TreeItem * newTag = new TreeItem(itemData, parent);
 			parent->appendChild(newTag);
 			endInsertRows();
@@ -221,7 +251,10 @@ void TagModel::addClassAndTag(QString className, QString tagName){
 		QList<QVariant> parentData;
 		QList<QVariant> itemData;
 		parentData << className << mAddTagQuery.value(1).toInt();
+		//put an empty string at the end for count
+		parentData << "";
 		itemData << tagName << mAddTagQuery.value(0).toInt();
+		itemData << 0;
 
 		//create the nodes and insert them
 		TreeItem * parent = new TreeItem(parentData, root());
@@ -244,14 +277,18 @@ void TagModel::buildFromQuery(){
 		int classIdCol = rec.indexOf("class_id");
 		int classCol = rec.indexOf("class");
 		int nameCol = rec.indexOf("name");
+		int countCol = rec.indexOf("count");
 
 		QList<QVariant> rootData;
 		rootData << "tag (class -> name)" << "id";
+		rootData << "associations";
 		TreeItem * newRoot = new TreeItem(rootData);
 
 		//create the first class item
 		QList<QVariant> parentData;
 		parentData << mQuery.value(classCol).toString() << mQuery.value(classIdCol).toInt() ;
+		//put an empty string at the end for count
+		parentData << "";
 		TreeItem * curParent = new TreeItem(parentData, newRoot);
 		newRoot->appendChild(curParent);
 
@@ -271,17 +308,52 @@ void TagModel::buildFromQuery(){
 			if(classId != parentData[1].toInt()){
 				parentData.clear();
 				parentData << className << classId;
+				//put an empty string at the end for count
+				parentData << "";
 				curParent = new TreeItem(parentData, newRoot);
 				newRoot->appendChild(curParent);
 				newClassListItem = new QPair<int, QString>(classId, className);
 				mClassList->push_back(newClassListItem);
 			}
 			//create the child (tag)
-			childData << name << id;
+			childData << name << id << mQuery.value(countCol).toInt();
 			curParent->appendChild(new TreeItem(childData, curParent));
 		} while(mQuery.next());
 		setRoot(newRoot);
 	} else {
 	}
 	reset();
+}	
+
+//update the count 
+void TagModel::updateTagCount(int tag_id){
+	QString queryStr;
+	queryStr.sprintf("select count(*), tag_classes.id class_id from audio_work_tags\n"
+			"\tjoin tags on tags.id = audio_work_tags.tag_id\n"
+			"\tjoin tag_classes on tags.tag_class_id = tag_classes.id\n"
+			"where audio_work_tags.tag_id = %d\n"
+			"group by tag_classes.id", tag_id);
+	mAddTagQuery.exec(queryStr);
+	if(mAddTagQuery.first()){
+		//grab the count
+		int count = mAddTagQuery.value(0).toInt();
+		int class_id = mAddTagQuery.value(1).toInt();
+		//find the class
+		for(int i = 0; i < root()->childCount(); i++){
+			if(root()->child(i)->data(ID_COL).toInt() == class_id){
+				//find the tag
+				for(int j = 0; j < root()->child(i)->childCount(); j++){
+					TreeItem * parent = root()->child(i);
+					if(parent->child(j)->data(ID_COL).toInt() == tag_id){
+						QModelIndex index = createIndex(parent->child(j)->row(), COUNT_COL, parent->child(j));
+						//if we can set the data, do it, and emit the signal that we've done it
+						if(parent->child(j)->setData(COUNT_COL, count))
+							emit(dataChanged(index,index));
+						break;
+					}
+				}
+				break;
+			}
+		}
+	}
 }
