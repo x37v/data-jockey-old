@@ -6,6 +6,7 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include "treemodel.h"
+#include <QList>
 
 class TreeModel;
 class QAbstractItemModel;
@@ -15,6 +16,7 @@ class TagView : public QTreeView {
 	public:
 		TagView(QAbstractItemModel * model,
 				QWidget * parent = NULL);
+		QList<int> selectedTagIds() const;
 	private:
 		QAbstractItemModel * mModel;
 };

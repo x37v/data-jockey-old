@@ -81,7 +81,7 @@ Qt::ItemFlags TagModel::flags(const QModelIndex &index) const {
 
 	if (index.isValid()) {
 		//if it isn't a tag class then it can be dragged
-		if(index.parent().isValid() && index.parent().internalPointer() != root())
+		if(isTag(index))
 			return Qt::ItemIsDragEnabled | defaultFlags;
 		else
 			return defaultFlags;
@@ -99,12 +99,19 @@ QMimeData * TagModel::mimeData ( const QModelIndexList & indexes ) const {
 	TagModelItemMimeData * data = new TagModelItemMimeData;
 	foreach(QModelIndex index, indexes){
 		//add the index to our data list, only if it isn't a class
-		if(index.isValid() && 
-				index.parent().isValid() &&
-				index.parent().internalPointer() != root())
+		if(isTag(index))
 			data->addItem(index.sibling(index.row(), ID_COL).data().toInt());
 	}
 	return data;
+}
+
+bool TagModel::isTag(const QModelIndex index) const {
+	if(index.isValid() && 
+			index.parent().isValid() &&
+			index.parent().internalPointer() != root()){
+		return true;
+	} else
+		return false;
 }
 
 void TagModel::addWorkTagAssociation(int work_id, int tag_id){
@@ -128,9 +135,7 @@ void TagModel::removeWorkTagAssociation(int work_id, int tag_id){
 }
 
 void TagModel::removeWorkTagAssociation(int work_id, QModelIndex tag_index){
-	if(tag_index.isValid() && 
-			tag_index.parent().isValid() && 
-			tag_index.parent().internalPointer() != root()){
+	if(isTag(tag_index)){
 			int tag_id = tag_index.sibling(tag_index.row(), ID_COL).data().toInt();
 			removeWorkTagAssociation(work_id, tag_id);
 	}
