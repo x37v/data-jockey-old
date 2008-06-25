@@ -16,6 +16,7 @@ class TagView : public QTreeView {
 	public:
 		TagView(QAbstractItemModel * model,
 				QWidget * parent = NULL);
+		//give a list of the ids of the selected tags
 		QList<int> selectedTagIds() const;
 	private:
 		QAbstractItemModel * mModel;
