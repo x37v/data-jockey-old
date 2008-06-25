@@ -13,6 +13,7 @@ class WorkTagModelFilter : public QSortFilterProxyModel {
 	public:
 		WorkTagModelFilter(TagModel * model);
 		int work();
+		TagModel * sourceTagModel();
 		bool filterAcceptsRow(int sourceRow,
 				const QModelIndex &sourceParent) const;
 		//the below are here to allow for droping of drag data
@@ -26,6 +27,7 @@ class WorkTagModelFilter : public QSortFilterProxyModel {
 	public slots:
 		void setWork(int work);
 		void clear();
+		void refilter();
 	private:
 		QSqlQuery mWorkTagsQuery;
 		int mWork;

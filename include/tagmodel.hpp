@@ -35,6 +35,9 @@ class TagModel : public TreeModel {
 		QList<QPair<int, QString> *> * classList() const;
 		//this is how you associate a tag with a work
 		void addWorkTagAssociation(int work_id, int tag_id);
+		//delete an association between a tag and a work
+		void removeWorkTagAssociation(int work_id, int tag_id);
+		void removeWorkTagAssociation(int work_id, QModelIndex tag_index);
 		//the below are here to allow draging of data
 		Qt::ItemFlags flags(const QModelIndex &index) const;
 		virtual QStringList mimeTypes() const;

@@ -5,6 +5,7 @@
 #include <QTreeView>
 #include <QSqlQuery>
 #include <QSqlRecord>
+#include <QKeyEvent>
 
 #include "tagmodel.hpp"
 #include "worktagmodelfilter.hpp"
@@ -49,6 +50,17 @@ WorkDetailView::WorkDetailView(
 	mLayout->setRowStretch(0,0);
 	mLayout->setRowStretch(1,0);
 	setLayout(mLayout);
+}
+
+//if a user hits delete and the index is valid then delete that association
+void WorkDetailView::keyPressEvent ( QKeyEvent * event ){
+	if(event->matches(QKeySequence::Delete) || event->key() == Qt::Key_Backspace){
+		if(mTagModel->work() > 0 && mTagView->currentIndex().isValid()){
+			mTagModel->sourceTagModel()->removeWorkTagAssociation(mTagModel->work(), mTagView->currentIndex());
+			mTagModel->refilter();
+		}
+	} else 
+		QWidget::keyPressEvent(event);
 }
 
 void WorkDetailView::setWork(int work_id){

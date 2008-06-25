@@ -14,6 +14,14 @@ WorkTagModelFilter::WorkTagModelFilter(TagModel * model):
 	mWork = -1;
 }
 
+int WorkTagModelFilter::work(){
+	return mWork;
+}
+
+TagModel * WorkTagModelFilter::sourceTagModel(){
+	return mModel;
+}
+
 Qt::DropActions WorkTagModelFilter::supportedDropActions() const {
 	return Qt::CopyAction;
 }
@@ -46,10 +54,7 @@ bool WorkTagModelFilter::dropMimeData( const QMimeData * data,
 		foreach(QVariant id, tagModelData->retrieveData("application/tag-id-list", QVariant::List).toList()){
 			mModel->addWorkTagAssociation(mWork, id.toInt());
 		}
-		//hack for now, just set the work again.. this will update the filter
-		int work = mWork;
-		mWork = 0;
-		setWork(work);
+		refilter();
 		return true;
 	} else
 		return false;
@@ -58,27 +63,7 @@ bool WorkTagModelFilter::dropMimeData( const QMimeData * data,
 void WorkTagModelFilter::setWork(int work){
 	if(mWork != work){
 		mWork = work;
-
-		QString queryStr("select tags.id id, tags.tag_class_id class_id from tags\n"
-				"\tjoin audio_work_tags on audio_work_tags.tag_id = tags.id\n"
-				"\tjoin audio_works on audio_works.id = audio_work_tags.audio_work_id\n"
-				"\nwhere audio_works.id = ");
-		QString id;
-		id.setNum(mWork);
-		queryStr.append(id);
-
-		mTagClassIds.clear();
-		mTagIds.clear();
-		//populate the mTagClassIds and mTagIds sets
-		mWorkTagsQuery.exec(queryStr);
-		if(mWorkTagsQuery.first()){
-			do {
-				mTagIds.insert(mWorkTagsQuery.value(0).toInt());
-				mTagClassIds.insert(mWorkTagsQuery.value(1).toInt());
-			} while(mWorkTagsQuery.next());
-		}
-
-		invalidateFilter();
+		refilter();
 		emit(workChanged(mWork));
 	}
 }
@@ -89,6 +74,29 @@ void WorkTagModelFilter::clear() {
 	mTagIds.clear();
 	invalidateFilter();
 	emit(workChanged(mWork));
+}
+
+void WorkTagModelFilter::refilter() {
+	QString queryStr("select tags.id id, tags.tag_class_id class_id from tags\n"
+			"\tjoin audio_work_tags on audio_work_tags.tag_id = tags.id\n"
+			"\tjoin audio_works on audio_works.id = audio_work_tags.audio_work_id\n"
+			"\nwhere audio_works.id = ");
+	QString id;
+	id.setNum(mWork);
+	queryStr.append(id);
+
+	mTagClassIds.clear();
+	mTagIds.clear();
+	//populate the mTagClassIds and mTagIds sets
+	mWorkTagsQuery.exec(queryStr);
+	if(mWorkTagsQuery.first()){
+		do {
+			mTagIds.insert(mWorkTagsQuery.value(0).toInt());
+			mTagClassIds.insert(mWorkTagsQuery.value(1).toInt());
+		} while(mWorkTagsQuery.next());
+	}
+
+	invalidateFilter();
 }
 
 bool WorkTagModelFilter::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const {

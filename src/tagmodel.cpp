@@ -107,9 +107,6 @@ QMimeData * TagModel::mimeData ( const QModelIndexList & indexes ) const {
 	return data;
 }
 
-#include <iostream>
-using namespace std;
-
 void TagModel::addWorkTagAssociation(int work_id, int tag_id){
 	QString queryStr;
 	//first make sure this association doesn't already exist
@@ -121,6 +118,21 @@ void TagModel::addWorkTagAssociation(int work_id, int tag_id){
 	if(!mAddTagQuery.first()){
 		queryStr.sprintf("insert into audio_work_tags (audio_work_id, tag_id) values(%d, %d)", work_id, tag_id);
 		mAddTagQuery.exec(queryStr);
+	}
+}
+
+void TagModel::removeWorkTagAssociation(int work_id, int tag_id){
+	QString queryStr;
+	queryStr.sprintf("delete from audio_work_tags where tag_id = %d AND audio_work_id = %d", tag_id, work_id);
+	mAddTagQuery.exec(queryStr);
+}
+
+void TagModel::removeWorkTagAssociation(int work_id, QModelIndex tag_index){
+	if(tag_index.isValid() && 
+			tag_index.parent().isValid() && 
+			tag_index.parent().internalPointer() != root()){
+			int tag_id = tag_index.sibling(tag_index.row(), ID_COL).data().toInt();
+			removeWorkTagAssociation(work_id, tag_id);
 	}
 }
 
