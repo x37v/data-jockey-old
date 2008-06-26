@@ -12,7 +12,10 @@ class WorkFilterModel : public QObject {
 	public:
 		WorkFilterModel(QObject * parent = NULL);
 		virtual ~WorkFilterModel();
-		virtual void beforeFilter();
+		//beforeFilter indicates if the filtering actually needs to be done
+		//for instance, if the filter is based on tempo and them tempo hasn't
+		//changed, then no work needs to be done
+		virtual bool beforeFilter();
 		virtual bool acceptsWork(int work_id) = 0;
 		virtual std::string description() = 0;
 		virtual std::string name() = 0;

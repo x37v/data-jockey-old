@@ -9,8 +9,9 @@ WorkFilterModel::WorkFilterModel(QObject * parent) :
 WorkFilterModel::~WorkFilterModel(){
 }
 
-void WorkFilterModel::beforeFilter(){
-	//default, do nothing
+bool WorkFilterModel::beforeFilter(){
+	//default, always filter
+	return true;
 }
 
 TagSelectionFilter::TagSelectionFilter(QObject * parent) :
@@ -19,14 +20,12 @@ TagSelectionFilter::TagSelectionFilter(QObject * parent) :
 }
 
 bool TagSelectionFilter::acceptsWork(int work_id){
-	if(work_id < 20)
-		return true;
-	return false;
+	return true;
 }
 
 std::string TagSelectionFilter::description(){
-	return "Filters works based on selections in the tag view."
-		"Shows only those works which have at least one of the tags that the user has selected."
+	return "Filters works based on selections in the tag view.  "
+		"It shows only those works which have at least one of the tags that the user has selected.  "
 		"If there are no tags selected, it shows all works.";
 }
 
@@ -116,9 +115,25 @@ bool WorkFilterModelProxy::filterAcceptsRow(int sourceRow,
 	}
 }
 
+#include <iostream>
+using namespace std;
+
 void WorkFilterModelProxy::filter(bool filter){
 	if(mFiltering != filter){
 		mFiltering = filter;
+		//if we're not filtering then we need to invalidate
+		if(!mFiltering){
+			cout << "removing filter" << endl;
+			invalidateFilter();
+			return;
+		}
+	}
+
+	//test to see if we actually need to filter
+	//if we have a filter model and its before filter returns true
+	//then we filter
+	if(mFiltering && mFilter && mFilter->beforeFilter()){
+		cout << "filtering" << endl;
 		invalidateFilter();
 	}
 }
