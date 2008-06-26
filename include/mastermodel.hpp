@@ -12,6 +12,7 @@ class MasterModel : public QObject {
 		void syncToModel(MasterModel * other, Qt::ConnectionType connectionType = Qt::AutoCompatConnection);
 		//zero means sync to clock, 1 means sync to mixer 0..
 		unsigned int syncSource() const ;
+		float tempo();
 	signals:
 		void volumeChanged(float vol);
 		void tempoChanged(float tempo);

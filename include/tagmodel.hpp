@@ -11,9 +11,6 @@
 #include <QStringList>
 #include <QList>
 
-#include "workfiltermodel.hpp"
-#include <set>
-
 //our own mime type for ids
 class TagModelItemMimeData : public QMimeData {
 	Q_OBJECT
@@ -61,24 +58,6 @@ class TagModel : public TreeModel {
 		QSqlQuery mQuery;
 		QSqlQuery mAddTagQuery;
 		void updateTagCount(int tag_id);
-};
-
-class TagSelectionFilter : public WorkFilterModel {
-	Q_OBJECT
-	public:
-		TagSelectionFilter(ApplicationModel * appModel, QObject * parent = NULL);
-		virtual bool beforeFilter();
-		virtual bool acceptsWork(int work_id);
-		virtual std::string description();
-		virtual std::string name();
-	public slots:
-		void addTag(int tag_id);
-		void clearTags();
-		void setTags(QList<int> tags);
-	private:
-		QSqlQuery mQuery;
-		QList<int> mSelectedTags;
-		std::set<int> mSelectedWorks;
 };
 
 #endif

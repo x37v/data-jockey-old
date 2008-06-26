@@ -18,6 +18,7 @@ HEADERS += include/audioworkdbview.hpp \
            include/audioworktablemodel.hpp \
            include/crossfadeview.hpp \
            include/crossfademodel.hpp \
+           include/defaultworkfilters.hpp \
            include/djmixerchannelview.hpp \
            include/djmixerchannelmodel.hpp \
            include/djmixercontrolview.hpp \
@@ -59,6 +60,7 @@ SOURCES += src/audioworkdbview.cpp \
            src/audioworktablemodel.cpp \
            src/crossfadeview.cpp \
            src/crossfademodel.cpp \
+           src/defaultworkfilters.cpp \
            src/djmixerchannelview.cpp \
            src/djmixerchannelmodel.cpp \
            src/djmixercontrolview.cpp \

@@ -15,6 +15,10 @@ unsigned int MasterModel::syncSource() const {
 	return mSyncSource;
 }
 
+float MasterModel::tempo(){
+	return mTempo;
+}
+
 void MasterModel::syncToModel(MasterModel * other, Qt::ConnectionType connectionType){
 	//this -> other
 	QObject::connect(this,
