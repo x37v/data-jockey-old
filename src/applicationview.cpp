@@ -11,6 +11,7 @@
 #include "mixerpanelview.hpp"
 #include "tageditor.hpp"
 #include "workdetailview.hpp"
+#include "workfilterlistview.hpp"
 
 //models
 #include "applicationmodel.hpp"
@@ -41,6 +42,7 @@ ApplicationView::ApplicationView(ApplicationModel * model):
 	mAudioWorkDB = new AudioWorkDBView(mModel->filteredWorkTable(), this);
 	mMixerPanel = new MixerPanelView(mModel->mixerPanel()->numMixerChannels(), this);
 	mTagEditor = new TagEditor(mModel->tagModel(), this);
+	mWorkFilterList = new WorkFilterListView(mModel->workFilterList(), this);
 
 	//set up our view
 	setWindowTitle("data jockey");
@@ -54,6 +56,7 @@ ApplicationView::ApplicationView(ApplicationModel * model):
 
 	leftTopTabView->addTab(mMixerPanel, "mixer panel");
 	leftTopTabView->addTab(mTagEditor, "tags");
+	leftTopTabView->addTab(mWorkFilterList, "filters");
 
 	vertSplit->addWidget(leftTopTabView);
 	vertSplit->addWidget(mWorkDetail);

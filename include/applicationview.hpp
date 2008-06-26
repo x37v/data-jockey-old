@@ -8,6 +8,7 @@ class WorkDetailView;
 class AudioWorkDBView;
 class TagEditor;
 class MixerPanelView;
+class WorkFilterListView;
 
 class ApplicationView : public QWidget {
 	Q_OBJECT
@@ -21,6 +22,7 @@ class ApplicationView : public QWidget {
 		AudioWorkDBView * mAudioWorkDB;
 		TagEditor * mTagEditor;
 		MixerPanelView * mMixerPanel;
+		WorkFilterListView * mWorkFilterList;
 		void connectToModel();
 };
 

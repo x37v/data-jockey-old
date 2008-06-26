@@ -33,6 +33,8 @@ HEADERS += include/audioworkdbview.hpp \
            include/mixerpanelmodel.hpp \ 
            include/workdetailview.hpp \
            include/workfiltermodel.hpp \
+           include/workfilterlist.hpp \
+           include/workfilterlistview.hpp \
            include/worktagmodelfilter.hpp \
            include/workloader.hpp \
 			  include/tageditor.hpp \
@@ -73,6 +75,8 @@ SOURCES += src/audioworkdbview.cpp \
            src/mixerpanelmodel.cpp \
            src/workdetailview.cpp \
            src/workfiltermodel.cpp \
+           src/workfilterlist.cpp \
+           src/workfilterlistview.cpp \
            src/worktagmodelfilter.cpp \
            src/workloader.cpp \
 			  src/tageditor.cpp \

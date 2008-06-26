@@ -3,6 +3,7 @@
 #include "mixerpanelmodel.hpp"
 #include "tagmodel.hpp"
 #include "workfiltermodel.hpp"
+#include "workfilterlist.hpp"
 
 ApplicationModel::ApplicationModel(unsigned int num_mixers, QSqlDatabase db, QObject * parent):
 	QObject(parent)
@@ -12,24 +13,36 @@ ApplicationModel::ApplicationModel(unsigned int num_mixers, QSqlDatabase db, QOb
 	mMixerPanel = new MixerPanelModel(num_mixers);
 	mTagModel = new TagModel(db);
 	mFilterProxy = new WorkFilterModelProxy(mAudioWorkTable);
+	mWorkFilterList = new WorkFilterList(this);
+
+	mWorkFilterList->addFilter(new TagSelectionFilter(this));
+	mWorkFilterList->addFilter(new TagSelectionFilter(this));
+	mWorkFilterList->addFilter(new TagSelectionFilter(this));
+	mWorkFilterList->addFilter(new TagSelectionFilter(this));
+	mWorkFilterList->addFilter(new TagSelectionFilter(this));
 }
 
-QSqlDatabase ApplicationModel::db(){
+QSqlDatabase ApplicationModel::db() const {
 	return mDB;
 }
 
-AudioWorkTableModel * ApplicationModel::audioWorkTable(){
+AudioWorkTableModel * ApplicationModel::audioWorkTable() const {
 	return mAudioWorkTable;
 }
 
-MixerPanelModel * ApplicationModel::mixerPanel(){
+MixerPanelModel * ApplicationModel::mixerPanel() const {
 	return mMixerPanel;
 }
 
-TagModel * ApplicationModel::tagModel(){
+TagModel * ApplicationModel::tagModel() const {
 	return mTagModel;
 }
 
-WorkFilterModelProxy * ApplicationModel::filteredWorkTable(){
+WorkFilterModelProxy * ApplicationModel::filteredWorkTable() const {
 	return mFilterProxy;
 }
+
+WorkFilterList * ApplicationModel::workFilterList() const {
+	return mWorkFilterList;
+}
+

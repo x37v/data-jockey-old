@@ -9,6 +9,29 @@ WorkFilterModel::WorkFilterModel(QObject * parent) :
 WorkFilterModel::~WorkFilterModel(){
 }
 
+void WorkFilterModel::beforeFilter(){
+	//default, do nothing
+}
+
+TagSelectionFilter::TagSelectionFilter(QObject * parent) :
+	WorkFilterModel(parent)
+{
+}
+
+bool TagSelectionFilter::acceptsWork(int work_id){
+	return true;
+}
+
+std::string TagSelectionFilter::description(){
+	return "Filters works based on selections in the tag view."
+		"Shows only those works which have at least one of the tags that the user has selected."
+		"If there are no tags selected, it shows all works.";
+}
+
+std::string TagSelectionFilter::name(){
+	return "Tag Selection Filter";
+}
+
 WorkFilterModelProxy::WorkFilterModelProxy(AudioWorkTableModel * parent) : 
 	QSortFilterProxyModel(parent)
 {

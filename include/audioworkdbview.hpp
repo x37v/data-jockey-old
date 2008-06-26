@@ -18,7 +18,7 @@ class AudioWorkDBView : public QWidget {
 		QPushButton * removeFilterButton();
 	protected slots:
 		void selectWork(const QModelIndex & index);
-		void selectionChanged( const QItemSelection & selected);
+		void setSelection( const QItemSelection & selected);
 		void setFiltered();
 		void setUnFiltered();
 	signals:

@@ -12,10 +12,19 @@ class WorkFilterModel : public QObject {
 	public:
 		WorkFilterModel(QObject * parent = NULL);
 		virtual ~WorkFilterModel();
-		virtual void beforeFilter() = 0;
+		virtual void beforeFilter();
 		virtual bool acceptsWork(int work_id) = 0;
 		virtual std::string description() = 0;
 		virtual std::string name() = 0;
+};
+
+class TagSelectionFilter : public WorkFilterModel {
+	Q_OBJECT
+	public:
+		TagSelectionFilter(QObject * parent = NULL);
+		virtual bool acceptsWork(int work_id);
+		virtual std::string description();
+		virtual std::string name();
 };
 
 //this is the one that actually does the filtering [based on a WorkFilterModel]

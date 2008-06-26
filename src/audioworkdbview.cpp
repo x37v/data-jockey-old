@@ -51,7 +51,7 @@ AudioWorkDBView::AudioWorkDBView(QAbstractItemModel * model,
 	QObject::connect(mTableView->selectionModel(), 
 			SIGNAL(selectionChanged(const QItemSelection, const QItemSelection)),
 			this,
-			SLOT(selectionChanged(const QItemSelection)));
+			SLOT(setSelection(const QItemSelection)));
 }
 
 QTableView * AudioWorkDBView::tableView(){
@@ -76,7 +76,7 @@ void AudioWorkDBView::selectWork(const QModelIndex & index ){
 	}
 }
 
-void AudioWorkDBView::selectionChanged( const QItemSelection & selected){
+void AudioWorkDBView::setSelection( const QItemSelection & selected){
 	Q_UNUSED(selected);
 	QModelIndex index = mTableView->selectionModel()->currentIndex(); 
 	index = index.sibling(index.row(), AudioWorkTableModel::idColumn);
