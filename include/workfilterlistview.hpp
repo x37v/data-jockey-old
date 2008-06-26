@@ -25,7 +25,6 @@ class WorkFilterListView : public QWidget {
 		void listDataChanged(QStandardItem * item);
 		void setSelection( const QItemSelection & selected);
 	private:
-		unsigned int mSelected;
 		WorkFilterList * mFilterList;
 		QTextEdit * mDetails;
 		QTableView * mSelectionTable;

@@ -5,6 +5,8 @@
 #include <QTableView>
 #include <QStandardItemModel>
 #include <QVBoxLayout>
+#include <QLabel>
+#include <QHeaderView>
 
 //XXX needs its own model
 
@@ -20,16 +22,23 @@ WorkFilterListView::WorkFilterListView(WorkFilterList * sourceList, QWidget * pa
 	mSelectionTable = new QTableView(this);
 	mModel = new QStandardItemModel(this);
 	QVBoxLayout * layout = new QVBoxLayout(this);
+	QLabel * detailLabel = new QLabel(QString(tr("filter description: ")), this);
 
-	mDetails->setText(tr("details about filter"));
+	mDetails->setText(tr("description of filter"));
 	mDetails->setReadOnly(true);
 
+	//set the header
+	QList<QString> header;
+	header.append(QString(tr("filter name")));
+	mModel->setHorizontalHeaderLabels(header);
+
 	mSelectionTable->setModel(mModel);
-	mSelected = 0;
+	mSelectionTable->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
 
 	layout->setContentsMargins(0,0,0,0);
-	layout->addWidget(mSelectionTable);
-	layout->addWidget(mDetails);
+	layout->addWidget(mSelectionTable, 1);
+	layout->addWidget(detailLabel, 0, Qt::AlignHCenter);
+	layout->addWidget(mDetails, 1);
 	setLayout(layout);
 
 	//add items to our model which are already in our source
@@ -116,6 +125,6 @@ void WorkFilterListView::setSelection( const QItemSelection & selected){
 							selected.indexes()[0].row()
 							)->description().c_str())));
 	} else
-		mDetails->setText(tr("details about filter"));
+		mDetails->setText(tr("description of filter"));
 }
 
