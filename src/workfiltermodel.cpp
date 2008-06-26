@@ -115,15 +115,11 @@ bool WorkFilterModelProxy::filterAcceptsRow(int sourceRow,
 	}
 }
 
-#include <iostream>
-using namespace std;
-
 void WorkFilterModelProxy::filter(bool filter){
 	if(mFiltering != filter){
 		mFiltering = filter;
 		//if we're not filtering then we need to invalidate
 		if(!mFiltering){
-			cout << "removing filter" << endl;
 			invalidateFilter();
 			return;
 		}
@@ -132,10 +128,8 @@ void WorkFilterModelProxy::filter(bool filter){
 	//test to see if we actually need to filter
 	//if we have a filter model and its before filter returns true
 	//then we filter
-	if(mFiltering && mFilter && mFilter->beforeFilter()){
-		cout << "filtering" << endl;
+	if(mFiltering && mFilter && mFilter->beforeFilter())
 		invalidateFilter();
-	}
 }
 
 void WorkFilterModelProxy::clearFilter(){
