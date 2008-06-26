@@ -28,6 +28,10 @@ using std::endl;
 #include "applicationmodel.hpp"
 #include "applicationview.hpp"
 
+#include "tagmodel.hpp"
+#include "tageditor.hpp"
+#include "workfilterlist.hpp"
+
 
 //for now we'll just have a gui app
 int DataJockeyApplication::run(int argc, char *argv[]){
@@ -51,6 +55,14 @@ int DataJockeyApplication::run(int argc, char *argv[]){
 	AudioDriverThread * audioDriverThread = new AudioDriverThread(model);
 
 	audioDriverThread->setAudioDriver(audioDriver);
+
+	//create a tag selection filter
+	TagSelectionFilter * tagFilter = new TagSelectionFilter(model, model);
+	model->workFilterList()->addFilter(tagFilter);
+	//connect the tag editor's selection to the tagFilter
+	QObject::connect(
+			view->tagEditor(), SIGNAL(tagSelectionChanged(QList<int>)),
+			tagFilter, SLOT(setTags(QList<int>)));
 
 	//make connections ********
 	//WorkLoader

@@ -15,12 +15,6 @@ ApplicationModel::ApplicationModel(unsigned int num_mixers, QSqlDatabase db, QOb
 	mFilterProxy = new WorkFilterModelProxy(mAudioWorkTable);
 	mWorkFilterList = new WorkFilterList(this);
 
-	mWorkFilterList->addFilter(new TagSelectionFilter(this));
-	mWorkFilterList->addFilter(new TagSelectionFilter(this));
-	mWorkFilterList->addFilter(new TagSelectionFilter(this));
-	mWorkFilterList->addFilter(new TagSelectionFilter(this));
-	mWorkFilterList->addFilter(new TagSelectionFilter(this));
-
 	//make internal connections
 	QObject::connect(
 			mWorkFilterList, SIGNAL(selectionChanged(WorkFilterModel *)),

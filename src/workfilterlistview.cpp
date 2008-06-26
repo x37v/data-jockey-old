@@ -53,6 +53,8 @@ WorkFilterListView::WorkFilterListView(WorkFilterList * sourceList, QWidget * pa
 	connect(this, SIGNAL(selectionChanged(unsigned int)),
 			mFilterList, SLOT(selectFilter(unsigned int)));
 
+	connect(mFilterList, SIGNAL(filterAdded(unsigned int)),
+			this, SLOT(addFilter(unsigned int)));
 }
 
 void WorkFilterListView::addFilter(unsigned int list_size){

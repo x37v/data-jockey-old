@@ -2,6 +2,7 @@
 #include <QList>
 #include "tagmodel.hpp"
 #include "treeitem.h"
+#include "applicationmodel.hpp"
 #include <QSqlRecord>
 #include <QStringList>
 
@@ -357,3 +358,75 @@ void TagModel::updateTagCount(int tag_id){
 		}
 	}
 }
+
+TagSelectionFilter::TagSelectionFilter(ApplicationModel * appModel, QObject * parent):
+	WorkFilterModel(appModel, parent), mQuery("", appModel->db())
+{
+}
+
+bool TagSelectionFilter::beforeFilter(){
+	mSelectedWorks.clear();
+	if(mSelectedTags.size() > 0){
+		QString queryStr("select audio_work_id from audio_work_tags where ");
+		QString tag_id;
+
+		//add the first one
+		queryStr.append("tag_id = ");
+		tag_id.setNum(mSelectedTags[0]);
+		queryStr.append(tag_id);
+
+		//do the rest
+		for(int i = 1; i < mSelectedTags.size(); i++){
+			queryStr.append(" or tag_id = ");
+			tag_id.setNum(mSelectedTags[i]);
+			queryStr.append(tag_id);
+		}
+		//execute the query
+		mQuery.exec(queryStr);
+		while(mQuery.next())
+			mSelectedWorks.insert(mQuery.value(0).toInt());
+	}
+	return true;
+}
+
+bool TagSelectionFilter::acceptsWork(int work_id){
+	//if there are no works or tags selected let all through
+	//if there are no works selected but there are tags selected 
+	//[ie tags which have no associations with works]
+	//don't let the works through
+	if(mSelectedWorks.empty()){
+		if(mSelectedTags.empty())
+			return true;
+		else
+			return false;
+	} else if(mSelectedWorks.find(work_id) != mSelectedWorks.end())
+		return true;
+	else
+		return false;
+}
+
+std::string TagSelectionFilter::description(){
+	return "Filters works based on selections in the tag view.  "
+		"It shows only those works which have at least one of the tags that the user has selected.  "
+		"If there are no tags selected, it shows all works.";
+}
+
+std::string TagSelectionFilter::name(){
+	return "Tag Selection Filter";
+}
+
+void TagSelectionFilter::addTag(int tag_id){
+	mSelectedTags.push_back(tag_id);
+}
+
+void TagSelectionFilter::clearTags(){
+	mSelectedTags.clear();
+	mSelectedWorks.clear();
+}
+
+void TagSelectionFilter::setTags(QList<int> tags){
+	mSelectedTags.clear();
+	for(int i = 0; i < tags.size(); i++)
+		mSelectedTags.push_back(tags[i]);
+}
+

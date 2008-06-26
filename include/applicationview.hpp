@@ -14,8 +14,9 @@ class ApplicationView : public QWidget {
 	Q_OBJECT
 	public:
 		ApplicationView(ApplicationModel * model);
-		MixerPanelView * mixerPanel();
-		AudioWorkDBView * workDB();
+		MixerPanelView * mixerPanel() const;
+		AudioWorkDBView * workDB() const;
+		TagEditor * tagEditor() const;
 	private:
 		ApplicationModel * mModel;
 		WorkDetailView * mWorkDetail;

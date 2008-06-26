@@ -54,6 +54,10 @@ TagEditor::TagEditor(TagModel * model, QWidget * parent) :
 			SIGNAL(classAdded(QPair<int, QString>)),
 			this,
 			SLOT(addToClassList(QPair<int, QString>)));
+	QObject::connect(mTagView,
+		SIGNAL(tagSelectionChanged(QList<int>)),
+		this,
+		SIGNAL(tagSelectionChanged(QList<int>)));
 }
 
 void TagEditor::addTagButtonPushed(){

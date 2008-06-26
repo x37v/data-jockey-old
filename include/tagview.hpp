@@ -18,6 +18,10 @@ class TagView : public QTreeView {
 				QWidget * parent = NULL);
 		//give a list of the ids of the selected tags
 		QList<int> selectedTagIds() const;
+	signals:
+		void tagSelectionChanged(QList<int>);
+	protected slots:
+		void updateTagSelection();
 	private:
 		QAbstractItemModel * mModel;
 };

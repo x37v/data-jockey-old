@@ -12,6 +12,11 @@ TagView::TagView(QAbstractItemModel * model, QWidget * parent) :
 	mModel = model;
 	setModel(mModel);
 	setColumnHidden(TagModel::idColumn(),true);
+
+	//connect internal signals/slots
+	QObject::connect(
+			selectionModel(), SIGNAL(selectionChanged ( const QItemSelection &, const QItemSelection &)),
+			this, SLOT(updateTagSelection()));
 }
 
 QList<int> TagView::selectedTagIds() const {
@@ -29,3 +34,6 @@ QList<int> TagView::selectedTagIds() const {
 	return ids;
 }
 
+void TagView::updateTagSelection(){
+	emit(tagSelectionChanged(selectedTagIds()));
+}

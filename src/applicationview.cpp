@@ -73,12 +73,16 @@ ApplicationView::ApplicationView(ApplicationModel * model):
 	connectToModel();
 }
 
-MixerPanelView * ApplicationView::mixerPanel(){
+MixerPanelView * ApplicationView::mixerPanel() const {
 	return mMixerPanel;
 }
 
-AudioWorkDBView * ApplicationView::workDB(){
+AudioWorkDBView * ApplicationView::workDB() const {
 	return mAudioWorkDB;
+}
+
+TagEditor * ApplicationView::tagEditor() const {
+	return mTagEditor;
 }
 
 void ApplicationView::connectToModel(){
@@ -328,7 +332,6 @@ void ApplicationView::connectToModel(){
 			SIGNAL(removeFilterPushed()),
 			mModel->filteredWorkTable(),
 			SLOT(clearFilter()));
-
 
 }
 

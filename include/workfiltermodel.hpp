@@ -6,11 +6,12 @@
 #include <string>
 
 class AudioWorkTableModel;
+class ApplicationModel;
 
 class WorkFilterModel : public QObject {
 	Q_OBJECT
 	public:
-		WorkFilterModel(QObject * parent = NULL);
+		WorkFilterModel(ApplicationModel * appModel, QObject * parent = NULL);
 		virtual ~WorkFilterModel();
 		//beforeFilter indicates if the filtering actually needs to be done
 		//for instance, if the filter is based on tempo and them tempo hasn't
@@ -19,15 +20,10 @@ class WorkFilterModel : public QObject {
 		virtual bool acceptsWork(int work_id) = 0;
 		virtual std::string description() = 0;
 		virtual std::string name() = 0;
-};
-
-class TagSelectionFilter : public WorkFilterModel {
-	Q_OBJECT
-	public:
-		TagSelectionFilter(QObject * parent = NULL);
-		virtual bool acceptsWork(int work_id);
-		virtual std::string description();
-		virtual std::string name();
+	protected:
+		ApplicationModel * applicationModel();
+	private:
+		ApplicationModel * mApplicationModel;
 };
 
 //this is the one that actually does the filtering [based on a WorkFilterModel]

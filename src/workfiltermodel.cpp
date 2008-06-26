@@ -1,9 +1,11 @@
 #include "workfiltermodel.hpp"
 #include "audioworktablemodel.hpp"
+#include "applicationmodel.hpp"
 
-WorkFilterModel::WorkFilterModel(QObject * parent) :
+WorkFilterModel::WorkFilterModel(ApplicationModel * appModel, QObject * parent) :
 	QObject(parent)
 {
+	mApplicationModel = appModel;
 }
 
 WorkFilterModel::~WorkFilterModel(){
@@ -14,23 +16,8 @@ bool WorkFilterModel::beforeFilter(){
 	return true;
 }
 
-TagSelectionFilter::TagSelectionFilter(QObject * parent) :
-	WorkFilterModel(parent)
-{
-}
-
-bool TagSelectionFilter::acceptsWork(int work_id){
-	return true;
-}
-
-std::string TagSelectionFilter::description(){
-	return "Filters works based on selections in the tag view.  "
-		"It shows only those works which have at least one of the tags that the user has selected.  "
-		"If there are no tags selected, it shows all works.";
-}
-
-std::string TagSelectionFilter::name(){
-	return "Tag Selection Filter";
+ApplicationModel * WorkFilterModel::applicationModel(){
+	return mApplicationModel;
 }
 
 WorkFilterModelProxy::WorkFilterModelProxy(AudioWorkTableModel * parent) : 

@@ -35,19 +35,25 @@ unsigned int WorkFilterList::size() const {
 
 void WorkFilterList::addFilter(WorkFilterModel * filter){
 	if(filter){
-		//select the first filter
-		if(mSelected < 0)
-			mSelected = 0;
 		mModelList.push_back(filter);
 		emit(filterAdded(mModelList.size()));
+		//select the first filter
+		if(mSelected < 0){
+			mSelected = 0;
+			emit(selectionChanged(0,-1));
+			emit(selectionChanged(filter));
+		}
 	}
 }
 
 void WorkFilterList::removeFilter(unsigned int index){
 	if(index < (unsigned int)mModelList.size()){
 		mModelList.removeAt(index);
-		if(mModelList.size() == 0)
+		if(mModelList.size() == 0){
 			mSelected = -1;
+			emit(selectionChanged(-1, mSelected));
+			emit(selectionChanged(NULL));
+		}
 		emit(filterRemoved(index));
 	}
 }

@@ -19,6 +19,7 @@ class TagEditor : public QWidget {
 		void tagAdded(int classIndex, QString tagName);
 		//create a new class with this tag
 		void tagAdded(QString className, QString tagName);
+		void tagSelectionChanged(QList<int> tags_selected);
 	protected slots:
 		void addTagButtonPushed();
 		void addToClassList(QPair<int, QString> item);
