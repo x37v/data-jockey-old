@@ -33,11 +33,11 @@ class WorkFilterModelProxy : public QSortFilterProxyModel {
 	public:
 		WorkFilterModelProxy(AudioWorkTableModel * parent = NULL);
 		WorkFilterModel * workFilter() const;
-		void setFilter(WorkFilterModel * model);
 		virtual bool filterAcceptsRow(int sourceRow,
 				const QModelIndex &sourceParent) const;
 		virtual bool lessThan(const QModelIndex &left, const QModelIndex &right) const;
 	public slots:
+		void setFilter(WorkFilterModel * model);
 		//should we filter or let everything through?
 		void filter(bool filter = true);
 		void clearFilter();

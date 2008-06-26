@@ -23,6 +23,8 @@ class AudioWorkDBView : public QWidget {
 		void setUnFiltered();
 	signals:
 		void workSelected(int work);
+		void applyFilterPushed();
+		void removeFilterPushed();
 	private:
 		QTableView * mTableView;
 		QPushButton * mApplyFilterButton;

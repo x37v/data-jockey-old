@@ -19,7 +19,9 @@ TagSelectionFilter::TagSelectionFilter(QObject * parent) :
 }
 
 bool TagSelectionFilter::acceptsWork(int work_id){
-	return true;
+	if(work_id < 20)
+		return true;
+	return false;
 }
 
 std::string TagSelectionFilter::description(){

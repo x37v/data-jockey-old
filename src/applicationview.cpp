@@ -317,5 +317,18 @@ void ApplicationView::connectToModel(){
 			mModel->tagModel(),
 			SLOT(addClassAndTag(QString,QString)));
 
+	//filtering the work view
+	QObject::connect(
+			mAudioWorkDB,
+			SIGNAL(applyFilterPushed()),
+			mModel->filteredWorkTable(),
+			SLOT(filter()));
+	QObject::connect(
+			mAudioWorkDB,
+			SIGNAL(removeFilterPushed()),
+			mModel->filteredWorkTable(),
+			SLOT(clearFilter()));
+
+
 }
 

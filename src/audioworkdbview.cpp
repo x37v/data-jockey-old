@@ -32,11 +32,6 @@ AudioWorkDBView::AudioWorkDBView(QAbstractItemModel * model,
 	mApplyFilterButton = new QPushButton("apply filter", this);
 	mRemoveFilterButton = new QPushButton("remove filter", this);
 
-	//QObject::connect(mApplyFilterButton, SIGNAL(clicked(bool)),
-			//this, SLOT(setFiltered()));
-	//QObject::connect(mRemoveFilterButton, SIGNAL(clicked(bool)),
-			//this, SLOT(setUnFiltered()));
-
 	//add items to the buttonLayout
 	buttonLayout->addWidget(mApplyFilterButton, 0);
 	buttonLayout->addWidget(mRemoveFilterButton, 0);
@@ -48,10 +43,16 @@ AudioWorkDBView::AudioWorkDBView(QAbstractItemModel * model,
 	layout->addLayout(buttonLayout, 0);
 	setLayout(layout);
 
+	//connect up our internal signals
 	QObject::connect(mTableView->selectionModel(), 
 			SIGNAL(selectionChanged(const QItemSelection, const QItemSelection)),
 			this,
 			SLOT(setSelection(const QItemSelection)));
+	QObject::connect(mApplyFilterButton, SIGNAL(clicked(bool)),
+			this, SIGNAL(applyFilterPushed()));
+	QObject::connect(mRemoveFilterButton, SIGNAL(clicked(bool)),
+			this, SIGNAL(removeFilterPushed()));
+
 }
 
 QTableView * AudioWorkDBView::tableView(){

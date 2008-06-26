@@ -62,7 +62,9 @@ void WorkFilterList::selectFilter(unsigned int index){
 	if(index < (unsigned int)mModelList.size()){
 		unsigned int old = mSelected;
 		mSelected = index;
+		WorkFilterModel * selectedFilter = mModelList[index];
 		emit(selectionChanged(mSelected, old));
+		emit(selectionChanged(selectedFilter));
 	}
 }
 

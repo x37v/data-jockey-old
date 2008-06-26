@@ -19,6 +19,7 @@ class WorkFilterList : public QObject {
 		void filterAdded(unsigned int list_size);
 		void filterRemoved(unsigned int index);
 		void selectionChanged(unsigned int new_index, unsigned int old_index);
+		void selectionChanged(WorkFilterModel * selected);
 	public slots:
 		void addFilter(WorkFilterModel * filter);
 		void removeFilter(unsigned int index);

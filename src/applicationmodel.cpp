@@ -20,6 +20,11 @@ ApplicationModel::ApplicationModel(unsigned int num_mixers, QSqlDatabase db, QOb
 	mWorkFilterList->addFilter(new TagSelectionFilter(this));
 	mWorkFilterList->addFilter(new TagSelectionFilter(this));
 	mWorkFilterList->addFilter(new TagSelectionFilter(this));
+
+	//make internal connections
+	QObject::connect(
+			mWorkFilterList, SIGNAL(selectionChanged(WorkFilterModel *)),
+			mFilterProxy, SLOT(setFilter(WorkFilterModel *)));
 }
 
 QSqlDatabase ApplicationModel::db() const {
