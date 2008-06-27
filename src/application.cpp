@@ -47,7 +47,7 @@ int DataJockeyApplication::run(int argc, char *argv[]){
 		return false;
 	}
 
-	ApplicationModel * model = new ApplicationModel(NUM_MIXERS, db);
+	ApplicationModel * model = new ApplicationModel(NUM_MIXERS, db, &app);
 	ApplicationView * view = new ApplicationView(model);
 	WorkLoader * loader = new WorkLoader(db, model->mixerPanel(), view->mixerPanel());
 	AudioDriver * audioDriver = new AudioDriver(model->mixerPanel());
@@ -100,6 +100,9 @@ int DataJockeyApplication::run(int argc, char *argv[]){
 
 	//make the warning messages graphical
 	QErrorMessage::qtHandler();
+
+	//ditch the reference to the database in this scope
+	db = QSqlDatabase();
 
 	view->show();
 	return app.exec();

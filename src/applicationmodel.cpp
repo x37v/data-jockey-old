@@ -5,13 +5,13 @@
 #include "workfiltermodel.hpp"
 #include "workfilterlist.hpp"
 
-ApplicationModel::ApplicationModel(unsigned int num_mixers, QSqlDatabase db, QObject * parent):
+ApplicationModel::ApplicationModel(unsigned int num_mixers, QSqlDatabase & db, QObject * parent):
 	QObject(parent)
 {
 	mDB = db;
-	mAudioWorkTable = new AudioWorkTableModel(db);
-	mMixerPanel = new MixerPanelModel(num_mixers);
-	mTagModel = new TagModel(db);
+	mAudioWorkTable = new AudioWorkTableModel(db, this);
+	mMixerPanel = new MixerPanelModel(num_mixers, this);
+	mTagModel = new TagModel(db, this);
 	mFilterProxy = new WorkFilterModelProxy(mAudioWorkTable);
 	mWorkFilterList = new WorkFilterList(this);
 
@@ -19,6 +19,10 @@ ApplicationModel::ApplicationModel(unsigned int num_mixers, QSqlDatabase db, QOb
 	QObject::connect(
 			mWorkFilterList, SIGNAL(selectionChanged(WorkFilterModel *)),
 			mFilterProxy, SLOT(setFilter(WorkFilterModel *)));
+}
+
+ApplicationModel::~ApplicationModel(){
+	mDB.close();
 }
 
 QSqlDatabase ApplicationModel::db() const {

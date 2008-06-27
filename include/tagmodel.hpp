@@ -27,7 +27,7 @@ class TagModelItemMimeData : public QMimeData {
 class TagModel : public TreeModel {
 	Q_OBJECT
 	public:
-		TagModel(const QSqlDatabase & db = QSqlDatabase(),
+		TagModel(const QSqlDatabase & db,
 				QObject * parent = NULL);
 		virtual ~TagModel();
 		static int idColumn();

@@ -13,7 +13,8 @@ class WorkFilterList;
 class ApplicationModel : public QObject {
 	Q_OBJECT
 	public:
-		ApplicationModel(unsigned int num_mixers, QSqlDatabase db, QObject * parent = NULL);
+		ApplicationModel(unsigned int num_mixers, QSqlDatabase & db, QObject * parent = NULL);
+		virtual ~ApplicationModel();
 		QSqlDatabase db() const;
 		AudioWorkTableModel * audioWorkTable() const;
 		MixerPanelModel * mixerPanel() const;

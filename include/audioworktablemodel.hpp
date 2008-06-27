@@ -15,7 +15,7 @@ class AudioWorkTableModel : public QSqlQueryModel {
 	Q_OBJECT
 	public:
 		AudioWorkTableModel(
-				const QSqlDatabase & db = QSqlDatabase(),
+				const QSqlDatabase & db,
 				QObject * parent = NULL
 				);
 		virtual QVariant data ( const QModelIndex & index, int role = Qt::DisplayRole ) const;
@@ -26,7 +26,7 @@ class AudioWorkTableModel : public QSqlQueryModel {
 		const static unsigned int titleColumn;
 		const static unsigned int trackColumn;
 	private:
-		static void init(const QSqlDatabase & db = QSqlDatabase());
+		static void init(const QSqlDatabase & db);
 		static bool cInited;
 		static QString cQuery;
 };

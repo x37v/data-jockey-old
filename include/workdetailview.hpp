@@ -17,7 +17,7 @@ class WorkDetailView : public QWidget {
 	public:
 		WorkDetailView(
 				TagModel * tagModel,
-				const QSqlDatabase & db = QSqlDatabase(),
+				const QSqlDatabase & db,
 				QWidget * parent = NULL);
 		virtual void keyPressEvent ( QKeyEvent * event );
 	public slots:
