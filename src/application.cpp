@@ -37,13 +37,13 @@ int DataJockeyApplication::run(int argc, char *argv[]){
 	QApplication app(argc, argv);
 	app.setStyle(new QCleanlooksStyle);
 
-	ApplicationModel::setNumberOfMixers(NUM_MIXERS);
 	try {
+		ApplicationModel::setNumberOfMixers(NUM_MIXERS);
 		ApplicationModel::setDataBase("QMYSQL", "dj_development");
-	} catch (...) {
-		QMessageBox::critical(0, app.tr("Cannot open database"),
-				app.tr("Unable to establish a database connection.\n"
-					"Click Cancel to exit."), QMessageBox::Cancel);
+	} catch (std::exception& e) {
+		QString text(app.tr(e.what()));
+		text.append("\nClick Cancel to exit.");
+		QMessageBox::critical(0, app.tr("Cannot open database"), text , QMessageBox::Cancel);
 		return false;
 	}
 

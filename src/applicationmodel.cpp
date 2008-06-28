@@ -12,9 +12,8 @@ QSqlDatabase ApplicationModel::cDB;
 ApplicationModel * ApplicationModel::cInstance = NULL;
 
 void ApplicationModel::setNumberOfMixers(unsigned int num){
-	if(num == 0){
-		//XXX Throw an error
-	}
+	if(num == 0)
+		throw std::logic_error("number of mixers must be greater than 0");
 	if(cNumMixers == 0)
 		cNumMixers = num;
 }
@@ -38,6 +37,9 @@ ApplicationModel * ApplicationModel::instance(){
 
 ApplicationModel::ApplicationModel()
 {
+	if(!cDB.isOpen() || cNumMixers == 0){
+		throw std::logic_error("you must set the number of mixers and set up the database before creating an instance of ApplicationModel");
+	}
 	//XXX make sure that the database is set up and the number of mixers are
 	//also set up
 	mAudioWorkTable = new AudioWorkTableModel(cDB, this);
