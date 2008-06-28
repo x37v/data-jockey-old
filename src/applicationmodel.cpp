@@ -5,13 +5,44 @@
 #include "workfiltermodel.hpp"
 #include "workfilterlist.hpp"
 
-ApplicationModel::ApplicationModel(unsigned int num_mixers, QSqlDatabase & db, QObject * parent):
-	QObject(parent)
+#include <stdexcept>
+
+unsigned int ApplicationModel::cNumMixers = 0;
+QSqlDatabase ApplicationModel::cDB;
+ApplicationModel * ApplicationModel::cInstance = NULL;
+
+void ApplicationModel::setNumberOfMixers(unsigned int num){
+	if(num == 0){
+		//XXX Throw an error
+	}
+	if(cNumMixers == 0)
+		cNumMixers = num;
+}
+
+void ApplicationModel::setDataBase(QString type, 
+		QString name, 
+		QString password, 
+		int port, 
+		QString host){
+	cDB = QSqlDatabase::addDatabase(type);
+	cDB.setDatabaseName(name);
+	if(!cDB.open())
+		throw std::runtime_error("cannot open database");
+}
+
+ApplicationModel * ApplicationModel::instance(){
+	if(!cInstance)
+		cInstance = new ApplicationModel();
+	return cInstance;
+}
+
+ApplicationModel::ApplicationModel()
 {
-	mDB = db;
-	mAudioWorkTable = new AudioWorkTableModel(db, this);
-	mMixerPanel = new MixerPanelModel(num_mixers, this);
-	mTagModel = new TagModel(db, this);
+	//XXX make sure that the database is set up and the number of mixers are
+	//also set up
+	mAudioWorkTable = new AudioWorkTableModel(cDB, this);
+	mMixerPanel = new MixerPanelModel(cNumMixers, this);
+	mTagModel = new TagModel(cDB, this);
 	mFilterProxy = new WorkFilterModelProxy(mAudioWorkTable);
 	mWorkFilterList = new WorkFilterList(this);
 
@@ -22,11 +53,11 @@ ApplicationModel::ApplicationModel(unsigned int num_mixers, QSqlDatabase & db, Q
 }
 
 ApplicationModel::~ApplicationModel(){
-	mDB.close();
+	cDB.close();
 }
 
 QSqlDatabase ApplicationModel::db() const {
-	return mDB;
+	return cDB;
 }
 
 AudioWorkTableModel * ApplicationModel::audioWorkTable() const {

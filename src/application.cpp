@@ -37,19 +37,19 @@ int DataJockeyApplication::run(int argc, char *argv[]){
 	QApplication app(argc, argv);
 	app.setStyle(new QCleanlooksStyle);
 
-	//open up the database
-	QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL");
-	db.setDatabaseName("dj_development");
-	if (!db.open()) {
+	ApplicationModel::setNumberOfMixers(NUM_MIXERS);
+	try {
+		ApplicationModel::setDataBase("QMYSQL", "dj_development");
+	} catch (...) {
 		QMessageBox::critical(0, app.tr("Cannot open database"),
 				app.tr("Unable to establish a database connection.\n"
 					"Click Cancel to exit."), QMessageBox::Cancel);
 		return false;
 	}
 
-	ApplicationModel * model = new ApplicationModel(NUM_MIXERS, db, &app);
+	ApplicationModel * model = ApplicationModel::instance();
 	ApplicationView * view = new ApplicationView(model);
-	WorkLoader * loader = new WorkLoader(db, model->mixerPanel(), view->mixerPanel());
+	WorkLoader * loader = new WorkLoader(model->db(), model->mixerPanel(), view->mixerPanel());
 	AudioDriver * audioDriver = new AudioDriver(model->mixerPanel());
 	AudioDriverThread * audioDriverThread = new AudioDriverThread(model);
 
@@ -100,9 +100,6 @@ int DataJockeyApplication::run(int argc, char *argv[]){
 
 	//make the warning messages graphical
 	QErrorMessage::qtHandler();
-
-	//ditch the reference to the database in this scope
-	db = QSqlDatabase();
 
 	view->show();
 	return app.exec();
