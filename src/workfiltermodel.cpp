@@ -1,5 +1,5 @@
 #include "workfiltermodel.hpp"
-#include "audioworktablemodel.hpp"
+#include "worktablemodel.hpp"
 #include "applicationmodel.hpp"
 
 WorkFilterModel::WorkFilterModel(ApplicationModel * appModel, QObject * parent) :
@@ -20,7 +20,7 @@ ApplicationModel * WorkFilterModel::applicationModel(){
 	return mApplicationModel;
 }
 
-WorkFilterModelProxy::WorkFilterModelProxy(AudioWorkTableModel * parent) : 
+WorkFilterModelProxy::WorkFilterModelProxy(WorkTableModel * parent) : 
 	QSortFilterProxyModel(parent)
 {
 	mFilter = NULL;
@@ -34,23 +34,23 @@ bool WorkFilterModelProxy::lessThan(const QModelIndex &left,
 	if(leftData.canConvert(QVariant::String)){
 		//get the data
 		QString leftArtist = 
-			sourceModel()->data(left.sibling(left.row(), AudioWorkTableModel::artistColumn)).toString().toCaseFolded();
+			sourceModel()->data(left.sibling(left.row(), WorkTableModel::artistColumn)).toString().toCaseFolded();
 		QString leftAlbum = 
-			sourceModel()->data(left.sibling(left.row(), AudioWorkTableModel::albumColumn)).toString().toCaseFolded();
+			sourceModel()->data(left.sibling(left.row(), WorkTableModel::albumColumn)).toString().toCaseFolded();
 		QString leftTitle = 
-			sourceModel()->data(left.sibling(left.row(), AudioWorkTableModel::titleColumn)).toString().toCaseFolded();
-		int leftTrack = sourceModel()->data(left.sibling(left.row(), AudioWorkTableModel::trackColumn)).toInt();
+			sourceModel()->data(left.sibling(left.row(), WorkTableModel::titleColumn)).toString().toCaseFolded();
+		int leftTrack = sourceModel()->data(left.sibling(left.row(), WorkTableModel::trackColumn)).toInt();
 		QString rightArtist = 
-			sourceModel()->data(right.sibling(right.row(), AudioWorkTableModel::artistColumn)).toString().toCaseFolded();
+			sourceModel()->data(right.sibling(right.row(), WorkTableModel::artistColumn)).toString().toCaseFolded();
 		QString rightAlbum = 
-			sourceModel()->data(right.sibling(right.row(), AudioWorkTableModel::albumColumn)).toString().toCaseFolded();
+			sourceModel()->data(right.sibling(right.row(), WorkTableModel::albumColumn)).toString().toCaseFolded();
 		QString rightTitle = 
-			sourceModel()->data(right.sibling(right.row(), AudioWorkTableModel::titleColumn)).toString().toCaseFolded();
-		int rightTrack = sourceModel()->data(right.sibling(right.row(), AudioWorkTableModel::trackColumn)).toInt();
+			sourceModel()->data(right.sibling(right.row(), WorkTableModel::titleColumn)).toString().toCaseFolded();
+		int rightTrack = sourceModel()->data(right.sibling(right.row(), WorkTableModel::trackColumn)).toInt();
 
 		//we sort specially for artist, title and album
 		//artist, album, track, title
-		if((unsigned int)left.column() == AudioWorkTableModel::artistColumn){
+		if((unsigned int)left.column() == WorkTableModel::artistColumn){
 			if(leftArtist != rightArtist)
 				return leftArtist < rightArtist;
 			if(leftAlbum != rightAlbum)
@@ -59,14 +59,14 @@ bool WorkFilterModelProxy::lessThan(const QModelIndex &left,
 				return leftTrack < rightTrack;
 			return leftTitle < rightTitle;
 		//title, artist, album
-		} else if((unsigned int)left.column() == AudioWorkTableModel::titleColumn){
+		} else if((unsigned int)left.column() == WorkTableModel::titleColumn){
 			if(leftTitle != rightTitle)
 				return leftTitle < rightTitle;
 			if(leftArtist != rightArtist)
 				return leftArtist < rightArtist;
 			return leftAlbum < rightAlbum;
 		//album, track, artist, title
-		} else if((unsigned int)left.column() == AudioWorkTableModel::albumColumn){
+		} else if((unsigned int)left.column() == WorkTableModel::albumColumn){
 			if(leftAlbum != rightAlbum)
 				return leftAlbum < rightAlbum;
 			if(leftTrack != rightTrack)
@@ -97,7 +97,7 @@ bool WorkFilterModelProxy::filterAcceptsRow(int sourceRow,
 	if(!mFiltering || !mFilter)
 		return true;
 	else {
-		QModelIndex rowIndex = sourceModel()->index(sourceRow, AudioWorkTableModel::idColumn, sourceParent);
+		QModelIndex rowIndex = sourceModel()->index(sourceRow, WorkTableModel::idColumn, sourceParent);
 		return mFilter->acceptsWork(rowIndex.data().toInt());
 	}
 }

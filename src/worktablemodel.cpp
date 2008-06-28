@@ -1,4 +1,4 @@
-#include "audioworktablemodel.hpp"
+#include "worktablemodel.hpp"
 #include <vector>
 #include <sstream>
 #include <QSqlDatabase>
@@ -6,16 +6,16 @@
 
 #include <iostream>
 
-const unsigned int AudioWorkTableModel::idColumn = 0;
-const unsigned int AudioWorkTableModel::artistColumn = 1;
-const unsigned int AudioWorkTableModel::titleColumn = 2;
-const unsigned int AudioWorkTableModel::albumColumn = 3;
-const unsigned int AudioWorkTableModel::trackColumn = 4;
+const unsigned int WorkTableModel::idColumn = 0;
+const unsigned int WorkTableModel::artistColumn = 1;
+const unsigned int WorkTableModel::titleColumn = 2;
+const unsigned int WorkTableModel::albumColumn = 3;
+const unsigned int WorkTableModel::trackColumn = 4;
 
-bool AudioWorkTableModel::cInited = false;
-QString AudioWorkTableModel::cQuery;
+bool WorkTableModel::cInited = false;
+QString WorkTableModel::cQuery;
 
-void AudioWorkTableModel::init(const QSqlDatabase & db){
+void WorkTableModel::init(const QSqlDatabase & db){
 	if(cInited)
 		return;
 	std::vector<QString> descriptorJoinClauses;
@@ -81,7 +81,7 @@ void AudioWorkTableModel::init(const QSqlDatabase & db){
 	cInited = true;
 }
 
-AudioWorkTableModel::AudioWorkTableModel(
+WorkTableModel::WorkTableModel(
 		const QSqlDatabase & db,
 		QObject * parent):
 	QSqlQueryModel(parent)
@@ -94,7 +94,7 @@ AudioWorkTableModel::AudioWorkTableModel(
 
 /*
 //XXX this is sort of a hack..
-void AudioWorkTableModel::sort(int column, Qt::SortOrder order){
+void WorkTableModel::sort(int column, Qt::SortOrder order){
 	std::stringstream queryStr;
 	//build up the sortBy string..
 	switch(column){
@@ -142,7 +142,7 @@ void AudioWorkTableModel::sort(int column, Qt::SortOrder order){
 */
 
 //reformat the time display role so that it is in MM:SS not milliseconds
-QVariant AudioWorkTableModel::data( const QModelIndex & index, int role) const {
+QVariant WorkTableModel::data( const QModelIndex & index, int role) const {
 	QVariant ret = QSqlQueryModel::data(index,role);
 	if(index.isValid() && (index.column() == TIME_COLUMN) && (role == Qt::DisplayRole)){
 		QVariant itemData = QSqlQueryModel::data(index, Qt::DisplayRole);

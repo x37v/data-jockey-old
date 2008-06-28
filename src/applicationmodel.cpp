@@ -1,5 +1,5 @@
 #include "applicationmodel.hpp"
-#include "audioworktablemodel.hpp"
+#include "worktablemodel.hpp"
 #include "mixerpanelmodel.hpp"
 #include "tagmodel.hpp"
 #include "workfiltermodel.hpp"
@@ -42,10 +42,10 @@ ApplicationModel::ApplicationModel()
 	}
 	//XXX make sure that the database is set up and the number of mixers are
 	//also set up
-	mAudioWorkTable = new AudioWorkTableModel(cDB, this);
+	mWorkTable = new WorkTableModel(cDB, this);
 	mMixerPanel = new MixerPanelModel(cNumMixers, this);
 	mTagModel = new TagModel(cDB, this);
-	mFilterProxy = new WorkFilterModelProxy(mAudioWorkTable);
+	mFilterProxy = new WorkFilterModelProxy(mWorkTable);
 	mWorkFilterList = new WorkFilterList(this);
 
 	//make internal connections
@@ -62,8 +62,8 @@ QSqlDatabase ApplicationModel::db() const {
 	return cDB;
 }
 
-AudioWorkTableModel * ApplicationModel::audioWorkTable() const {
-	return mAudioWorkTable;
+WorkTableModel * ApplicationModel::WorkTable() const {
+	return mWorkTable;
 }
 
 MixerPanelModel * ApplicationModel::mixerPanel() const {

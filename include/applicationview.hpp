@@ -5,7 +5,7 @@
 
 class ApplicationModel;
 class WorkDetailView;
-class AudioWorkDBView;
+class WorkDBView;
 class TagEditor;
 class MixerPanelView;
 class WorkFilterListView;
@@ -15,12 +15,12 @@ class ApplicationView : public QWidget {
 	public:
 		ApplicationView(ApplicationModel * model);
 		MixerPanelView * mixerPanel() const;
-		AudioWorkDBView * workDB() const;
+		WorkDBView * workDB() const;
 		TagEditor * tagEditor() const;
 	private:
 		ApplicationModel * mModel;
 		WorkDetailView * mWorkDetail;
-		AudioWorkDBView * mAudioWorkDB;
+		WorkDBView * mWorkDB;
 		TagEditor * mTagEditor;
 		MixerPanelView * mMixerPanel;
 		WorkFilterListView * mWorkFilterList;

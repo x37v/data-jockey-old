@@ -1,5 +1,5 @@
-#include "audioworkdbview.hpp"
-#include "audioworktablemodel.hpp"
+#include "workdbview.hpp"
+#include "worktablemodel.hpp"
 #include <QTableView>
 #include <QPushButton>
 #include <QVBoxLayout>
@@ -9,7 +9,7 @@
 #include <QSqlTableModel>
 #include <QAbstractItemModel>
 
-AudioWorkDBView::AudioWorkDBView(QAbstractItemModel * model, 
+WorkDBView::WorkDBView(QAbstractItemModel * model, 
 		QWidget *parent) :
 	QWidget(parent)
 {
@@ -55,21 +55,21 @@ AudioWorkDBView::AudioWorkDBView(QAbstractItemModel * model,
 
 }
 
-QTableView * AudioWorkDBView::tableView(){
+QTableView * WorkDBView::tableView(){
 	return mTableView;
 }
 
-QPushButton * AudioWorkDBView::applyFilterButton(){
+QPushButton * WorkDBView::applyFilterButton(){
 	return mApplyFilterButton;
 }
 
-QPushButton * AudioWorkDBView::removeFilterButton(){
+QPushButton * WorkDBView::removeFilterButton(){
 	return mRemoveFilterButton;
 }
 
-void AudioWorkDBView::selectWork(const QModelIndex & index ){
+void WorkDBView::selectWork(const QModelIndex & index ){
 	QSqlRecord record = ((QSqlTableModel *)mTableView->model())->record(index.row());
-	QVariant itemData = record.value(AudioWorkTableModel::idColumn);
+	QVariant itemData = record.value(WorkTableModel::idColumn);
 	//find the id of the work and emit that
 	if(itemData.isValid() && itemData.canConvert(QVariant::Int)){
 		int work = itemData.toInt();
@@ -77,17 +77,17 @@ void AudioWorkDBView::selectWork(const QModelIndex & index ){
 	}
 }
 
-void AudioWorkDBView::setSelection( const QItemSelection & selected){
+void WorkDBView::setSelection( const QItemSelection & selected){
 	Q_UNUSED(selected);
 	QModelIndex index = mTableView->selectionModel()->currentIndex(); 
-	index = index.sibling(index.row(), AudioWorkTableModel::idColumn);
+	index = index.sibling(index.row(), WorkTableModel::idColumn);
 	int work_id = -1;
 	if(index.isValid())
 		work_id = mTableView->model()->data(index).toInt();
 	emit(workSelected(work_id));
 }
 
-void AudioWorkDBView::setFiltered(){
+void WorkDBView::setFiltered(){
 	//bool selected = false;
 	//int work_index = 0;
 	//QModelIndexList indexes = mTableView->selectionModel()->selectedIndexes();
@@ -103,7 +103,7 @@ void AudioWorkDBView::setFiltered(){
 	//}
 }
 
-void AudioWorkDBView::setUnFiltered(){
+void WorkDBView::setUnFiltered(){
 	//mModel->setUnFiltered();
 }
 

@@ -4,7 +4,7 @@
 #include <QSqlDatabase>
 #include <QObject>
 
-class AudioWorkTableModel;
+class WorkTableModel;
 class MixerPanelModel;
 class TagModel;
 class WorkFilterModelProxy;
@@ -22,7 +22,7 @@ class ApplicationModel : public QObject {
 		static ApplicationModel * instance();
 
 		QSqlDatabase db() const;
-		AudioWorkTableModel * audioWorkTable() const;
+		WorkTableModel * WorkTable() const;
 		MixerPanelModel * mixerPanel() const;
 		TagModel * tagModel() const;
 		WorkFilterModelProxy * filteredWorkTable() const;
@@ -36,7 +36,7 @@ class ApplicationModel : public QObject {
 		static ApplicationModel * cInstance;
 		static unsigned int cNumMixers;
 		static QSqlDatabase cDB;
-		AudioWorkTableModel * mAudioWorkTable;
+		WorkTableModel * mWorkTable;
 		MixerPanelModel * mMixerPanel;
 		TagModel * mTagModel;
 		WorkFilterModelProxy * mFilterProxy;

@@ -165,8 +165,8 @@ void TagModel::removeWorkTagAssociation(int work_id, int tag_id){
 
 void TagModel::removeWorkTagAssociation(int work_id, QModelIndex tag_index){
 	if(isTag(tag_index)){
-			int tag_id = tag_index.sibling(tag_index.row(), ID_COL).data().toInt();
-			removeWorkTagAssociation(work_id, tag_id);
+		int tag_id = tag_index.sibling(tag_index.row(), ID_COL).data().toInt();
+		removeWorkTagAssociation(work_id, tag_id);
 	}
 }
 
@@ -328,12 +328,11 @@ void TagModel::buildFromQuery(){
 
 //update the count 
 void TagModel::updateTagCount(int tag_id){
-	QString queryStr;
-	queryStr.sprintf("select count(*), tag_classes.id class_id from audio_work_tags\n"
-			"\tjoin tags on tags.id = audio_work_tags.tag_id\n"
-			"\tjoin tag_classes on tags.tag_class_id = tag_classes.id\n"
-			"where audio_work_tags.tag_id = %d\n"
-			"group by tag_classes.id", tag_id);
+	QString queryStr = 
+		QString("select count(audio_work_tags.id), tag_classes.id class_id from tags\n"
+				"\tjoin tag_classes on tags.tag_class_id = tag_classes.id\n"
+				"\tleft join audio_work_tags on tags.id = audio_work_tags.tag_id\n"
+				"where tags.id = %1 group by tag_classes.id;").arg(tag_id);
 	mAddTagQuery.exec(queryStr);
 	if(mAddTagQuery.first()){
 		//grab the count

@@ -1,7 +1,7 @@
 #include "applicationview.hpp"
 
 //views
-#include "audioworkdbview.hpp"
+#include "workdbview.hpp"
 #include "crossfadeview.hpp"
 #include "djmixerchannelview.hpp"
 #include "djmixercontrolview.hpp"
@@ -15,7 +15,7 @@
 
 //models
 #include "applicationmodel.hpp"
-#include "audioworktablemodel.hpp"
+#include "worktablemodel.hpp"
 #include "crossfademodel.hpp"
 #include "djmixerchannelmodel.hpp"
 #include "djmixercontrolmodel.hpp"
@@ -39,7 +39,7 @@ ApplicationView::ApplicationView(ApplicationModel * model):
 
 	//create subviews
 	mWorkDetail = new WorkDetailView(mModel->tagModel(), mModel->db(), this);
-	mAudioWorkDB = new AudioWorkDBView(mModel->filteredWorkTable(), this);
+	mWorkDB = new WorkDBView(mModel->filteredWorkTable(), this);
 	mMixerPanel = new MixerPanelView(mModel->mixerPanel()->numMixerChannels(), this);
 	mTagEditor = new TagEditor(mModel->tagModel(), this);
 	mWorkFilterList = new WorkFilterListView(mModel->workFilterList(), this);
@@ -62,12 +62,12 @@ ApplicationView::ApplicationView(ApplicationModel * model):
 	vertSplit->addWidget(mWorkDetail);
 
 	horiSplit->addWidget(vertSplit);
-	horiSplit->addWidget(mAudioWorkDB);
+	horiSplit->addWidget(mWorkDB);
 	horiSplit->setStretchFactor(0,0);
 	horiSplit->setStretchFactor(1,10);
 
 	//connect up internal sigs/slots
-	QObject::connect(mAudioWorkDB, SIGNAL(workSelected(int)), mWorkDetail, SLOT(setWork(int)));
+	QObject::connect(mWorkDB, SIGNAL(workSelected(int)), mWorkDetail, SLOT(setWork(int)));
 
 	//connect to model
 	connectToModel();
@@ -77,8 +77,8 @@ MixerPanelView * ApplicationView::mixerPanel() const {
 	return mMixerPanel;
 }
 
-AudioWorkDBView * ApplicationView::workDB() const {
-	return mAudioWorkDB;
+WorkDBView * ApplicationView::workDB() const {
+	return mWorkDB;
 }
 
 TagEditor * ApplicationView::tagEditor() const {
@@ -323,12 +323,12 @@ void ApplicationView::connectToModel(){
 
 	//filtering the work view
 	QObject::connect(
-			mAudioWorkDB,
+			mWorkDB,
 			SIGNAL(applyFilterPushed()),
 			mModel->filteredWorkTable(),
 			SLOT(filter()));
 	QObject::connect(
-			mAudioWorkDB,
+			mWorkDB,
 			SIGNAL(removeFilterPushed()),
 			mModel->filteredWorkTable(),
 			SLOT(clearFilter()));

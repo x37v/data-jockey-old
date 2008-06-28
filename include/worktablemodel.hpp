@@ -1,5 +1,5 @@
-#ifndef AUDIO_WORK_TABLE_MODEL_HPP
-#define AUDIO_WORK_TABLE_MODEL_HPP
+#ifndef WORK_TABLE_MODEL_HPP
+#define WORK_TABLE_MODEL_HPP
 
 //QSortFilterProxyModel
 
@@ -11,10 +11,10 @@ class QSqlDatabase;
 class QSqlRecord;
 #define TIME_COLUMN 5
 
-class AudioWorkTableModel : public QSqlQueryModel {
+class WorkTableModel : public QSqlQueryModel {
 	Q_OBJECT
 	public:
-		AudioWorkTableModel(
+		WorkTableModel(
 				const QSqlDatabase & db,
 				QObject * parent = NULL
 				);

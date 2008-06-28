@@ -17,7 +17,7 @@ using std::endl;
 #include <QErrorMessage>
 #include <QTimer>
 
-#include "audioworkdbview.hpp"
+#include "workdbview.hpp"
 #include "mixerpanelmodel.hpp"
 
 #include "audioio.hpp"

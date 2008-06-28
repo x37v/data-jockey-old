@@ -1,5 +1,5 @@
-#ifndef AUDIO_WORK_DB_VIEW_HPP
-#define AUDIO_WORK_DB_VIEW_HPP
+#ifndef WORK_DB_VIEW_HPP
+#define WORK_DB_VIEW_HPP
 
 #include <QWidget>
 #include <QModelIndex>
@@ -9,10 +9,10 @@ class QTableView;
 class QPushButton;
 class QAbstractItemModel;
 
-class AudioWorkDBView : public QWidget {
+class WorkDBView : public QWidget {
 	Q_OBJECT
 	public:
-		AudioWorkDBView(QAbstractItemModel * model, QWidget *parent = NULL);
+		WorkDBView(QAbstractItemModel * model, QWidget *parent = NULL);
 		QTableView * tableView();
 		QPushButton * applyFilterButton();
 		QPushButton * removeFilterButton();

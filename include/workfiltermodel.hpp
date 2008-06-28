@@ -5,7 +5,7 @@
 #include <QSortFilterProxyModel>
 #include <string>
 
-class AudioWorkTableModel;
+class WorkTableModel;
 class ApplicationModel;
 
 class WorkFilterModel : public QObject {
@@ -30,7 +30,7 @@ class WorkFilterModel : public QObject {
 class WorkFilterModelProxy : public QSortFilterProxyModel {
 	Q_OBJECT
 	public:
-		WorkFilterModelProxy(AudioWorkTableModel * parent = NULL);
+		WorkFilterModelProxy(WorkTableModel * parent = NULL);
 		WorkFilterModel * workFilter() const;
 		virtual bool filterAcceptsRow(int sourceRow,
 				const QModelIndex &sourceParent) const;
