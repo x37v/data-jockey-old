@@ -5,6 +5,20 @@ CrossFadeModel::CrossFadeModel(unsigned int numMixers, QObject * parent) :
 	QObject(parent)
 {
 	mNumMixers = numMixers;
+	mLeft = 0;
+	mRight = 0;
+	mEnabled = false;
+	mPosition = 0.0;
+	mRecursing = false;
+}
+
+
+CrossFadeModel::CrossFadeModel(QObject * parent) :
+	QObject(parent)
+{
+	mNumMixers = 0;
+	mLeft = 0;
+	mRight = 0;
 	mEnabled = false;
 	mPosition = 0.0;
 	mRecursing = false;
@@ -23,7 +37,6 @@ float CrossFadeModel::valueRight() const {
 		return 0.0f;
 	else if(mPosition >= 1.0f)
 		return 1.0f;
-	return mPosition;
 	return (float)log((exp(1) - exp(0)) * mPosition + exp(0));
 }
 
@@ -53,6 +66,8 @@ float CrossFadeModel::scaleVolume(unsigned int index, float mixer_volume){
 //sync this model's state to another model
 		//signals which don't change the model's state only go from this model to the other, not back
 void CrossFadeModel::syncToModel(CrossFadeModel * other, Qt::ConnectionType connectionType){
+	//make our number of mixers the same
+	mNumMixers = other->mNumMixers;
 	//this -> other
 	QObject::connect(this,
 			SIGNAL(mixersChanged(unsigned int, unsigned int)),
@@ -85,6 +100,24 @@ void CrossFadeModel::syncToModel(CrossFadeModel * other, Qt::ConnectionType conn
 			this,
 			SLOT(setPosition(float)),
 			connectionType);
+}
+
+void CrossFadeModel::setLeftMixer(unsigned int index){
+   if(index >= mNumMixers)
+      return;
+   if(index != mLeft){
+      mLeft = index;
+      emit(leftMixerChanged(mLeft));
+   }
+}
+
+void CrossFadeModel::setRightMixer(unsigned int index){
+   if(index >= mNumMixers)
+      return;
+   if(index != mRight){
+      mRight = index;
+      emit(rightMixerChanged(mRight));
+   }
 }
 
 void CrossFadeModel::setMixers(unsigned int left, unsigned int right){

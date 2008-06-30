@@ -7,6 +7,7 @@ class CrossFadeModel : public QObject {
 	Q_OBJECT
 	public:
 		CrossFadeModel(unsigned int numMixers, QObject * parent = NULL);
+		CrossFadeModel(QObject * parent = NULL);
 		//sync this model's state to another model
 		//signals which don't change the model's state only go from this model to the other, not back
 		void syncToModel(CrossFadeModel * other, Qt::ConnectionType connectionType = Qt::AutoCompatConnection);
@@ -20,7 +21,11 @@ class CrossFadeModel : public QObject {
 		void mixersChanged(unsigned int left, unsigned int right);
 		void disabled();
 		void positionChanged(float val);
+      void leftMixerChanged(unsigned int);
+      void rightMixerChanged(unsigned int);
 	public slots:
+      void setLeftMixer(unsigned int left);
+      void setRightMixer(unsigned int right);
 		void setMixers(unsigned int left, unsigned int right);
 		void disable();
 		void setPosition(float val);
