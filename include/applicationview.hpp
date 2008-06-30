@@ -10,6 +10,8 @@ class TagEditor;
 class MixerPanelView;
 class WorkFilterListView;
 
+class InterpreterView;
+
 class ApplicationView : public QWidget {
 	Q_OBJECT
 	public:
@@ -24,6 +26,9 @@ class ApplicationView : public QWidget {
 		TagEditor * mTagEditor;
 		MixerPanelView * mMixerPanel;
 		WorkFilterListView * mWorkFilterList;
+
+		InterpreterView * mInterpView;
+
 		void connectToModel();
 };
 

@@ -9,6 +9,7 @@
 #include "masterview.hpp"
 #include "mixerchannelview.hpp"
 #include "mixerpanelview.hpp"
+#include "interpreterview.hpp"
 #include "tageditor.hpp"
 #include "workdetailview.hpp"
 #include "workfilterlistview.hpp"
@@ -23,6 +24,7 @@
 #include "mastermodel.hpp"
 #include "mixerchannelmodel.hpp"
 #include "mixerpanelmodel.hpp"
+#include "interpretermodel.hpp"
 #include "tagmodel.hpp"
 #include "workfiltermodel.hpp"
 
@@ -44,12 +46,15 @@ ApplicationView::ApplicationView(ApplicationModel * model):
 	mTagEditor = new TagEditor(mModel->tagModel(), this);
 	mWorkFilterList = new WorkFilterListView(mModel->workFilterList(), this);
 
+	mInterpView = new InterpreterView(this);
+
 	//set up our view
 	setWindowTitle("data jockey");
 	QVBoxLayout * layout = new QVBoxLayout(this);
 	QSplitter * horiSplit = new QSplitter(Qt::Horizontal, this);
 	QSplitter * vertSplit = new QSplitter(Qt::Vertical, this);
 	QTabWidget * leftTopTabView = new QTabWidget(this);
+	QTabWidget * rightTabView = new QTabWidget(this);
 	layout->addWidget(horiSplit);
 	layout->setContentsMargins(2,2,2,2);
 	setLayout(layout);
@@ -58,11 +63,14 @@ ApplicationView::ApplicationView(ApplicationModel * model):
 	leftTopTabView->addTab(mTagEditor, "tags");
 	leftTopTabView->addTab(mWorkFilterList, "filters");
 
+	rightTabView->addTab(mWorkDB, "work list");
+	rightTabView->addTab(mInterpView, "script interpreter");
+
 	vertSplit->addWidget(leftTopTabView);
 	vertSplit->addWidget(mWorkDetail);
 
 	horiSplit->addWidget(vertSplit);
-	horiSplit->addWidget(mWorkDB);
+	horiSplit->addWidget(rightTabView);
 	horiSplit->setStretchFactor(0,0);
 	horiSplit->setStretchFactor(1,10);
 
@@ -333,5 +341,16 @@ void ApplicationView::connectToModel(){
 			mModel->filteredWorkTable(),
 			SLOT(clearFilter()));
 
+	//connect up the interpreter
+	QObject::connect(
+			mInterpView,
+			SIGNAL(newInput(QString)),
+			mModel->interpreter(),
+			SLOT(addToInput(QString)));
+	QObject::connect(
+			mModel->interpreter(),
+			SIGNAL(newOutput(QString)),
+			mInterpView,
+			SLOT(addToOutput(QString)));
 }
 

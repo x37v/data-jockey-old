@@ -39,7 +39,7 @@ void MasterModel::syncToModel(MasterModel * other, Qt::ConnectionType connection
 	QObject::connect(this,
 			SIGNAL(syncSourceChanged(unsigned int)),
 			other,
-			SLOT(setTempoMul(unsigned int)),
+			SLOT(setSyncSource(unsigned int)),
 			connectionType);
 	//other -> this
 	QObject::connect(other,
@@ -53,14 +53,14 @@ void MasterModel::syncToModel(MasterModel * other, Qt::ConnectionType connection
 			SLOT(setTempo(float)),
 			connectionType);
 	QObject::connect(other,
-			SIGNAL(tempoMulChanged(float)),
+			SIGNAL(tempoMulChanged(double)),
 			this,
-			SLOT(setTempoMul(float)),
+			SLOT(setTempoMul(double)),
 			connectionType);
 	QObject::connect(other,
 			SIGNAL(syncSourceChanged(unsigned int)),
 			this,
-			SLOT(setTempoMul(unsigned int)),
+			SLOT(setSyncSource(unsigned int)),
 			connectionType);
 }
 

@@ -1,0 +1,59 @@
+#include "interpreterioproxy.hpp"
+#include "interpretermodel.hpp"
+#include "applicationmodel.hpp"
+#include <iostream>
+#include <fstream>
+
+InterpreterIOProxy::InterpreterIOProxy(){
+	//create our pipe if it doesn't exist
+	QString cmd = QString("mkfifo %1").arg(DATAJOCKEY_INTERP_PIPE_LOC);
+	system(cmd.toStdString().c_str());
+
+	QObject::connect(this,
+		SIGNAL(newOutput(QString)),
+		ApplicationModel::instance()->interpreter(),
+		SLOT(addToOutput(QString)),
+		Qt::QueuedConnection);
+	QObject::connect(
+		ApplicationModel::instance()->interpreter(),
+		SIGNAL(newInput(QString)),
+		this,
+		SLOT(addToInput(QString)),
+		Qt::DirectConnection);
+		//Qt::QueuedConnection);
+}
+
+std::string InterpreterIOProxy::pipeLocation(){
+	return DATAJOCKEY_INTERP_PIPE_LOC;
+}
+
+/*
+bool InterpreterIOProxy::newInput(){
+	return !mInputList.empty();
+}
+
+std::string InterpreterIOProxy::getInput(){
+	QString input;
+	if(!mInputList.empty()){
+		input = mInputList[0];
+		mInputList.pop_front();
+	}
+	return input.toStdString();
+}
+*/
+
+void InterpreterIOProxy::addToInput(QString input){
+	//mInputList.push_back(input);
+	
+	//write to pipe
+	std::ofstream fout(DATAJOCKEY_INTERP_PIPE_LOC);
+	fout << input.toStdString() << std::endl;
+	//fout.write(input.toStdString().c_str());
+	fout.close();
+}
+
+void InterpreterIOProxy::addToOutput(std::string output){
+	QString outputString(output.c_str());
+	emit(newOutput(outputString));
+}
+

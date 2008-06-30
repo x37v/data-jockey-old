@@ -8,6 +8,7 @@
 #include "../include/eqmodel.hpp"
 #include "../include/mixerchannelmodel.hpp"
 #include "../include/mixerpanelmodel.hpp"
+#include "../include/interpreterioproxy.hpp"
 %}
 
 /* Parse the header file to generate wrappers */
@@ -21,4 +22,5 @@
 %include "eqmodel.i"
 %include "mixerchannelmodel.i"
 %include "mixerpanelmodel.i"
+%include "interpreterioproxy.i"
 

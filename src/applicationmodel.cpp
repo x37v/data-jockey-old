@@ -4,6 +4,7 @@
 #include "tagmodel.hpp"
 #include "workfiltermodel.hpp"
 #include "workfilterlist.hpp"
+#include "interpretermodel.hpp"
 
 #include <stdexcept>
 
@@ -47,6 +48,7 @@ ApplicationModel::ApplicationModel()
 	mTagModel = new TagModel(cDB, this);
 	mFilterProxy = new WorkFilterModelProxy(mWorkTable);
 	mWorkFilterList = new WorkFilterList(this);
+	mInterp = new InterpreterModel(this);
 
 	//make internal connections
 	QObject::connect(
@@ -80,6 +82,10 @@ WorkFilterModelProxy * ApplicationModel::filteredWorkTable() const {
 
 WorkFilterList * ApplicationModel::workFilterList() const {
 	return mWorkFilterList;
+}
+
+InterpreterModel * ApplicationModel::interpreter() const {
+	return mInterp;
 }
 
 ApplicationModelProxy::ApplicationModelProxy(Qt::ConnectionType type, QObject * parent) :

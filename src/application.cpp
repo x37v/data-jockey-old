@@ -32,9 +32,6 @@ using std::endl;
 #include "workfilterlist.hpp"
 #include "defaultworkfilters.hpp"
 
-#include "ruby.h"
-extern "C" void Init_datajockey();
-
 //for now we'll just have a gui app
 int DataJockeyApplication::run(int argc, char *argv[]){
 
@@ -104,17 +101,21 @@ int DataJockeyApplication::run(int argc, char *argv[]){
 
 	//make the warning messages graphical
 	QErrorMessage::qtHandler();
-
-	char * rubyArgv[2];
-	rubyArgv[0] = argv[0];
-	rubyArgv[1] = "ruby-interp-new.rb";
-
-	ruby_init();
-	ruby_options(2, rubyArgv);
-	Init_datajockey();
-	ruby_run();
+	RubyInterpreterThread * rubyThread = new RubyInterpreterThread;
+	rubyThread->start();
 
 	view->show();
 	return app.exec();
+}
+
+#include "ruby.h"
+extern "C" void Init_datajockey();
+
+void RubyInterpreterThread::run(){
+	ruby_init();
+	ruby_init_loadpath();
+	Init_datajockey();
+	rb_load_file("ruby-interp-new.rb");
+	ruby_run();
 }
 

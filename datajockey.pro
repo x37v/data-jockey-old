@@ -41,6 +41,9 @@ HEADERS +=  include/application.hpp \
 				include/mixerpanelmodel.hpp \
 				include/mixerpanelview.hpp \
 				include/object.hpp \
+				include/interpretermodel.hpp \
+				include/interpreterioproxy.hpp \
+				include/interpreterview.hpp \
 				include/soundfile.hpp \
 				include/tageditor.hpp \
 				include/tagmodel.hpp \
@@ -57,6 +60,7 @@ HEADERS +=  include/application.hpp \
 				include/workloader.hpp \
 				include/worktablemodel.hpp \
 				include/worktagmodelfilter.hpp
+
 SOURCES +=  src/application.cpp \
 				src/main.cpp \
 				src/applicationmodel.cpp \
@@ -83,6 +87,9 @@ SOURCES +=  src/application.cpp \
 				src/mixerpanelmodel.cpp \
 				src/mixerpanelview.cpp \
 				src/object.cpp \
+				src/interpretermodel.cpp \
+				src/interpreterioproxy.cpp \
+				src/interpreterview.cpp \
 				src/soundfile.cpp \
 				src/tageditor.cpp \
 				src/tagmodel.cpp \

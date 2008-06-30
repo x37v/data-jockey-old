@@ -9,11 +9,18 @@ class AudioDriver;
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QString>
+#include <QThread>
 #include "buffer.hpp"
 
 class DataJockeyApplication {
 	public:
 		static int run(int argc, char *argv[]);
+};
+
+class RubyInterpreterThread : public QThread {
+	Q_OBJECT
+	public:
+		void run();
 };
 
 #endif

@@ -9,6 +9,7 @@ class MixerPanelModel;
 class TagModel;
 class WorkFilterModelProxy;
 class WorkFilterList;
+class InterpreterModel;
 
 class ApplicationModel : public QObject {
 	Q_OBJECT
@@ -27,6 +28,7 @@ class ApplicationModel : public QObject {
 		TagModel * tagModel() const;
 		WorkFilterModelProxy * filteredWorkTable() const;
 		WorkFilterList * workFilterList() const;
+		InterpreterModel * interpreter() const;
 	protected:
 		ApplicationModel();
 		ApplicationModel(const ApplicationModel&);
@@ -41,13 +43,14 @@ class ApplicationModel : public QObject {
 		TagModel * mTagModel;
 		WorkFilterModelProxy * mFilterProxy;
 		WorkFilterList * mWorkFilterList;
+		InterpreterModel * mInterp;
 };
 
 class ApplicationModelProxy : public QObject {
 	Q_OBJECT
 	public:
 		ApplicationModelProxy(Qt::ConnectionType type = Qt::AutoCompatConnection, 
-				QObject * parent = ApplicationModel::instance());
+				QObject * parent = NULL);
 		MixerPanelModel * mixerPanel() const;
 	private:
 		MixerPanelModel * mMixerPanel;
