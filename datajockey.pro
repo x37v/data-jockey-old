@@ -6,9 +6,11 @@ TEMPLATE = app
 TARGET = datajockey
 DEPENDPATH += .
 INCLUDEPATH += include/
+INCLUDEPATH += /usr/local/include/
+INCLUDEPATH += /usr/lib/ruby/1.8/i486-linux/
 
 QT += sql
-LIBS += -ljackcpp `pkg-config --libs jack` -lsndfile -lslv2 -lmad -lvorbisfile
+LIBS += -ljackcpp `pkg-config --libs jack` -lsndfile -lslv2 -lmad -lvorbisfile -lruby1.8
 
 MOC_DIR = moc
 OBJECTS_DIR = objects
@@ -55,8 +57,8 @@ HEADERS +=  include/application.hpp \
 				include/workloader.hpp \
 				include/worktablemodel.hpp \
 				include/worktagmodelfilter.hpp
-
 SOURCES +=  src/application.cpp \
+				src/main.cpp \
 				src/applicationmodel.cpp \
 				src/applicationview.cpp \
 				src/audiodriver.cpp \
@@ -74,7 +76,6 @@ SOURCES +=  src/application.cpp \
 				src/djmixerworkinfoview.cpp \
 				src/eqmodel.cpp \
 				src/eqview.cpp \
-				src/main.cpp \
 				src/mastermodel.cpp \
 				src/masterview.cpp \
 				src/mixerchannelmodel.cpp \
@@ -97,5 +98,6 @@ SOURCES +=  src/application.cpp \
 				src/workfiltermodel.cpp \
 				src/workloader.cpp \
 				src/worktablemodel.cpp \
-				src/worktagmodelfilter.cpp 
+				src/worktagmodelfilter.cpp \
+				swig/datajockey_wrap.cxx
 

@@ -109,6 +109,10 @@ void CrossFadeModel::setLeftMixer(unsigned int index){
       mLeft = index;
       emit(leftMixerChanged(mLeft));
    }
+	if(!mEnabled){
+		mEnabled = true;
+		emit(enabled(mEnabled));
+	}
 }
 
 void CrossFadeModel::setRightMixer(unsigned int index){
@@ -118,6 +122,10 @@ void CrossFadeModel::setRightMixer(unsigned int index){
       mRight = index;
       emit(rightMixerChanged(mRight));
    }
+	if(!mEnabled){
+		mEnabled = true;
+		emit(enabled(mEnabled));
+	}
 }
 
 void CrossFadeModel::setMixers(unsigned int left, unsigned int right){
@@ -125,9 +133,8 @@ void CrossFadeModel::setMixers(unsigned int left, unsigned int right){
 	if(left >= mNumMixers || right >= mNumMixers)
 		return;
 	if(left != mLeft || right != mRight || !mEnabled){
-		mLeft = left;
-		mRight = right;
-		mEnabled = true;
+		setLeftMixer(left);
+		setRightMixer(right);
 		emit(mixersChanged(mLeft,mRight));
 	}
 }
@@ -136,6 +143,7 @@ void CrossFadeModel::disable(){
 	if(mEnabled){
 		mEnabled = false;
 		emit(disabled());
+		emit(enabled(mEnabled));
 	}
 }
 

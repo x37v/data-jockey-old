@@ -202,6 +202,14 @@ std::vector<DJMixerChannelModel *> * MixerPanelModel::mixerChannels() {
 	return &mDJMixerChannels;
 }
 
+DJMixerChannelModel * MixerPanelModel::mixerChannel(unsigned int i) const {
+	if(i >= mDJMixerChannels.size())
+		return NULL;
+	else
+		return mDJMixerChannels[i];
+}
+
+
 unsigned int MixerPanelModel::numMixerChannels() const {
 	return mDJMixerChannels.size();
 }

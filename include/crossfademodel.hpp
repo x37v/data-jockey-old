@@ -23,6 +23,7 @@ class CrossFadeModel : public QObject {
 		void positionChanged(float val);
       void leftMixerChanged(unsigned int);
       void rightMixerChanged(unsigned int);
+      void enabled(bool);
 	public slots:
       void setLeftMixer(unsigned int left);
       void setRightMixer(unsigned int right);

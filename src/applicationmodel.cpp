@@ -82,3 +82,16 @@ WorkFilterList * ApplicationModel::workFilterList() const {
 	return mWorkFilterList;
 }
 
+ApplicationModelProxy::ApplicationModelProxy(Qt::ConnectionType type, QObject * parent) :
+	QObject(parent)
+{
+	ApplicationModel * model = ApplicationModel::instance();
+	//sync our mixer panel
+	mMixerPanel = new MixerPanelModel(model->mixerPanel()->numMixerChannels());
+	mMixerPanel->syncToModel(model->mixerPanel());
+}
+
+MixerPanelModel * ApplicationModelProxy::mixerPanel() const {
+	return mMixerPanel;
+}
+

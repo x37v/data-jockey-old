@@ -43,5 +43,15 @@ class ApplicationModel : public QObject {
 		WorkFilterList * mWorkFilterList;
 };
 
+class ApplicationModelProxy : public QObject {
+	Q_OBJECT
+	public:
+		ApplicationModelProxy(Qt::ConnectionType type = Qt::AutoCompatConnection, 
+				QObject * parent = ApplicationModel::instance());
+		MixerPanelModel * mixerPanel() const;
+	private:
+		MixerPanelModel * mMixerPanel;
+};
+
 #endif
 

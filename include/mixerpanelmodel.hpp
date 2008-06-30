@@ -21,6 +21,7 @@ class MixerPanelModel : public QObject {
 		CrossFadeModel * crossFade() const;
 		MasterModel * master() const;
 		std::vector<DJMixerChannelModel *> * mixerChannels();
+		DJMixerChannelModel * mixerChannel(unsigned int i) const;
 		unsigned int numMixerChannels() const;
 		bool mixerAudible(unsigned int index) const;
 		float mixerVolume(unsigned int index) const;
