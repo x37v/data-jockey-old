@@ -3,11 +3,14 @@
 
 class InterpreterIOProxy {
    public:
-      InterpreterIOProxy();
-      void addToOutput(std::string output);
-      bool newInput();
-      std::string getInput();
+      static void addToOutput(std::string output);
+      static bool newInput();
+      static std::string getInput();
       static void processEvents();
+   protected:
+      InterpreterIOProxy();
+      InterpreterIOProxy(const InterpreterIOProxy&);
+      InterpreterIOProxy& operator= (const InterpreterIOProxy&);
 };
 
 #endif

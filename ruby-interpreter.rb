@@ -17,24 +17,22 @@ require 'irb'
 # bye
 
 
-$dataJockeyIOProxy = Datajockey::InterpreterIOProxy.new
-
 class RedirectOutput < IO
     def initialize
         super(2)  
     end
     def write(text)
-      $dataJockeyIOProxy.addToOutput(text.to_s)
+      Datajockey::InterpreterIOProxy::addToOutput(text.to_s)
     end
 end
 
 #here we read from datajockey 
 class DataJockeyInput < IRB::InputMethod
   def gets()
-    until $dataJockeyIOProxy.newInput
+    until Datajockey::InterpreterIOProxy::newInput
       sleep(0.001)
     end
-    return $dataJockeyIOProxy.getInput + "\n"
+    return Datajockey::InterpreterIOProxy::getInput + "\n"
   end
   def readable_atfer_eof?()
     true

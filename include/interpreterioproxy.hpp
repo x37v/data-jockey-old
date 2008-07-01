@@ -9,18 +9,22 @@
 
 class InterpreterIOProxy : public QObject {
 	Q_OBJECT
-	public:
+	protected:
 		InterpreterIOProxy();
-		bool newInput();
-		std::string getInput();
+		InterpreterIOProxy(const InterpreterIOProxy&);
+		InterpreterIOProxy& operator= (const InterpreterIOProxy&);
+		static QList<QString> mInputList;
+		static InterpreterIOProxy * cInstance;
+	public:
+		static InterpreterIOProxy * instance();
+		static bool newInput();
+		static std::string getInput();
 		static void processEvents();
 	signals:
 		void newOutput(QString output);
 	public slots:
-		void addToInput(QString input);
-		void addToOutput(std::string output);
-	protected:
-		QList<QString> mInputList;
+		static void addToInput(QString input);
+		static void addToOutput(std::string output);
 };
 
 #endif

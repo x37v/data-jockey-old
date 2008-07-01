@@ -7,6 +7,9 @@
 #include <stdexcept>
 #include <QCoreApplication>
 
+QList<QString> InterpreterIOProxy::mInputList;
+InterpreterIOProxy * InterpreterIOProxy::cInstance = NULL;
+
 InterpreterIOProxy::InterpreterIOProxy(){
 	QObject::connect(this,
 		SIGNAL(newOutput(QString)),
@@ -22,15 +25,23 @@ InterpreterIOProxy::InterpreterIOProxy(){
 		//Qt::DirectConnection);
 }
 
+InterpreterIOProxy * InterpreterIOProxy::instance(){
+	if(cInstance == NULL)
+		cInstance = new InterpreterIOProxy();
+	return cInstance;
+}
+
 void InterpreterIOProxy::processEvents(){
 	QCoreApplication::processEvents();
 }
 
 bool InterpreterIOProxy::newInput(){
-	return !mInputList.empty();
+	return !instance()->mInputList.empty();
 }
 
 std::string InterpreterIOProxy::getInput(){
+	if(!cInstance)
+		instance();
 	QString input;
 	if(mInputList.empty())
 		return "";
@@ -40,11 +51,13 @@ std::string InterpreterIOProxy::getInput(){
 }
 
 void InterpreterIOProxy::addToInput(QString input){
+	if(!cInstance)
+		instance();
 	mInputList.push_back(input);
 }
 
 void InterpreterIOProxy::addToOutput(std::string output){
 	QString outputString(output.c_str());
-	emit(newOutput(outputString));
+	instance()->newOutput(outputString);
 }
 
