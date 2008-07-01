@@ -40,17 +40,17 @@ void EQModel::syncToModel(EQModel * other, Qt::ConnectionType connectionType){
 	QObject::connect(other,
 			SIGNAL(highChanged(float)),
 			this,
-			SLOT(setHigh(float)),
+			SLOT(updateHigh(float)),
 			connectionType);
 	QObject::connect(other,
 			SIGNAL(midChanged(float)),
 			this,
-			SLOT(setMid(float)),
+			SLOT(updateMid(float)),
 			connectionType);
 	QObject::connect(other,
 			SIGNAL(lowChanged(float)),
 			this,
-			SLOT(setLow(float)),
+			SLOT(updateLow(float)),
 			connectionType);
 	//XXX what about cuts?
 }
@@ -74,6 +74,30 @@ void EQModel::reset(){
 	mCuttingHigh = mCuttingMid = mCuttingLow = false;
 }
 
+void EQModel::updateHigh(float val){
+	if(val > 1.0f)
+		val = 1.0f;
+	else if (val < -1.0f)
+		val = -1.0f;
+	mHigh = val;
+}
+
+void EQModel::updateMid(float val){
+	if(val > 1.0f)
+		val = 1.0f;
+	else if (val < -1.0f)
+		val = -1.0f;
+	mMid = val;
+}
+
+void EQModel::updateLow(float val){
+	if(val > 1.0f)
+		val = 1.0f;
+	else if (val < -1.0f)
+		val = -1.0f;
+	mLow = val;
+}
+
 void EQModel::setHigh(float val){
 	if(mCuttingHigh != false){
 		mCuttingHigh = false;
@@ -81,7 +105,7 @@ void EQModel::setHigh(float val){
 	}
 	if(mHigh != val){
 		mHighLast = mHigh;
-		mHigh = val;
+		updateHigh(val);
 		emit(highChanged(mHigh));
 		emit(valuesChanged(mLow, mMid, mHigh));
 	}
@@ -94,7 +118,7 @@ void EQModel::setMid(float val){
 	}
 	if(mMid != val){
 		mMidLast = mMid;
-		mMid = val;
+		updateMid(val);
 		emit(midChanged(mMid));
 		emit(valuesChanged(mLow, mMid, mHigh));
 	}
@@ -107,7 +131,7 @@ void EQModel::setLow(float val){
 	}
 	if(mLow != val){
 		mLowLast = mLow;
-		mLow = val;
+		updateLow(val);
 		emit(lowChanged(mLow));
 		emit(valuesChanged(mLow, mMid, mHigh));
 	}

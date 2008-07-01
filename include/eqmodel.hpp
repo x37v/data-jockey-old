@@ -30,6 +30,11 @@ class EQModel : public QObject {
 		void toggleHighCut();
 		void toggleMidCut();
 		void toggleLowCut();
+	//protected slots, they don't emit signals, just change our internal values
+	protected slots:
+		void updateHigh(float val);
+		void updateMid(float val);
+		void updateLow(float val);
 	private:
 		float mHigh;
 		float mMid;
