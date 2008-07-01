@@ -5,7 +5,8 @@ class InterpreterIOProxy {
    public:
       InterpreterIOProxy();
       void addToOutput(std::string output);
-      static std::string pipeLocation();
+      bool newInput();
+      std::string getInput();
       static void processEvents();
 };
 

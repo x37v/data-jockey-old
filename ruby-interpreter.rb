@@ -28,16 +28,13 @@ class RedirectOutput < IO
     end
 end
 
-#here we read from the datajockey pipe
-class PipedInput < IRB::InputMethod
+#here we read from datajockey 
+class DataJockeyInput < IRB::InputMethod
   def gets()
-    File.open(Datajockey::InterpreterIOProxy::pipeLocation, "r") { |f|
-      input = nil
-      while input == "" or input == nil
-        input = f.gets()
-      end
-      return input
-    }
+    until $dataJockeyIOProxy.newInput
+      sleep(0.001)
+    end
+    return $dataJockeyIOProxy.getInput + "\n"
   end
   def readable_atfer_eof?()
     true
@@ -60,8 +57,8 @@ module IRB
     if @CONF[:SCRIPT]
       self.instance = Irb.new(workspace, @CONF[:SCRIPT])
     else
-      #self.instance = Irb.new(workspace, PipedInput.new)
-      self.instance = Irb.new(workspace)
+      self.instance = Irb.new(workspace, DataJockeyInput.new)
+      #self.instance = Irb.new(workspace)
     end
 
     @CONF[:IRB_RC].call(self.instance.context) if @CONF[:IRB_RC]
@@ -114,15 +111,15 @@ def dROP! object = nil
 	IRB.start_session binding
 end
 
-
 #redirect stdout
-#$stdout = RedirectOutput.new
+$stdout = RedirectOutput.new
 
 if defined? IRBHelper
   puts "Helper Methods: #{(Class.new.instance_eval {include IRBHelper;self}.new.methods.sort - Class.new.methods).join(', ')}"
   include IRBHelper
 end
 
+#process events coming from data jockey
 Thread.start {
   loop {
     sleep(0.001)
