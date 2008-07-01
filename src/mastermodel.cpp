@@ -47,17 +47,17 @@ void MasterModel::syncToModel(MasterModel * other, Qt::ConnectionType connection
 	QObject::connect(other,
 			SIGNAL(volumeChanged(float)),
 			this,
-			SLOT(setVolume(float)),
+			SLOT(updateVolume(float)),
 			connectionType);
 	QObject::connect(other,
 			SIGNAL(tempoChanged(float)),
 			this,
-			SLOT(setTempo(float)),
+			SLOT(updateTempo(float)),
 			connectionType);
 	QObject::connect(other,
 			SIGNAL(tempoMulChanged(double)),
 			this,
-			SLOT(setTempoMul(double)),
+			SLOT(updateTempoMul(double)),
 			connectionType);
 	QObject::connect(other,
 			SIGNAL(syncSourceChanged(unsigned int)),
@@ -80,10 +80,6 @@ void MasterModel::setTempo(float tempo){
 	}
 }
 
-
-#include <iostream>
-using namespace std;
-
 void MasterModel::setTempoMul(double mul){
 	if(mRecursing)
 		return;
@@ -93,6 +89,18 @@ void MasterModel::setTempoMul(double mul){
 		emit(tempoMulChanged(mTempoMul));
 	}
 	mRecursing = false;
+}
+
+void MasterModel::updateVolume(float vol){
+	mVolume = vol;
+}
+
+void MasterModel::updateTempo(float tempo){
+	mTempo = tempo;
+}
+
+void MasterModel::updateTempoMul(double mul){
+	mTempoMul = mul;
 }
 
 void MasterModel::setSyncSource(unsigned int src){

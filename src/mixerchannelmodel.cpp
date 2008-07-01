@@ -46,7 +46,7 @@ void MixerChannelModel::syncToModel(MixerChannelModel * other, Qt::ConnectionTyp
 	QObject::connect(other,
 			SIGNAL(volumeChanged(float)),
 			this,
-			SLOT(setVolume(float)),
+			SLOT(updateVolume(float)),
 			connectionType);
 	QObject::connect(other,
 			SIGNAL(mutedChanged(bool)),
@@ -75,6 +75,10 @@ void MixerChannelModel::setVolume(float volume){
 		mVolume = volume;
 		emit(volumeChanged(volume));
 	}
+}
+
+void MixerChannelModel::updateVolume(float volume){
+	mVolume = volume;
 }
 
 void MixerChannelModel::setMuted(bool muted){

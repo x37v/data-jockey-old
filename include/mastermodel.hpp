@@ -24,6 +24,10 @@ class MasterModel : public QObject {
 		void setTempoMul(double mul);
 		//0 is master, 1 is mixer 0, 2 is mixer 1..
 		void setSyncSource(unsigned int src);
+	protected slots:
+		void updateVolume(float vol);
+		void updateTempo(float tempo);
+		void updateTempoMul(double mul);
 	private:
 		bool mRecursing;
 		float mVolume;
