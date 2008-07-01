@@ -20,6 +20,8 @@ float MasterModel::tempo(){
 }
 
 void MasterModel::syncToModel(MasterModel * other, Qt::ConnectionType connectionType){
+	//make us have the same number of mixers
+	mNumMixers = other->mNumMixers;
 	//this -> other
 	QObject::connect(this,
 			SIGNAL(volumeChanged(float)),

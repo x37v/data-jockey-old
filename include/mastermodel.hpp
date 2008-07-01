@@ -6,7 +6,7 @@
 class MasterModel : public QObject {
 	Q_OBJECT
 	public:
-		MasterModel(unsigned int numMixers, QObject *parent = NULL);
+		MasterModel(unsigned int numMixers = 0, QObject *parent = NULL);
 		//sync this model's state to another model
 		//signals which don't change the model's state only go from this model to the other, not back
 		void syncToModel(MasterModel * other, Qt::ConnectionType connectionType = Qt::AutoCompatConnection);

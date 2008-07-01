@@ -19,13 +19,14 @@ require 'irb'
 
 $dataJockeyIOProxy = Datajockey::InterpreterIOProxy.new
 
-class <<STDOUT
-  alias :old_write :write
-  def write(data)
-    $dataJockeyIOProxy.addToOutput(data.to_s)
-  end
+class RedirectOutput < IO
+    def initialize
+        super(2)  
+    end
+    def write(text)
+      $dataJockeyIOProxy.addToOutput(text.to_s)
+    end
 end
-
 
 #here we read from the datajockey pipe
 class PipedInput < IRB::InputMethod
@@ -59,7 +60,8 @@ module IRB
     if @CONF[:SCRIPT]
       self.instance = Irb.new(workspace, @CONF[:SCRIPT])
     else
-      self.instance = Irb.new(workspace, PipedInput.new)
+      #self.instance = Irb.new(workspace, PipedInput.new)
+      self.instance = Irb.new(workspace)
     end
 
     @CONF[:IRB_RC].call(self.instance.context) if @CONF[:IRB_RC]
@@ -75,23 +77,8 @@ module IRB
   def self.start_session(binding)
     old_args = ARGV
   	ARGV.size.times { ARGV.shift }
-    
-    IRB.setup(nil)
 
-    workspace = WorkSpace.new(binding)
-
-    if @CONF[:SCRIPT]
-      self.instance = Irb.new(workspace, @CONF[:SCRIPT])
-    else
-      self.instance = Irb.new(workspace, PipedInput.new)
-    end
-
-    @CONF[:IRB_RC].call(self.instance.context) if @CONF[:IRB_RC]
-    @CONF[:MAIN_CONTEXT] = self.instance.context
-
-    trap 'INT' do
-      self.instance.signal_handle
-    end
+    set_binding(binding)
 
     catch(:IRB_EXIT) do
       self.instance.eval_input
@@ -127,19 +114,23 @@ def dROP! object = nil
 	IRB.start_session binding
 end
 
-=begin
-class <<STDERR
-  alias :old_write :write
-  def write(data)
-    $dataJockeyIOProxy.addToOutput(data)
-  end
-end
-=end
+
+#redirect stdout
+#$stdout = RedirectOutput.new
 
 if defined? IRBHelper
   puts "Helper Methods: #{(Class.new.instance_eval {include IRBHelper;self}.new.methods.sort - Class.new.methods).join(', ')}"
   include IRBHelper
 end
+
+=begin
+Thread.start {
+  loop {
+    sleep(1)
+    $dataJockeyIOProxy.addToOutput("test")
+  }
+}
+=end
 
 IRB.set_binding(Datajockey::ApplicationModelProxy.new)
 while true

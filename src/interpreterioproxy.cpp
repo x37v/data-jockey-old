@@ -4,10 +4,24 @@
 #include <iostream>
 #include <fstream>
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
+#include <stdexcept>
+
 InterpreterIOProxy::InterpreterIOProxy(){
-	//create our pipe if it doesn't exist
-	QString cmd = QString("mkfifo %1").arg(DATAJOCKEY_INTERP_PIPE_LOC);
-	system(cmd.toStdString().c_str());
+	struct stat stat_buf;
+
+	//does the file exist?
+	if(stat(DATAJOCKEY_INTERP_PIPE_LOC, &stat_buf)){
+		//create our pipe if it doesn't exist
+		QString cmd = QString("mkfifo %1").arg(DATAJOCKEY_INTERP_PIPE_LOC);
+		system(cmd.toStdString().c_str());
+	} else if(!S_ISFIFO(stat_buf.st_mode)){
+		//if it exists but isn't a fifo that is problem
+		throw std::runtime_error("DATAJOCKEY_INTERP_PIPE_LOC exists but is not a fifo");
+	}
 
 	QObject::connect(this,
 		SIGNAL(newOutput(QString)),

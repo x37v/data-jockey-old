@@ -32,6 +32,7 @@ using std::endl;
 #include "workfilterlist.hpp"
 #include "defaultworkfilters.hpp"
 
+
 //for now we'll just have a gui app
 int DataJockeyApplication::run(int argc, char *argv[]){
 
@@ -115,7 +116,7 @@ void RubyInterpreterThread::run(){
 	ruby_init();
 	ruby_init_loadpath();
 	Init_datajockey();
-	rb_load_file("ruby-interp-new.rb");
+	rb_load_file("ruby-interpreter.rb");
 	ruby_run();
 }
 
