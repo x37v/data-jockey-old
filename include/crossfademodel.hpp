@@ -30,6 +30,8 @@ class CrossFadeModel : public QObject {
 		void setMixers(unsigned int left, unsigned int right);
 		void disable();
 		void setPosition(float val);
+	protected slots:
+		void updatePosition(float val);
 	private:
 		bool mRecursing;
 		float mPosition;

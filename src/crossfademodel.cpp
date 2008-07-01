@@ -98,7 +98,7 @@ void CrossFadeModel::syncToModel(CrossFadeModel * other, Qt::ConnectionType conn
 	QObject::connect(other,
 			SIGNAL(positionChanged(float)),
 			this,
-			SLOT(setPosition(float)),
+			SLOT(updatePosition(float)),
 			connectionType);
 }
 
@@ -147,17 +147,21 @@ void CrossFadeModel::disable(){
 	}
 }
 
+void CrossFadeModel::updatePosition(float pos){
+	if(pos < 0.0f)
+		mPosition = 0.0f;
+	else if (pos > 1.0f)
+		mPosition = 1.0f;
+	else
+		mPosition = pos;
+}
+
 void CrossFadeModel::setPosition(float pos){
 	if(mRecursing)
 		return;
 	mRecursing = true;
 	if(pos != mPosition){
-		if(pos < 0.0f)
-			mPosition = 0.0f;
-		else if (pos > 1.0f)
-			mPosition = 1.0f;
-		else
-			mPosition = pos;
+		updatePosition(pos);
 		emit(positionChanged(mPosition));
 	}
 	mRecursing = false;
