@@ -86,11 +86,6 @@ void DJMixerControlModel::syncToModel(DJMixerControlModel * other, Qt::Connectio
 			SLOT(setSync(bool)),
 			connectionType);
 	QObject::connect(this,
-			SIGNAL(progressChanged(float)),
-			other,
-			SLOT(setProgress(float)),
-			connectionType);
-	QObject::connect(this,
 			SIGNAL(playbackPositionChanged(int)),
 			other,
 			SLOT(setPlaybackPosition(int)),

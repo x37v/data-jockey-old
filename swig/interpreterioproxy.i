@@ -6,6 +6,7 @@ class InterpreterIOProxy {
       InterpreterIOProxy();
       void addToOutput(std::string output);
       static std::string pipeLocation();
+      static void processEvents();
 };
 
 #endif

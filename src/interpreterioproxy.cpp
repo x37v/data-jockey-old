@@ -9,6 +9,7 @@
 #include <unistd.h>
 
 #include <stdexcept>
+#include <QCoreApplication>
 
 InterpreterIOProxy::InterpreterIOProxy(){
 	struct stat stat_buf;
@@ -39,6 +40,10 @@ InterpreterIOProxy::InterpreterIOProxy(){
 
 std::string InterpreterIOProxy::pipeLocation(){
 	return DATAJOCKEY_INTERP_PIPE_LOC;
+}
+
+void InterpreterIOProxy::processEvents(){
+	QCoreApplication::processEvents();
 }
 
 /*

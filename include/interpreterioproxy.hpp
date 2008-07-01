@@ -18,6 +18,7 @@ class InterpreterIOProxy : public QObject {
 		//bool newInput();
 		//std::string getInput();
 		static std::string pipeLocation();
+		static void processEvents();
 	signals:
 		void newOutput(QString output);
 	public slots:

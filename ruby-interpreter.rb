@@ -123,14 +123,13 @@ if defined? IRBHelper
   include IRBHelper
 end
 
-=begin
 Thread.start {
   loop {
-    sleep(1)
-    $dataJockeyIOProxy.addToOutput("test")
+    sleep(0.001)
+    #process the incoming events
+    Datajockey::InterpreterIOProxy.processEvents
   }
 }
-=end
 
 IRB.set_binding(Datajockey::ApplicationModelProxy.new)
 while true
