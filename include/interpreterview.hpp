@@ -20,6 +20,10 @@ class InterpreterView : public QWidget {
 	protected slots:
 		void acceptNewInput();
 	private:
+		//mWaitingForOutput is true when we've sent at least one line
+		//before getting any input back.. it helps us set the prompt
+		//on the input display
+		bool mWaitingForOutput;
 		QLineEdit * mTextEntry;
 		QTextEdit * mOutputDisplay;
 };
