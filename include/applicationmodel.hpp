@@ -55,6 +55,7 @@ class ApplicationModelProxy : public QObject {
 		MixerPanelModel * mixerPanel() const;
 		void addFilter(RemoteWorkFilterModel * filter);
 		void removeFilter(RemoteWorkFilterModel * filter);
+		void removeFilter(unsigned int i);
 		unsigned int numFilters();
 		RemoteWorkFilterModel * filter(unsigned int i);
 	private:

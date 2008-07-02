@@ -13,8 +13,7 @@ unsigned int ApplicationModel::cNumMixers = 0;
 QSqlDatabase ApplicationModel::cDB;
 ApplicationModel * ApplicationModel::cInstance = NULL;
 
-void ApplicationModel::setNumberOfMixers(unsigned int num){
-	if(num == 0)
+void ApplicationModel::setNumberOfMixers(unsigned int num){ if(num == 0)
 		throw std::logic_error("number of mixers must be greater than 0");
 	if(cNumMixers == 0)
 		cNumMixers = num;
@@ -123,14 +122,19 @@ void ApplicationModelProxy::removeFilter(RemoteWorkFilterModel * filter){
 	}
 }
 
+void ApplicationModelProxy::removeFilter(unsigned int i){
+	if(i < (unsigned int)mFilterList.size())
+		removeFilter(mFilterList[i]);
+}
+
 unsigned int ApplicationModelProxy::numFilters(){
 	return (unsigned int)mFilterList.size();
 }
 
-	RemoteWorkFilterModel * ApplicationModelProxy::filter(unsigned int i){
-		if(i >= (unsigned int)mFilterList.size())
-			return NULL;
-		else
-			return mFilterList[i];
-	}
+RemoteWorkFilterModel * ApplicationModelProxy::filter(unsigned int i){
+	if(i >= (unsigned int)mFilterList.size())
+		return NULL;
+	else
+		return mFilterList[i];
+}
 
