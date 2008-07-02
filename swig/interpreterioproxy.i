@@ -10,7 +10,7 @@ class InterpreterIOProxy {
    protected:
       InterpreterIOProxy();
       InterpreterIOProxy(const InterpreterIOProxy&);
-      InterpreterIOProxy& operator= (const InterpreterIOProxy&);
+      //InterpreterIOProxy& operator= (const InterpreterIOProxy&);
 };
 
 #endif

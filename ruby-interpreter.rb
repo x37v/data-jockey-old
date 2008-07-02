@@ -126,6 +126,7 @@ Thread.start {
   }
 }
 
+include Datajockey
 IRB.set_binding(Datajockey::ApplicationModelProxy.new)
 while true
   catch(:IRB_EXIT) do
