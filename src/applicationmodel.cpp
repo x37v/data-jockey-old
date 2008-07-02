@@ -123,3 +123,14 @@ void ApplicationModelProxy::removeFilter(RemoteWorkFilterModel * filter){
 	}
 }
 
+unsigned int ApplicationModelProxy::numFilters(){
+	return (unsigned int)mFilterList.size();
+}
+
+	RemoteWorkFilterModel * ApplicationModelProxy::filter(unsigned int i){
+		if(i >= (unsigned int)mFilterList.size())
+			return NULL;
+		else
+			return mFilterList[i];
+	}
+
