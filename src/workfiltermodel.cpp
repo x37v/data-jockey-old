@@ -6,6 +6,7 @@ WorkFilterModel::WorkFilterModel(ApplicationModel * appModel, QObject * parent) 
 	QObject(parent)
 {
 	mApplicationModel = appModel;
+	qRegisterMetaType<WorkFilterModel *>("WorkFilterModel *");
 }
 
 WorkFilterModel::~WorkFilterModel(){

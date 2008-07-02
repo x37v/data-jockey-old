@@ -10,6 +10,7 @@
 #include "../include/mixerchannelmodel.hpp"
 #include "../include/mixerpanelmodel.hpp"
 #include "../include/interpreterioproxy.hpp"
+#include "../include/remoteworkfiltermodel.hpp"
 %}
 
 /* Parse the header file to generate wrappers */
@@ -25,4 +26,5 @@
 %include "mixerchannelmodel.i"
 %include "mixerpanelmodel.i"
 %include "interpreterioproxy.i"
+%include "remoteworkfiltermodel.i"
 

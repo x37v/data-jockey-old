@@ -44,6 +44,7 @@ HEADERS +=  include/application.hpp \
 				include/interpretermodel.hpp \
 				include/interpreterioproxy.hpp \
 				include/interpreterview.hpp \
+				include/remoteworkfiltermodel.hpp \
 				include/soundfile.hpp \
 				include/tageditor.hpp \
 				include/tagmodel.hpp \
@@ -90,6 +91,7 @@ SOURCES +=  src/application.cpp \
 				src/interpretermodel.cpp \
 				src/interpreterioproxy.cpp \
 				src/interpreterview.cpp \
+				src/remoteworkfiltermodel.cpp \
 				src/soundfile.cpp \
 				src/tageditor.cpp \
 				src/tagmodel.cpp \

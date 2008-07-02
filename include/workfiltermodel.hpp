@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QSortFilterProxyModel>
 #include <string>
+#include <set>
 
 class WorkTableModel;
 class ApplicationModel;
@@ -25,6 +26,8 @@ class WorkFilterModel : public QObject {
 	private:
 		ApplicationModel * mApplicationModel;
 };
+
+Q_DECLARE_METATYPE(WorkFilterModel *)
 
 //this is the one that actually does the filtering [based on a WorkFilterModel]
 class WorkFilterModelProxy : public QSortFilterProxyModel {
