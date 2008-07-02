@@ -173,6 +173,7 @@ void WorkLoader::mixerLoadWork(int mixer){
 						loadingArtist);
 				mMixerPanelView->mixerChannels()->at(mixer)->DJMixerWorkInfo()->setTitleText(
 						loadingTitle);
+				mMixerPanelModel->mixerChannels()->at(mixer)->setWork(-1);
 			}
 			
 		} else {
@@ -209,6 +210,7 @@ void WorkLoader::setWork(unsigned int mixer_index,
 		mMixerPanelView->mixerChannels()->at(mixer_index)->DJMixerWorkInfo()->setTitleText(
 				mWorkInfoQuery.value(titleCol).toString()
 				);
+		mMixerPanelModel->mixerChannels()->at(mixer_index)->setWork(work);
 	}
 }
 
