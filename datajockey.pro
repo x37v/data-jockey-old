@@ -15,6 +15,11 @@ LIBS += -ljackcpp `pkg-config --libs jack` -lsndfile -lslv2 -lmad -lvorbisfile -
 MOC_DIR = moc
 OBJECTS_DIR = objects
 
+swigtarget.target = swig/datajockey_wrap.cxx
+swigtarget.commands = swig -Wall -c++ -ruby -o swig/datajockey_wrap.cxx swig/datajockey.i
+swigtarget.depends = swig/*.i
+QMAKE_EXTRA_TARGETS += swigtarget
+
 # Input
 HEADERS +=  include/application.hpp \
 				include/applicationmodel.hpp \
