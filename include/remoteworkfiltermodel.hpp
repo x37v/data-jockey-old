@@ -9,6 +9,8 @@
 #include <QString>
 #include <QList>
 
+class RemoteWorkFilterModelProxy;
+
 //this is a filter that is executed in another thread
 //for instance, in an interpreter
 class RemoteWorkFilterModel : public QObject {
@@ -20,6 +22,7 @@ class RemoteWorkFilterModel : public QObject {
 		void clearWorks();
 		void addWork(int id);
 		void setWorks(std::vector<int> idlist);
+		RemoteWorkFilterModelProxy * proxy() const;
 	signals:
 		void workListing(QList<int> works);
 		void nameChanged(QString name);
@@ -28,6 +31,7 @@ class RemoteWorkFilterModel : public QObject {
 	public slots:
 		void reportWorks();
 	private:
+		RemoteWorkFilterModelProxy * mProxy;
 		QList<int> mSelectedWorks;
 };
 
@@ -49,7 +53,6 @@ class RemoteWorkFilterModelProxy : public WorkFilterModel {
 		void setWorks(QList<int> idlist);
 		void setName(QString name);
 		void setDescription(QString description);
-	protected slots:
 		void removeSelf();
 	private:
 		//this indicates if we have been updated since the filter was executed
@@ -58,5 +61,6 @@ class RemoteWorkFilterModelProxy : public WorkFilterModel {
 		QString mName;
 		QString mDescription;
 };
+
 
 #endif

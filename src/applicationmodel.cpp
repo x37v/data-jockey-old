@@ -5,6 +5,7 @@
 #include "workfiltermodel.hpp"
 #include "workfilterlist.hpp"
 #include "interpretermodel.hpp"
+#include "remoteworkfiltermodel.hpp"
 
 #include <stdexcept>
 
@@ -99,5 +100,26 @@ ApplicationModelProxy::ApplicationModelProxy(Qt::ConnectionType type, QObject * 
 
 MixerPanelModel * ApplicationModelProxy::mixerPanel() const {
 	return mMixerPanel;
+}
+
+void ApplicationModelProxy::addFilter(RemoteWorkFilterModel * filter){
+	//if it isn't already in there, do your work
+	if(!mFilterList.contains(filter)){
+		mFilterList.push_back(filter);
+		//insert it (via the proxy) into the filter list
+		QMetaObject::invokeMethod(ApplicationModel::instance()->workFilterList(), 
+				"addFilter", Qt::QueuedConnection, Q_ARG(WorkFilterModel *, filter->proxy()));
+	}
+}
+
+void ApplicationModelProxy::removeFilter(RemoteWorkFilterModel * filter){
+	if(mFilterList.contains(filter)){
+		//remove it (via the proxy) into the filter list
+		QMetaObject::invokeMethod(ApplicationModel::instance()->workFilterList(), 
+				"removeFilter", Qt::QueuedConnection, Q_ARG(WorkFilterModel *, filter->proxy()));
+		QMetaObject::invokeMethod(ApplicationModel::instance()->filteredWorkTable(), 
+				"setFilter", Qt::QueuedConnection, Q_ARG(WorkFilterModel *, NULL));
+		mFilterList.removeAll(filter);
+	}
 }
 

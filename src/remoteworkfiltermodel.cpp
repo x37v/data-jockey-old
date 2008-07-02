@@ -9,33 +9,30 @@ RemoteWorkFilterModel::RemoteWorkFilterModel(std::string name, std::string descr
 		qRegisterMetaType<QList<int> >("QList<int>");
 
 	//create our proxy and set its name and description
-	RemoteWorkFilterModelProxy * proxy = new RemoteWorkFilterModelProxy;
-	proxy->setName(QString(name.c_str()));
-	proxy->setDescription(QString(description.c_str()));
+	mProxy = new RemoteWorkFilterModelProxy;
+	mProxy->setName(QString(name.c_str()));
+	mProxy->setDescription(QString(description.c_str()));
 
 	//move the proxy to the main thread
-	proxy->moveToThread(QApplication::instance()->thread());
+	mProxy->moveToThread(QApplication::instance()->thread());
 
 	//connect ourselves to our proxy
 	QObject::connect(this, SIGNAL(workListing(QList<int>)),
-			proxy, SLOT(setWorks(QList<int>)),
+			mProxy, SLOT(setWorks(QList<int>)),
 			Qt::QueuedConnection);
-	QObject::connect(proxy, SIGNAL(requestingUpdate()),
+	QObject::connect(mProxy, SIGNAL(requestingUpdate()),
 			this, SLOT(reportWorks()),
 			Qt::QueuedConnection);
 	QObject::connect(this, SIGNAL(deleteingSelf()),
-			proxy, SLOT(removeSelf()),
+			mProxy, SLOT(removeSelf()),
 			Qt::BlockingQueuedConnection);
-
-	//insert us (via our proxy) into the filter list
-	QMetaObject::invokeMethod(ApplicationModel::instance()->workFilterList(), 
-			"addFilter", Qt::QueuedConnection, Q_ARG(WorkFilterModel *, proxy));
 }
 
 RemoteWorkFilterModel::~RemoteWorkFilterModel(){
 	//make sure our proxy knows that we are going away...
 	emit(deleteingSelf());
-	//XXX delete our proxy?
+	//schedule the proxy to be deleted
+	mProxy->deleteLater();
 }
 
 void RemoteWorkFilterModel::clearWorks(){
@@ -51,6 +48,10 @@ void RemoteWorkFilterModel::setWorks(std::vector<int> idlist){
 	for(unsigned int i = 0; i < idlist.size(); i++)
 		mSelectedWorks.push_back(idlist[i]);
 	emit(workListing(mSelectedWorks));
+}
+
+RemoteWorkFilterModelProxy * RemoteWorkFilterModel::proxy() const {
+	return mProxy;
 }
 
 void RemoteWorkFilterModel::reportWorks(){

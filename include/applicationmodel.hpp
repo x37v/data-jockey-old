@@ -10,6 +10,7 @@ class TagModel;
 class WorkFilterModelProxy;
 class WorkFilterList;
 class InterpreterModel;
+class RemoteWorkFilterModel;
 
 class ApplicationModel : public QObject {
 	Q_OBJECT
@@ -52,7 +53,10 @@ class ApplicationModelProxy : public QObject {
 		ApplicationModelProxy(Qt::ConnectionType type = Qt::AutoCompatConnection, 
 				QObject * parent = NULL);
 		MixerPanelModel * mixerPanel() const;
+		void addFilter(RemoteWorkFilterModel * filter);
+		void removeFilter(RemoteWorkFilterModel * filter);
 	private:
+		QList<RemoteWorkFilterModel *> mFilterList;
 		MixerPanelModel * mMixerPanel;
 };
 
