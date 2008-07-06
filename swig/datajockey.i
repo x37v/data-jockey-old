@@ -11,6 +11,7 @@
 #include "../include/mixerpanelmodel.hpp"
 #include "../include/interpreterioproxy.hpp"
 #include "../include/remoteworkfiltermodel.hpp"
+#include "scriptcallbackfilter.hpp"
 %}
 
 /* Parse the header file to generate wrappers */
@@ -27,4 +28,5 @@
 %include "mixerpanelmodel.i"
 %include "interpreterioproxy.i"
 %include "remoteworkfiltermodel.i"
+%include "scriptcallbackfilter.i"
 

@@ -65,7 +65,8 @@ HEADERS +=  include/application.hpp \
 				include/workfiltermodel.hpp \
 				include/workloader.hpp \
 				include/worktablemodel.hpp \
-				include/worktagmodelfilter.hpp
+				include/worktagmodelfilter.hpp \
+				swig/scriptcallbackfilter.hpp 
 
 SOURCES +=  src/application.cpp \
 				src/main.cpp \
@@ -113,5 +114,6 @@ SOURCES +=  src/application.cpp \
 				src/workloader.cpp \
 				src/worktablemodel.cpp \
 				src/worktagmodelfilter.cpp \
-				swig/datajockey_wrap.cxx
+				swig/scriptcallbackfilter.cpp \
+				swig/datajockey_wrap.cxx 
 

@@ -29,7 +29,7 @@ class RemoteWorkFilterModel : public QObject {
 		void descriptionChanged(QString description);
 		void deleteingSelf();
 	public slots:
-		void reportWorks();
+		virtual void reportWorks();
 	private:
 		RemoteWorkFilterModelProxy * mProxy;
 		QList<int> mSelectedWorks;
@@ -62,5 +62,5 @@ class RemoteWorkFilterModelProxy : public WorkFilterModel {
 		QString mDescription;
 };
 
-
 #endif
+
