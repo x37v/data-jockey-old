@@ -126,8 +126,10 @@ Thread.start {
   }
 }
 
-include Datajockey
-IRB.set_binding(Datajockey::ApplicationModelProxy.new)
+$dj_model = Datajockey::ApplicationModelProxy.new
+
+#include Datajockey
+IRB.set_binding($dj_model)
 while true
   catch(:IRB_EXIT) do
     IRB.instance.eval_input

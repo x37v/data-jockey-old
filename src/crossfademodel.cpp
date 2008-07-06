@@ -24,6 +24,10 @@ CrossFadeModel::CrossFadeModel(QObject * parent) :
 	mRecursing = false;
 }
 
+float CrossFadeModel::position() const {
+	return mPosition;
+}
+
 float CrossFadeModel::valueLeft() const {
 	if(mPosition >= 1.0f)
 		return 0.0f;

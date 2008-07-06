@@ -11,6 +11,7 @@ class CrossFadeModel : public QObject {
 		//sync this model's state to another model
 		//signals which don't change the model's state only go from this model to the other, not back
 		void syncToModel(CrossFadeModel * other, Qt::ConnectionType connectionType = Qt::AutoCompatConnection);
+		float position() const;
 		float valueLeft() const;
 		float valueRight() const;
 		bool enabled() const;

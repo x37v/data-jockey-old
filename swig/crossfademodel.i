@@ -3,6 +3,7 @@
 
 class CrossFadeModel {
    public:
+      float position() const;
       float valueLeft() const;
       float valueRight() const;
       bool enabled() const;
