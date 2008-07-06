@@ -10,5 +10,5 @@ class RemoteWorkFilterModel{
       void setWorks(std::vector<int> idlist);
       void clearWorks();
       void addWork(int id);
-      void reportWorks();
+      virtual void reportWorks();
 };

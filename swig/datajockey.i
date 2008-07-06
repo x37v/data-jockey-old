@@ -27,6 +27,6 @@
 %include "mixerchannelmodel.i"
 %include "mixerpanelmodel.i"
 %include "interpreterioproxy.i"
-%include "remoteworkfiltermodel.i"
+/*%include "remoteworkfiltermodel.i" */
 %include "scriptcallbackfilter.i"
 

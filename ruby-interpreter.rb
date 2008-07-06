@@ -129,6 +129,7 @@ Thread.start {
 $dj_model = Datajockey::ApplicationModelProxy.new
 
 #include Datajockey
+load "ruby/workfilter.rb"
 IRB.set_binding($dj_model)
 while true
   catch(:IRB_EXIT) do

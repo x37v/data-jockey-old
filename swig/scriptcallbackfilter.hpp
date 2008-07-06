@@ -10,7 +10,7 @@ class ScriptCallbackFilter : public RemoteWorkFilterModel {
 		void * mUserData;
 		void * mOtherData;
 	public:
-		ScriptCallbackFilter(callback_t callback, void * user_data = NULL, void * other_data = NULL);
+		ScriptCallbackFilter(std::string name, std::string description, callback_t callback, void * user_data = NULL, void * other_data = NULL);
 		void * getUserData();
 		void * getOtherData();
 	public slots:

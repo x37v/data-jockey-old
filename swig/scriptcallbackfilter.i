@@ -41,11 +41,15 @@ $1 = NULL;
 /* Specify the mark function */
 %markfunc ScriptCallbackFilter "mark_ScriptCallbackFilter";
 
+%rename(WorkFilter) ScriptCallbackFilter;
+
 class ScriptCallbackFilter : public RemoteWorkFilterModel {
    public:
-      ScriptCallbackFilter(callback_t callback, void * user_data = NULL, void * other_data = NULL);
-      //void * getUserData();
-      //void * getOtherData();
+      ScriptCallbackFilter(std::string name, std::string description, 
+            callback_t callback, void * user_data = NULL, void * other_data = NULL);
+      void setWorks(std::vector<int> idlist);
+      void clearWorks();
+      void addWork(int id);
       virtual void reportWorks();
 };
 

@@ -1,6 +1,9 @@
 #include "scriptcallbackfilter.hpp"
 
-ScriptCallbackFilter::ScriptCallbackFilter(callback_t callback, void * user_data, void * other_data){
+ScriptCallbackFilter::ScriptCallbackFilter(std::string name, std::string description, 
+		callback_t callback, void * user_data, void * other_data) :
+	RemoteWorkFilterModel(name, description)
+{
 	mCallback = callback;
 	mUserData = user_data;
 	mOtherData = other_data;
@@ -16,5 +19,6 @@ void * ScriptCallbackFilter::getOtherData(){
 
 void ScriptCallbackFilter::reportWorks(){
 	mCallback(mUserData, mOtherData);
+	RemoteWorkFilterModel::reportWorks();
 }
 
