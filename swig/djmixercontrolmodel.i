@@ -17,7 +17,6 @@ class DJMixerControlModel {
       void setPlay(bool play = true);
       void setSync(bool sync = true);
       void setRunFree(bool free = true);
-      void setProgress(float progress);
       void setPlaybackPosition(int pos);
       void seekFwd();
       void seekBkwd();
