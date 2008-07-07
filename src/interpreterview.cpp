@@ -5,6 +5,15 @@
 #include <QVBoxLayout>
 #include <QKeyEvent>
 
+#define TAB_STOP "\t"
+#define HTML_TAB_STOP "&nbsp;&nbsp;&nbsp;&nbsp;"
+
+QString formatStringForHtml(QString input){
+	input.replace("\t", HTML_TAB_STOP);
+	input.replace(" ", "&nbsp;");
+	return input;
+}
+
 InterpreterView::InterpreterView(InterpreterModel * model, QWidget * parent) :
 	QWidget(parent)
 {
@@ -24,6 +33,8 @@ InterpreterView::InterpreterView(InterpreterModel * model, QWidget * parent) :
 
 	//set up the cancel action
 	mTextEntry->installEventFilter(this);
+
+	//allow tabs
 
 	//connect internal sigs and slots
 	QObject::connect(
@@ -75,6 +86,14 @@ bool InterpreterView::eventFilter(QObject *obj, QEvent *ev){
 				return true;
 			} else
 				return QWidget::eventFilter(obj, ev);
+		} else if (ev->type() == QEvent::FocusOut){
+			QFocusEvent *focusEvent = static_cast<QFocusEvent*>(ev);
+			if(focusEvent->reason() == Qt::TabFocusReason){
+				mTextEntry->setFocus(Qt::OtherFocusReason);
+				mTextEntry->insert(TAB_STOP);
+				return true;
+			} else
+				return QWidget::eventFilter(obj, ev);
 		}
 		return QWidget::eventFilter(obj, ev);
 	} else {
@@ -101,10 +120,10 @@ void InterpreterView::acceptNewInput(){
 	//move the cursor to the end because the user may have moved it
 	mOutputDisplay->moveCursor(QTextCursor::End);
 	if(mWaitingForOutput){
-		QString html = QString("<strong>?> %1</strong><br>\n").arg(newText);
+		QString html = QString("<strong>?> %1</strong><br>\n").arg(formatStringForHtml(newText));
 		mOutputDisplay->insertHtml(html);
 	} else {
-		QString html = QString("<strong>>> %1</strong><br>\n").arg(newText);
+		QString html = QString("<strong>>> %1</strong><br>\n").arg(formatStringForHtml(newText));
 		mOutputDisplay->insertHtml(html);
 	}
 	mWaitingForOutput = true;
