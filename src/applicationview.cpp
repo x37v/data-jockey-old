@@ -46,7 +46,7 @@ ApplicationView::ApplicationView(ApplicationModel * model):
 	mTagEditor = new TagEditor(mModel->tagModel(), this);
 	mWorkFilterList = new WorkFilterListView(mModel->workFilterList(), this);
 
-	mInterpView = new InterpreterView(this);
+	mInterpView = new InterpreterView(mModel->interpreter(), this);
 
 	//set up our view
 	setWindowTitle("data jockey");

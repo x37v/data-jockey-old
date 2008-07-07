@@ -6,12 +6,13 @@
 class QLineEdit;
 class QTextEdit;
 class QKeyEvent;
+class InterpreterModel;
 
 class InterpreterView : public QWidget {
 	Q_OBJECT
 	public:
-		InterpreterView(QWidget * parent = NULL);
-		//virtual void keyPressEvent ( QKeyEvent * event );
+		InterpreterView(InterpreterModel * model, QWidget * parent = NULL);
+		virtual void keyPressEvent ( QKeyEvent * event );
 	signals:
 		void newInput(QString line);
 	public slots:
@@ -26,6 +27,10 @@ class InterpreterView : public QWidget {
 		bool mWaitingForOutput;
 		QLineEdit * mTextEntry;
 		QTextEdit * mOutputDisplay;
+		//zero means current, use mHistoryIndex - 1 to get history line
+		unsigned int mHistoryIndex;
+		QString mCurrentInput;
+		InterpreterModel * mModel;
 };
 
 #endif

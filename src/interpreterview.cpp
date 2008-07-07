@@ -1,12 +1,15 @@
 #include "interpreterview.hpp"
+#include "interpretermodel.hpp"
 #include <QLineEdit>
 #include <QTextEdit>
 #include <QVBoxLayout>
 #include <QKeyEvent>
 
-InterpreterView::InterpreterView(QWidget * parent) :
+InterpreterView::InterpreterView(InterpreterModel * model, QWidget * parent) :
 	QWidget(parent)
 {
+	mModel = model;
+	mHistoryIndex = 0;
 	mWaitingForOutput = false;
 	mTextEntry = new QLineEdit(this);
 	mOutputDisplay = new QTextEdit(this);
@@ -25,15 +28,35 @@ InterpreterView::InterpreterView(QWidget * parent) :
 			this, SLOT(acceptNewInput()));
 }
 
-/*
 void InterpreterView::keyPressEvent ( QKeyEvent * event ){
-	if(event->matches(QKeySequence::Copy)){
-		emit(newInput(""));
+	//if(event->matches(QKeySequence::Copy)){
+		//emit(newInput(""));
+	if(event->matches(QKeySequence::MoveToPreviousLine)){
+		if (mHistoryIndex == 0){
+			mCurrentInput = mTextEntry->text();
+			mHistoryIndex = 1;
+			mTextEntry->setText(mModel->line(0));
+		} else if (mHistoryIndex <= mModel->inputHistoryLines()) {
+			mTextEntry->setText(mModel->line(mHistoryIndex - 1));
+			mHistoryIndex += 1;
+			if (mHistoryIndex > mModel->inputHistoryLines())
+				mHistoryIndex = mModel->inputHistoryLines();
+		}
+	} else if(event->matches(QKeySequence::MoveToNextLine)){
+		if (mHistoryIndex == 0){
+			//do nothing
+		} else  {
+			if (mHistoryIndex == 1){
+				mTextEntry->setText(mCurrentInput);
+			} else {
+				mHistoryIndex -= 1;
+				mTextEntry->setText(mModel->line(mHistoryIndex - 1));
+			}
+		}
 	} else {
 		QWidget::keyPressEvent(event);
 	}
 }
-*/
 
 void InterpreterView::setInput(QString line){
 	mTextEntry->setText(line);
@@ -48,6 +71,7 @@ void InterpreterView::addToOutput(QString line){
 
 void InterpreterView::acceptNewInput(){
 	QString newText = mTextEntry->text();
+	mHistoryIndex = 0;
 	mTextEntry->clear();
 
 	//move the cursor to the end because the user may have moved it
