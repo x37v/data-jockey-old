@@ -36,8 +36,8 @@ void InterpreterView::keyPressEvent ( QKeyEvent * event ){
 			mCurrentInput = mTextEntry->text();
 			mHistoryIndex = 1;
 			mTextEntry->setText(mModel->line(0));
-		} else if (mHistoryIndex <= mModel->inputHistoryLines()) {
-			mTextEntry->setText(mModel->line(mHistoryIndex - 1));
+		} else if (mHistoryIndex < mModel->inputHistoryLines()) {
+			mTextEntry->setText(mModel->line(mHistoryIndex));
 			mHistoryIndex += 1;
 			if (mHistoryIndex > mModel->inputHistoryLines())
 				mHistoryIndex = mModel->inputHistoryLines();
@@ -45,13 +45,12 @@ void InterpreterView::keyPressEvent ( QKeyEvent * event ){
 	} else if(event->matches(QKeySequence::MoveToNextLine)){
 		if (mHistoryIndex == 0){
 			//do nothing
-		} else  {
-			if (mHistoryIndex == 1){
-				mTextEntry->setText(mCurrentInput);
-			} else {
-				mHistoryIndex -= 1;
-				mTextEntry->setText(mModel->line(mHistoryIndex - 1));
-			}
+		} else if (mHistoryIndex == 1){
+			mTextEntry->setText(mCurrentInput);
+			mHistoryIndex = 0;
+		} else {
+			mHistoryIndex -= 1;
+			mTextEntry->setText(mModel->line(mHistoryIndex - 1));
 		}
 	} else {
 		QWidget::keyPressEvent(event);
