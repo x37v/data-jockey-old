@@ -105,28 +105,28 @@ void ApplicationView::connectToModel(){
 		//****** mixer signals
 		//volume
 		QObject::connect(
-				djMixerModel->mixerChannel(),
+				djMixerModel,
 				SIGNAL(volumeChanged(float)),
 				djMixerView->mixerChannel(),
 				SLOT(setVolume(float)));
 		QObject::connect(
 				djMixerView->mixerChannel(),
 				SIGNAL(volumeChanged(float)),
-				djMixerModel->mixerChannel(),
+				djMixerModel,
 				SLOT(setVolume(float)));
 		//mute
 		QObject::connect(
-				djMixerModel->mixerChannel(),
+				djMixerModel,
 				SIGNAL(mutedChanged(bool)),
 				djMixerView->mixerChannel(),
 				SLOT(setMuted(bool)));
 		QObject::connect(
 				djMixerView->mixerChannel(),
 				SIGNAL(mutedChanged(bool)),
-				djMixerModel->mixerChannel(),
+				djMixerModel,
 				SLOT(setMuted(bool)));
 		//eq
-		EQModel * eqModel = djMixerModel->mixerChannel()->eq();
+		EQModel * eqModel = djMixerModel->eq();
 		EQView * eqView = djMixerView->mixerChannel()->eq();
 		QObject::connect(
 				eqModel,

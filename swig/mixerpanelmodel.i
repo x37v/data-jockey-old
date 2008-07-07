@@ -7,12 +7,14 @@
 //class MasterModel;
 //class CrossFadeModel;
 
+%rename(mixer) MixerPanelModel::mixerChannel;
+%rename(numMixers) MixerPanelModel::numMixerChannels;
+
 class MixerPanelModel {
    public:
       MixerPanelModel(unsigned int numMixers = 4);
       CrossFadeModel * crossFade() const;
       MasterModel * master() const;
-      std::vector<DJMixerChannelModel *> * mixerChannels();
       DJMixerChannelModel * mixerChannel(unsigned int i) const;
       unsigned int numMixerChannels() const;
       bool mixerAudible(unsigned int index) const;

@@ -17,6 +17,7 @@ require 'irb'
 # bye
 
 require 'ruby/applicationmodel'
+require 'ruby/mixerchannelmodel'
 require 'ruby/workfilter'
 
 class RedirectOutput < IO

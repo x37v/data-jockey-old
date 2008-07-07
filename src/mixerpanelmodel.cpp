@@ -16,21 +16,20 @@ MixerPanelModel::MixerPanelModel(unsigned int numMixers, QObject *parent) :
 		//indices
 		mMixerObjectIndexMap[djMixerModel] = i;
 		mMixerObjectIndexMap[djMixerModel->DJMixerControl()] = i;
-		mMixerObjectIndexMap[djMixerModel->mixerChannel()] = i;
-		mMixerObjectIndexMap[djMixerModel->mixerChannel()->eq()] = i;
+		mMixerObjectIndexMap[djMixerModel->eq()] = i;
 
 		//signals
 		//mixer
-		QObject::connect(djMixerModel->mixerChannel()->eq(),
+		QObject::connect(djMixerModel->eq(),
 				SIGNAL(valuesChanged(QObject *)),
 				this,
 				SLOT(setEqVal(QObject *)));
-		QObject::connect(djMixerModel->mixerChannel(),
+		QObject::connect(djMixerModel,
 				SIGNAL(volumeChanged(QObject *)),
 				this,
 				SLOT(setMixerVolume(QObject *)));
 		//volume takes care of muted
-		QObject::connect(djMixerModel->mixerChannel(),
+		QObject::connect(djMixerModel,
 				SIGNAL(mutedChanged(QObject *)),
 				this,
 				SLOT(setMixerVolume(QObject *)));
@@ -217,10 +216,10 @@ unsigned int MixerPanelModel::numMixerChannels() const {
 bool MixerPanelModel::mixerAudible(unsigned int index) const {
 	if(index < mDJMixerChannels.size()){
 		DJMixerChannelModel * mixer = mDJMixerChannels.at(index);
-		if(!mixer->mixerChannel()->muted() &&
+		if(!mixer->muted() &&
 				mixer->DJMixerControl()->playing() &&
 				!mixer->DJMixerControl()->cueing() &&
-				mXFade->scaleVolume(index, mixer->mixerChannel()->volume()) > 0.0 &&
+				mXFade->scaleVolume(index, mixer->volume()) > 0.0 &&
 				mixer->DJMixerControl()->progress() > 0.0 &&
 				mixer->DJMixerControl()->progress() < 1.0
 				)
@@ -235,9 +234,9 @@ float MixerPanelModel::mixerVolume(unsigned int index) const {
 	if(index >= mDJMixerChannels.size())
 		return 0.0f;
 	DJMixerChannelModel * djMixer = mDJMixerChannels[index];
-	float volume = djMixer->mixerChannel()->volume();
+	float volume = djMixer->volume();
 	//if it is muted the volume is 0, if it isn't cueing we let the xfade scale it
-	if(djMixer->mixerChannel()->muted())
+	if(djMixer->muted())
 		volume = 0.0f;
 	else if(!djMixer->DJMixerControl()->cueing())
 		volume = mXFade->scaleVolume(index, volume);

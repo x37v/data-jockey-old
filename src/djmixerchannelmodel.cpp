@@ -3,10 +3,9 @@
 #include "mixerchannelmodel.cpp"
 
 DJMixerChannelModel::DJMixerChannelModel(QObject * parent):
-	QObject(parent) 
+	MixerChannelModel(parent) 
 {
 	mDJMixerControl = new DJMixerControlModel(this);
-	mMixerChannel = new MixerChannelModel(this);
 	mWork = -1;
 }
 
@@ -34,15 +33,11 @@ void DJMixerChannelModel::syncToModel(DJMixerChannelModel * other, Qt::Connectio
 
 	//connect our children too
 	mDJMixerControl->syncToModel(other->DJMixerControl(), connectionType);
-	mMixerChannel->syncToModel(other->mixerChannel(), connectionType);
+	MixerChannelModel::syncToModel(other, connectionType);
 }
 
 DJMixerControlModel * DJMixerChannelModel::DJMixerControl() const {
 	return mDJMixerControl;
-}
-
-MixerChannelModel * DJMixerChannelModel::mixerChannel() const {
-	return mMixerChannel;
 }
 
 int DJMixerChannelModel::work() const {

@@ -24,7 +24,6 @@
 %include "djmixercontrolmodel.i"
 %include "eqmodel.i"
 %include "mastermodel.i"
-%include "mixerchannelmodel.i"
 %include "mixerpanelmodel.i"
 %include "interpreterioproxy.i"
 /*%include "remoteworkfiltermodel.i" */

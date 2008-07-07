@@ -41,6 +41,7 @@ void InterpreterView::setInput(QString line){
 
 void InterpreterView::addToOutput(QString line){
 	mWaitingForOutput = false;
+	mOutputDisplay->moveCursor(QTextCursor::End);
 	mOutputDisplay->insertPlainText(line);
 	mOutputDisplay->moveCursor(QTextCursor::End);
 }
@@ -49,6 +50,8 @@ void InterpreterView::acceptNewInput(){
 	QString newText = mTextEntry->text();
 	mTextEntry->clear();
 
+	//move the cursor to the end because the user may have moved it
+	mOutputDisplay->moveCursor(QTextCursor::End);
 	if(mWaitingForOutput){
 		QString html = QString("<strong>?> %1</strong><br>\n").arg(newText);
 		mOutputDisplay->insertHtml(html);

@@ -2,11 +2,11 @@
 #define DJ_MIXER_CHANNEL_MODEL_HPP
 
 #include <QObject>
+#include "mixerchannelmodel.hpp"
 
 class DJMixerControlModel;
-class MixerChannelModel;
 
-class DJMixerChannelModel : public QObject {
+class DJMixerChannelModel : public MixerChannelModel {
 	Q_OBJECT
 	public:
 		DJMixerChannelModel(QObject * parent = NULL);
@@ -15,7 +15,6 @@ class DJMixerChannelModel : public QObject {
 		void syncToModel(DJMixerChannelModel * other, Qt::ConnectionType connectionType = Qt::AutoCompatConnection);
 
 		DJMixerControlModel * DJMixerControl() const;
-		MixerChannelModel * mixerChannel() const;
 		int work() const;
 	signals:
 		void workChanged(int work);
@@ -30,7 +29,6 @@ class DJMixerChannelModel : public QObject {
 	private:
 		int mWork;
 		DJMixerControlModel * mDJMixerControl;
-		MixerChannelModel * mMixerChannel;
 };
 
 #endif
