@@ -1,6 +1,8 @@
 class MixerPanelModel;
 class RemoteWorkFilterModel;
 
+%rename(ApplicationModel) ApplicationModelProxy;
+
 /* Tell SWIG to keep track of mappings between C/C++ structs/classes. */
 %trackobjects;
 

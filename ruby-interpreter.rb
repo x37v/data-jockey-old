@@ -16,6 +16,8 @@ require 'irb'
 # >> continue
 # bye
 
+require 'ruby/applicationmodel'
+require 'ruby/workfilter'
 
 class RedirectOutput < IO
     def initialize
@@ -126,10 +128,9 @@ Thread.start {
   }
 }
 
-$dj_model = Datajockey::ApplicationModelProxy.new
+$dj_model = Datajockey::ApplicationModel.instance
 
 #include Datajockey
-load "ruby/workfilter.rb"
 IRB.set_binding($dj_model)
 while true
   catch(:IRB_EXIT) do
