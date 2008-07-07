@@ -29,13 +29,18 @@ class RedirectOutput < IO
     end
 end
 
+#redirect stdout
+$stdout = RedirectOutput.new
+
 #here we read from datajockey 
 class DataJockeyInput < IRB::InputMethod
   def gets()
     until Datajockey::InterpreterIOProxy::newInput
       sleep(0.001)
     end
-    return Datajockey::InterpreterIOProxy::getInput + "\n"
+    input = Datajockey::InterpreterIOProxy::getInput + "\n"
+    raise RubyLex::TerminateLineInput if input =~ /DATAJOCKEY_CANCEL_INPUT/
+    return input
   end
   def readable_atfer_eof?()
     true
@@ -112,8 +117,6 @@ def dROP! object = nil
 	IRB.start_session binding
 end
 
-#redirect stdout
-$stdout = RedirectOutput.new
 
 if defined? IRBHelper
   puts "Helper Methods: #{(Class.new.instance_eval {include IRBHelper;self}.new.methods.sort - Class.new.methods).join(', ')}"
@@ -129,10 +132,10 @@ Thread.start {
   }
 }
 
-$dj_model = Datajockey::ApplicationModel.instance
+dj_model = Datajockey::ApplicationModel.instance
 
 #include Datajockey
-IRB.set_binding($dj_model)
+IRB.set_binding(dj_model)
 while true
   catch(:IRB_EXIT) do
     IRB.instance.eval_input

@@ -13,13 +13,17 @@ class InterpreterView : public QWidget {
 	public:
 		InterpreterView(InterpreterModel * model, QWidget * parent = NULL);
 		virtual void keyPressEvent ( QKeyEvent * event );
+	protected:
+		virtual bool eventFilter(QObject *obj, QEvent *ev);
 	signals:
 		void newInput(QString line);
+		void cancelingInput();
 	public slots:
 		void setInput(QString line);
 		void addToOutput(QString line);
 	protected slots:
 		void acceptNewInput();
+		void cancelInput();
 	private:
 		//mWaitingForOutput is true when we've sent at least one line
 		//before getting any input back.. it helps us set the prompt

@@ -348,6 +348,11 @@ void ApplicationView::connectToModel(){
 			mModel->interpreter(),
 			SLOT(addToInput(QString)));
 	QObject::connect(
+			mInterpView,
+			SIGNAL(cancelingInput()),
+			mModel->interpreter(),
+			SLOT(cancelInput()));
+	QObject::connect(
 			mModel->interpreter(),
 			SIGNAL(newOutput(QString)),
 			mInterpView,

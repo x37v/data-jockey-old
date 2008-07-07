@@ -16,8 +16,10 @@ class InterpreterModel : public QObject {
 	signals:
 		void newOutput(QString output);
 		void newInput(QString output);
+		void cancelingInput();
 	public slots:
 		void addToInput(QString input);
+		void cancelInput();
 		void addToOutput(QString output);
 		void setHistoryFile(QString filename);
 		void writeHistory();

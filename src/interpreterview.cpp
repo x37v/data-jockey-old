@@ -22,6 +22,9 @@ InterpreterView::InterpreterView(InterpreterModel * model, QWidget * parent) :
 
 	setLayout(layout);
 
+	//set up the cancel action
+	mTextEntry->installEventFilter(this);
+
 	//connect internal sigs and slots
 	QObject::connect(
 			mTextEntry, SIGNAL(returnPressed()),
@@ -29,8 +32,14 @@ InterpreterView::InterpreterView(InterpreterModel * model, QWidget * parent) :
 }
 
 void InterpreterView::keyPressEvent ( QKeyEvent * event ){
-	//if(event->matches(QKeySequence::Copy)){
-		//emit(newInput(""));
+	/*
+	//if(event->modifiers() && Qt::ControlModifier){
+	if(event->key() == Qt::Key_C){
+		cout << "c" << endl;
+		if(event->modifiers() && Qt::ControlModifier){
+			cout << "control" << endl;
+		}
+		*/
 	if(event->matches(QKeySequence::MoveToPreviousLine)){
 		if (mHistoryIndex == 0){
 			mCurrentInput = mTextEntry->text();
@@ -54,6 +63,22 @@ void InterpreterView::keyPressEvent ( QKeyEvent * event ){
 		}
 	} else {
 		QWidget::keyPressEvent(event);
+	}
+}
+
+bool InterpreterView::eventFilter(QObject *obj, QEvent *ev){
+	if(obj == mTextEntry){
+		if (ev->type() == QEvent::KeyPress) {
+			QKeyEvent *keyEvent = static_cast<QKeyEvent*>(ev);
+			if(keyEvent->key() == Qt::Key_C && (keyEvent->modifiers() & Qt::ControlModifier)){
+				cancelInput();
+				return true;
+			} else
+				return QWidget::eventFilter(obj, ev);
+		}
+		return QWidget::eventFilter(obj, ev);
+	} else {
+		return QWidget::eventFilter(obj, ev);
 	}
 }
 
@@ -85,5 +110,19 @@ void InterpreterView::acceptNewInput(){
 	mWaitingForOutput = true;
 	emit(newInput(newText));
 	mOutputDisplay->moveCursor(QTextCursor::End);
+}
+
+void InterpreterView::cancelInput(){
+	mOutputDisplay->moveCursor(QTextCursor::End);
+	if(mWaitingForOutput){
+		QString html = QString("<strong>?> ^C</strong><br>\n");
+		mOutputDisplay->insertHtml(html);
+	} else {
+		QString html = QString("<strong>>> ^C</strong><br>\n");
+		mOutputDisplay->insertHtml(html);
+	}
+	mWaitingForOutput = false;
+	mTextEntry->clear();
+	emit(cancelingInput());
 }
 

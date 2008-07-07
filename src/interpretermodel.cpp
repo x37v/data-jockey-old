@@ -24,6 +24,10 @@ void InterpreterModel::addToInput(QString input){
 	emit(newInput(input));
 }
 
+void InterpreterModel::cancelInput(){
+	emit(cancelingInput());
+}
+
 void InterpreterModel::addToOutput(QString output){
 	mOutputHistory.push_back(output);
 	emit(newOutput(output));

@@ -24,6 +24,7 @@ class InterpreterIOProxy : public QObject {
 		void newOutput(QString output);
 	public slots:
 		static void addToInput(QString input);
+		static void cancelInput();
 		static void addToOutput(std::string output);
 };
 

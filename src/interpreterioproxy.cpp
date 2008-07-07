@@ -22,7 +22,12 @@ InterpreterIOProxy::InterpreterIOProxy(){
 		this,
 		SLOT(addToInput(QString)),
 		Qt::QueuedConnection);
-		//Qt::DirectConnection);
+	QObject::connect(
+		ApplicationModel::instance()->interpreter(),
+		SIGNAL(cancelingInput()),
+		this,
+		SLOT(cancelInput()),
+		Qt::QueuedConnection);
 }
 
 InterpreterIOProxy * InterpreterIOProxy::instance(){
@@ -54,6 +59,12 @@ void InterpreterIOProxy::addToInput(QString input){
 	if(!cInstance)
 		instance();
 	mInputList.push_back(input);
+}
+
+void InterpreterIOProxy::cancelInput(){
+	if(!cInstance)
+		instance();
+	mInputList.push_back("DATAJOCKEY_CANCEL_INPUT");
 }
 
 void InterpreterIOProxy::addToOutput(std::string output){
