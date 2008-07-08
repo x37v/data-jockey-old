@@ -27,8 +27,6 @@ InterpreterView::InterpreterView(InterpreterModel * model, QWidget * parent) :
 	//set up the cancel action
 	mTextEntry->installEventFilter(this);
 
-	//allow tabs
-
 	//connect internal sigs and slots
 	QObject::connect(
 			mTextEntry, SIGNAL(returnPressed()),
@@ -77,21 +75,13 @@ bool InterpreterView::eventFilter(QObject *obj, QEvent *ev){
 			if(keyEvent->key() == Qt::Key_C && (keyEvent->modifiers() & Qt::ControlModifier)){
 				cancelInput();
 				return true;
-			} else
-				return QWidget::eventFilter(obj, ev);
-		} else if (ev->type() == QEvent::FocusOut){
-			QFocusEvent *focusEvent = static_cast<QFocusEvent*>(ev);
-			if(focusEvent->reason() == Qt::TabFocusReason){
-				mTextEntry->setFocus(Qt::OtherFocusReason);
+			} else if(keyEvent->key() == Qt::Key_Tab){
 				mTextEntry->insert(TAB_STOP);
 				return true;
-			} else
-				return QWidget::eventFilter(obj, ev);
+			}
 		}
-		return QWidget::eventFilter(obj, ev);
-	} else {
-		return QWidget::eventFilter(obj, ev);
 	}
+	return QWidget::eventFilter(obj, ev);
 }
 
 void InterpreterView::setInput(QString line){
