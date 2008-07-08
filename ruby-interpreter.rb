@@ -18,6 +18,7 @@ require 'irb'
 
 require 'ruby/applicationmodel'
 require 'ruby/mixerchannelmodel'
+require 'ruby/mixerpannelmodel'
 require 'ruby/workfilter'
 
 class RedirectOutput < IO
@@ -133,6 +134,7 @@ Thread.start {
 }
 
 dj_model = Datajockey::ApplicationModel.instance
+require 'datajockey_base'
 
 #include Datajockey
 IRB.set_binding(dj_model)

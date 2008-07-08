@@ -6,13 +6,6 @@
 #include <QKeyEvent>
 
 #define TAB_STOP "\t"
-#define HTML_TAB_STOP "&nbsp;&nbsp;&nbsp;&nbsp;"
-
-QString formatStringForHtml(QString input){
-	input.replace("\t", HTML_TAB_STOP);
-	input.replace(" ", "&nbsp;");
-	return input;
-}
 
 InterpreterView::InterpreterView(InterpreterModel * model, QWidget * parent) :
 	QWidget(parent)
@@ -119,13 +112,13 @@ void InterpreterView::acceptNewInput(){
 
 	//move the cursor to the end because the user may have moved it
 	mOutputDisplay->moveCursor(QTextCursor::End);
-	if(mWaitingForOutput){
-		QString html = QString("<strong>?> %1</strong><br>\n").arg(formatStringForHtml(newText));
-		mOutputDisplay->insertHtml(html);
-	} else {
-		QString html = QString("<strong>>> %1</strong><br>\n").arg(formatStringForHtml(newText));
-		mOutputDisplay->insertHtml(html);
-	}
+	if(mWaitingForOutput)
+		mOutputDisplay->insertHtml(QString("<strong>?>&nbsp;"));
+	else 
+		mOutputDisplay->insertHtml(QString("<strong>>>&nbsp;"));
+	mOutputDisplay->insertPlainText(newText);
+	mOutputDisplay->insertHtml(QString("</strong><br>\n"));
+
 	mWaitingForOutput = true;
 	emit(newInput(newText));
 	mOutputDisplay->moveCursor(QTextCursor::End);
