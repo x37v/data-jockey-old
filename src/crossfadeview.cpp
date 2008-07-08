@@ -15,6 +15,7 @@ CrossFadeView::CrossFadeView(unsigned int numMixers, QWidget *parent) :
 
 	//set up Slider params
 	mSlider->setTickPosition(QSlider::TicksBelow);
+	mSlider->setRange(0,100);
 	
 	//set up the Combo Box
 	mSelection->addItem("disabled", 0);
@@ -100,7 +101,7 @@ void CrossFadeView::setIndex(int index){
 }
 
 void CrossFadeView::setPosition(float val){
-	if(val < 0.0)
+	if(val < 0.0f)
 		val = 0.0f;
 	else if(val > 1.0f)
 		val = 1.0f;

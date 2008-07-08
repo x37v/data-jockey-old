@@ -219,9 +219,9 @@ bool MixerPanelModel::mixerAudible(unsigned int index) const {
 		if(!mixer->muted() &&
 				mixer->DJMixerControl()->playing() &&
 				!mixer->DJMixerControl()->cueing() &&
-				mXFade->scaleVolume(index, mixer->volume()) > 0.0 &&
-				mixer->DJMixerControl()->progress() > 0.0 &&
-				mixer->DJMixerControl()->progress() < 1.0
+				mXFade->scaleVolume(index, mixer->volume()) > 0.0f &&
+				mixer->DJMixerControl()->progress() > 0.0f &&
+				mixer->DJMixerControl()->progress() < 1.0f
 				)
 			return true;
 		return false;
