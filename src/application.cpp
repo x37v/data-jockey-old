@@ -32,6 +32,8 @@ using std::endl;
 #include "workfilterlist.hpp"
 #include "defaultworkfilters.hpp"
 
+#include "oscreceiver.hpp"
+
 
 //for now we'll just have a gui app
 int DataJockeyApplication::run(int argc, char *argv[]){
@@ -105,8 +107,25 @@ int DataJockeyApplication::run(int argc, char *argv[]){
 	RubyInterpreterThread * rubyThread = new RubyInterpreterThread;
 	rubyThread->start();
 
+	OscThread * oscThread = new OscThread(model->oscReceiver(), 10001);
+	oscThread->start();
+
 	view->show();
 	return app.exec();
+}
+
+#include "ip/UdpSocket.h"
+
+OscThread::OscThread(OscReceiver * receiver, unsigned int port) {
+	mOscReceiver = receiver;
+	mPort = port;
+}
+
+void OscThread::run(){
+	UdpListeningReceiveSocket s(
+			IpEndpointName( IpEndpointName::ANY_ADDRESS, mPort ),
+			mOscReceiver );
+	s.Run();
 }
 
 #include "ruby.h"

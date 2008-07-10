@@ -6,6 +6,7 @@
 #include "workfilterlist.hpp"
 #include "interpretermodel.hpp"
 #include "remoteworkfiltermodel.hpp"
+#include "oscreceiver.hpp"
 
 #include <stdexcept>
 
@@ -36,8 +37,7 @@ ApplicationModel * ApplicationModel::instance(){
 	return cInstance;
 }
 
-ApplicationModel::ApplicationModel()
-{
+ApplicationModel::ApplicationModel() {
 	if(!cDB.isOpen() || cNumMixers == 0){
 		throw std::logic_error("you must set the number of mixers and set up the database before creating an instance of ApplicationModel");
 	}
@@ -49,6 +49,7 @@ ApplicationModel::ApplicationModel()
 	mFilterProxy = new WorkFilterModelProxy(mWorkTable);
 	mWorkFilterList = new WorkFilterList(this);
 	mInterp = new InterpreterModel(this);
+	mOscReceiver = new OscReceiver(mMixerPanel);
 
 	//make internal connections
 	QObject::connect(
@@ -88,13 +89,17 @@ InterpreterModel * ApplicationModel::interpreter() const {
 	return mInterp;
 }
 
+OscReceiver * ApplicationModel::oscReceiver() const {
+	return mOscReceiver;
+}
+
 ApplicationModelProxy::ApplicationModelProxy(Qt::ConnectionType type, QObject * parent) :
 	QObject(parent)
 {
 	ApplicationModel * model = ApplicationModel::instance();
 	//sync our mixer panel
 	mMixerPanel = new MixerPanelModel(model->mixerPanel()->numMixerChannels());
-	mMixerPanel->syncToModel(model->mixerPanel());
+	mMixerPanel->syncToModel(model->mixerPanel(), type);
 }
 
 MixerPanelModel * ApplicationModelProxy::mixerPanel() const {

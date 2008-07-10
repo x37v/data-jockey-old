@@ -8,9 +8,10 @@ DEPENDPATH += .
 INCLUDEPATH += include/
 INCLUDEPATH += /usr/local/include/
 INCLUDEPATH += /usr/lib/ruby/1.8/i486-linux/
+INCLUDEPATH += /usr/local/include/oscpack/
 
 QT += sql
-LIBS += -ljackcpp `pkg-config --libs jack` -lsndfile -lslv2 -lmad -lvorbisfile -lruby1.8
+LIBS += -ljackcpp `pkg-config --libs jack` -lsndfile -lslv2 -lmad -lvorbisfile -lruby1.8 -loscpack -lboost_regex
 
 MOC_DIR = moc
 OBJECTS_DIR = objects
@@ -46,6 +47,7 @@ HEADERS +=  include/application.hpp \
 				include/mixerpanelmodel.hpp \
 				include/mixerpanelview.hpp \
 				include/object.hpp \
+				include/oscreceiver.hpp \
 				include/interpretermodel.hpp \
 				include/interpreterioproxy.hpp \
 				include/interpreterview.hpp \
@@ -94,6 +96,7 @@ SOURCES +=  src/application.cpp \
 				src/mixerpanelmodel.cpp \
 				src/mixerpanelview.cpp \
 				src/object.cpp \
+				src/oscreceiver.cpp \
 				src/interpretermodel.cpp \
 				src/interpreterioproxy.cpp \
 				src/interpreterview.cpp \

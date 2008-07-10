@@ -4,6 +4,7 @@
 class MixerPanelView;
 class MixerPanelModel;
 class AudioDriver;
+class OscReceiver;
 
 #include <QObject>
 #include <QSqlDatabase>
@@ -15,6 +16,16 @@ class AudioDriver;
 class DataJockeyApplication {
 	public:
 		static int run(int argc, char *argv[]);
+};
+
+class OscThread : public QThread {
+	Q_OBJECT
+	public:
+		OscThread(OscReceiver * receiver, unsigned int port);
+		void run();
+	private:
+		OscReceiver * mOscReceiver;
+		unsigned int mPort;
 };
 
 class RubyInterpreterThread : public QThread {

@@ -11,6 +11,7 @@ class WorkFilterModelProxy;
 class WorkFilterList;
 class InterpreterModel;
 class RemoteWorkFilterModel;
+class OscReceiver;
 
 class ApplicationModel : public QObject {
 	Q_OBJECT
@@ -30,6 +31,7 @@ class ApplicationModel : public QObject {
 		WorkFilterModelProxy * filteredWorkTable() const;
 		WorkFilterList * workFilterList() const;
 		InterpreterModel * interpreter() const;
+		OscReceiver * oscReceiver() const;
 	protected:
 		ApplicationModel();
 		ApplicationModel(const ApplicationModel&);
@@ -45,6 +47,7 @@ class ApplicationModel : public QObject {
 		WorkFilterModelProxy * mFilterProxy;
 		WorkFilterList * mWorkFilterList;
 		InterpreterModel * mInterp;
+		OscReceiver * mOscReceiver;
 };
 
 class ApplicationModelProxy : public QObject {
