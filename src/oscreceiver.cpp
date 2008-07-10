@@ -47,17 +47,35 @@ void OscReceiver::processMixerMessage(const std::string addr, const osc::Receive
 		if(mixer >= mModel->numMixerChannels())
 			return;
 		if(boost::regex_match(remain.c_str(), matches, volume_re)){
-			if(strcmp("", matches[1].str().c_str()) == 0)
-				cout << "absolute" << endl;
-			else
-				cout << "relative" << endl;
+			if(matches.size() == 2){
+				if(strcmp("", matches[1].str().c_str()) == 0)
+					cout << "absolute" << endl;
+				else
+					cout << "relative" << endl;
+			}
 		} else if(boost::regex_match(remain.c_str(), matches, mute_re)){
-			if(strcmp("", matches[1].str().c_str()) == 0)
-				cout << "mute" << endl;
-			else
-				cout << "toggle" << endl;
+			if(matches.size() == 2){
+				if(strcmp("", matches[1].str().c_str()) == 0)
+					cout << "mute" << endl;
+				else
+					cout << "toggle" << endl;
+			}
 		} else if(boost::regex_match(remain.c_str(), matches, eq_re)){
-			cout << "eq " <<  matches.size() << endl;
+			if(matches.size() == 3){
+				//absolute
+				if(strcmp(matches[2].str().c_str(), "") == 0){
+					cout << "absolute " << matches[1] << endl;
+					//cut
+				} else if(strcmp(matches[2].str().c_str(), "/cut") == 0){
+					cout << "cut " << matches[1] << endl;
+					//toggle cut
+				} else if(strcmp(matches[2].str().c_str(), "/cut/toggle") == 0){
+					cout << "cut/toggle " << matches[1] << endl;
+					//otherwise it is relative
+				} else {
+					cout << "relative " << matches[1] << endl;
+				}
+			}
 		}
 	}
 }
