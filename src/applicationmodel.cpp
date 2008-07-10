@@ -49,7 +49,9 @@ ApplicationModel::ApplicationModel() {
 	mFilterProxy = new WorkFilterModelProxy(mWorkTable);
 	mWorkFilterList = new WorkFilterList(this);
 	mInterp = new InterpreterModel(this);
-	mOscReceiver = new OscReceiver(mMixerPanel);
+	MixerPanelModel * oscMixerPanelModel = new MixerPanelModel;
+	oscMixerPanelModel->syncToModel(mMixerPanel, Qt::QueuedConnection);
+	mOscReceiver = new OscReceiver(oscMixerPanelModel);
 
 	//make internal connections
 	QObject::connect(

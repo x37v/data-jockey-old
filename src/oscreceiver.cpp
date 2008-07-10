@@ -2,7 +2,35 @@
 #include "osc/OscReceivedElements.h"
 #include <boost/regex.hpp>
 #include "mixerpanelmodel.hpp"
+#include "djmixerchannelmodel.hpp"
+#include "djmixercontrolmodel.hpp"
+#include "mixerchannelmodel.hpp"
+#include "eqmodel.hpp"
 #include <stdlib.h>
+
+bool boolFromBoolOrInt(const osc::ReceivedMessageArgument a){
+	if(a.IsBool())
+		return a.AsBool();
+	else if(a.IsInt32())
+		return (a.AsInt32() != 0);
+	else if(a.IsInt64())
+		return (a.AsInt64() != 0);
+	else
+		throw osc::WrongArgumentTypeException();
+}
+
+float floatFromOscNumber(const osc::ReceivedMessageArgument a){
+	if(a.IsFloat())
+		return a.AsFloat();
+	if(a.IsDouble())
+		return (float)a.AsDouble();
+	else if(a.IsInt32())
+		return (float)a.AsInt32();
+	else if(a.IsInt64())
+		return (float)a.AsInt64();
+	else
+		throw osc::WrongArgumentTypeException();
+}
 
 OscReceiver::OscReceiver(MixerPanelModel * model){
 	mModel = model;
@@ -40,6 +68,8 @@ void OscReceiver::processMixerMessage(const std::string addr, const osc::Receive
 	boost::regex mute_re("^mute(/toggle){0,1}/{0,1}$");
 	boost::regex eq_re("^eq/(high|mid|low)(/relative|/cut|/cut/toggle){0,1}/{0,1}$");
 	boost::cmatch matches;
+	osc::ReceivedMessage::const_iterator arg_it = m.ArgumentsBegin();
+
 	if(boost::regex_match(addr.c_str(), matches, mixer_re)){
 		unsigned int mixer = (unsigned int)atoi(matches[1].str().c_str());
 		std::string remain(matches[2].str());
@@ -47,18 +77,33 @@ void OscReceiver::processMixerMessage(const std::string addr, const osc::Receive
 		if(mixer >= mModel->numMixerChannels())
 			return;
 		if(boost::regex_match(remain.c_str(), matches, volume_re)){
-			if(matches.size() == 2){
+			//make sure our matches list is long enough and that we have an argument
+			if(matches.size() == 2 && arg_it != m.ArgumentsEnd()){
+				float num = floatFromOscNumber(*arg_it);
+				//"" == absolute, otherwise, relative
 				if(strcmp("", matches[1].str().c_str()) == 0)
-					cout << "absolute" << endl;
-				else
-					cout << "relative" << endl;
+					mModel->mixerChannels()->at(mixer)->setVolume(num);
+				else {
+					mModel->mixerChannels()->at(mixer)->setVolume(
+							mModel->mixerChannels()->at(mixer)->volume() + num);
+				}
+				//XXX throw error, wrong args
 			}
 		} else if(boost::regex_match(remain.c_str(), matches, mute_re)){
+			//make sure our matches list is long enough to test
 			if(matches.size() == 2){
-				if(strcmp("", matches[1].str().c_str()) == 0)
-					cout << "mute" << endl;
-				else
-					cout << "toggle" << endl;
+				//if we have no argument then we're just setting the mute
+				//otherwise toggle mute
+				if(strcmp("", matches[1].str().c_str()) == 0) {
+					if(arg_it != m.ArgumentsEnd())
+						mModel->mixerChannels()->at(mixer)->setMuted(boolFromBoolOrInt(*arg_it));
+					else {
+						//XXX throw error, wrong args
+					}
+				} else {
+					mModel->mixerChannels()->at(mixer)->setMuted(
+							!mModel->mixerChannels()->at(mixer)->muted());
+				}
 			}
 		} else if(boost::regex_match(remain.c_str(), matches, eq_re)){
 			if(matches.size() == 3){
