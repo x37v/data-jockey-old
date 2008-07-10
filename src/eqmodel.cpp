@@ -67,11 +67,85 @@ float EQModel::low(){
 	return mLow;
 }
 
+float EQModel::value(band b){
+	switch(b) {
+		case LOW:
+			return low();
+		case MID:
+			return mid();
+		case HIGH:
+			return high();
+	}
+}
+
 void EQModel::reset(){
 	setHigh(0.0);
 	setMid(0.0);
 	setLow(0.0);
 	mCuttingHigh = mCuttingMid = mCuttingLow = false;
+}
+
+void EQModel::set(band b, float val){
+	switch(b) {
+		case LOW:
+			setLow(val);
+			break;
+		case MID:
+			setMid(val);
+			break;
+		case HIGH:
+			setHigh(val);
+			break;
+	}
+}
+
+void EQModel::toggleCut(band b){
+	switch(b) {
+		case LOW:
+			toggleLowCut();
+			break;
+		case MID:
+			toggleMidCut();
+			break;
+		case HIGH:
+			toggleHighCut();
+			break;
+	}
+}
+
+void EQModel::cut(band b, bool cut){
+	switch(b) {
+		case LOW:
+			cutLow(cut);
+			break;
+		case MID:
+			cutMid(cut);
+			break;
+		case HIGH:
+			cutHigh(cut);
+			break;
+	}
+}
+
+void EQModel::cutLow(bool cut){
+	if(mCuttingLow != cut){
+		mCuttingLow = cut;
+		emit(lowCutChanged(mCuttingLow));
+	}
+}
+
+void EQModel::cutMid(bool cut){
+	if(mCuttingMid != cut){
+		mCuttingMid = cut;
+		emit(midCutChanged(mCuttingMid));
+	}
+}
+
+void EQModel::cutHigh(bool cut){
+	if(mCuttingHigh != cut){
+		mCuttingHigh = cut;
+		emit(highCutChanged(mCuttingHigh));
+	}
 }
 
 void EQModel::updateHigh(float val){

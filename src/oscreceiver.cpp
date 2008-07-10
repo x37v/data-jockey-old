@@ -106,18 +106,39 @@ void OscReceiver::processMixerMessage(const std::string addr, const osc::Receive
 			}
 		} else if(boost::regex_match(remain.c_str(), matches, eq_re)){
 			if(matches.size() == 3){
-				//absolute
+				EQModel * eqModel = mModel->mixerChannels()->at(mixer)->eq();
+				//figure out the band
+				EQModel::band band;
+				if(strcmp(matches[1].str().c_str(), "low") == 0)
+					band = EQModel::LOW;
+				else if(strcmp(matches[1].str().c_str(), "mid") == 0)
+					band = EQModel::MID;
+				else
+					band = EQModel::HIGH;
+
 				if(strcmp(matches[2].str().c_str(), "") == 0){
-					cout << "absolute " << matches[1] << endl;
-					//cut
+					//absolute
+					if(arg_it == m.ArgumentsEnd())
+						throw osc::MissingArgumentException();
+					else
+						eqModel->set(band, floatFromOscNumber(*arg_it));
 				} else if(strcmp(matches[2].str().c_str(), "/cut") == 0){
-					cout << "cut " << matches[1] << endl;
-					//toggle cut
+					//cut
+					if(arg_it == m.ArgumentsEnd())
+						throw osc::MissingArgumentException();
+					else
+						eqModel->cut(band, boolFromBoolOrInt(*arg_it));
 				} else if(strcmp(matches[2].str().c_str(), "/cut/toggle") == 0){
-					cout << "cut/toggle " << matches[1] << endl;
-					//otherwise it is relative
+					//toggle cut
+					eqModel->toggleCut(band);
 				} else {
-					cout << "relative " << matches[1] << endl;
+					//otherwise it is relative
+					if(arg_it == m.ArgumentsEnd())
+						throw osc::MissingArgumentException();
+					else {
+						eqModel->set(band, 
+								eqModel->value(band) + floatFromOscNumber(*arg_it));
+					}
 				}
 			}
 		}
