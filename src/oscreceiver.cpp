@@ -87,8 +87,8 @@ void OscReceiver::processMixerMessage(const std::string addr, const osc::Receive
 					mModel->mixerChannels()->at(mixer)->setVolume(
 							mModel->mixerChannels()->at(mixer)->volume() + num);
 				}
-				//XXX throw error, wrong args
-			}
+			} else
+				throw osc::MissingArgumentException();
 		} else if(boost::regex_match(remain.c_str(), matches, mute_re)){
 			//make sure our matches list is long enough to test
 			if(matches.size() == 2){
@@ -97,9 +97,8 @@ void OscReceiver::processMixerMessage(const std::string addr, const osc::Receive
 				if(strcmp("", matches[1].str().c_str()) == 0) {
 					if(arg_it != m.ArgumentsEnd())
 						mModel->mixerChannels()->at(mixer)->setMuted(boolFromBoolOrInt(*arg_it));
-					else {
-						//XXX throw error, wrong args
-					}
+					else 
+						throw osc::MissingArgumentException();
 				} else {
 					mModel->mixerChannels()->at(mixer)->setMuted(
 							!mModel->mixerChannels()->at(mixer)->muted());
