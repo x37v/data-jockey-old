@@ -1,12 +1,10 @@
 #ifndef SWIG_DJ_MIXER_CHANNEL_MODEL_HPP
 #define SWIG_DJ_MIXER_CHANNEL_MODEL_HPP
 
-%rename(control) DJMixerChannelModel::DJMixerControl;
-
 class DJMixerChannelModel {
    public:
       DJMixerChannelModel(QObject * parent = NULL);
-      DJMixerControlModel * DJMixerControl() const;
+      DJMixerControlModel * control() const;
       int work() const;
       void loadWork(int work);
       void reset();

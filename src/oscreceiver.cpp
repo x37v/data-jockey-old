@@ -20,6 +20,15 @@ bool boolFromBoolOrInt(const osc::ReceivedMessageArgument a){
 		throw osc::WrongArgumentTypeException();
 }
 
+int intFromOsc(const osc::ReceivedMessageArgument a){
+	if(a.IsInt32())
+		return a.AsInt32();
+	else if(a.IsInt64())
+		return a.AsInt64();
+	else
+		throw osc::WrongArgumentTypeException();
+}
+
 float floatFromOscNumber(const osc::ReceivedMessageArgument a){
 	if(a.IsFloat())
 		return a.AsFloat();
@@ -68,6 +77,7 @@ void OscReceiver::processMixerMessage(const std::string addr, const osc::Receive
 	boost::regex volume_re("^volume(/relative){0,1}/{0,1}$");
 	boost::regex mute_re("^mute(/toggle){0,1}/{0,1}$");
 	boost::regex eq_re("^eq/(high|mid|low)(/relative|/cut|/cut/toggle){0,1}/{0,1}$");
+	boost::regex load_re("^load/{0,1}$");
 	boost::cmatch matches;
 	osc::ReceivedMessage::const_iterator arg_it = m.ArgumentsBegin();
 
@@ -142,7 +152,71 @@ void OscReceiver::processMixerMessage(const std::string addr, const osc::Receive
 					}
 				}
 			}
+		} else if(boost::regex_match(remain.c_str(), load_re)){
+			if(arg_it == m.ArgumentsEnd())
+				throw osc::MissingArgumentException();
+			int work = intFromOsc(*arg_it);
+			mModel->mixerChannels()->at(mixer)->loadWork(work);
+			//otherwise it is a djmixer control message [or not valid]
+		} else {
+			processDJControlMessage(remain.c_str(), mModel->mixerChannels()->at(mixer)->control(), m);
 		}
+	}
+}
+
+void OscReceiver::processDJControlMessage(const std::string addr, 
+		DJMixerControlModel * control, 
+		const osc::ReceivedMessage& m){
+	boost::regex play_re("^play(/toggle){0,1}/{0,1}$");
+	boost::regex cue_re("^cue(/toggle){0,1}/{0,1}$");
+	boost::regex sync_re("^sync(/toggle){0,1}/{0,1}$");
+	boost::regex seek_re("^seek(/relative){0,1}/{0,1}$");
+	boost::regex tempomul_re("^tempomul/{0,1}$");
+	boost::cmatch matches;
+	osc::ReceivedMessage::const_iterator arg_it = m.ArgumentsBegin();
+
+	if(boost::regex_match(addr.c_str(), matches, play_re)){
+		if(strcmp(matches[1].str().c_str(), "") == 0){
+			//set
+			if(arg_it == m.ArgumentsEnd())
+				throw osc::MissingArgumentException();
+			else
+				control->setPlay(boolFromBoolOrInt(*arg_it));
+		} else 
+			control->setPlay(!control->playing());
+	} else if(boost::regex_match(addr.c_str(), matches, cue_re)){
+		if(strcmp(matches[1].str().c_str(), "") == 0){
+			//set
+			if(arg_it == m.ArgumentsEnd())
+				throw osc::MissingArgumentException();
+			else
+				control->setCueing(boolFromBoolOrInt(*arg_it));
+		} else 
+			control->setCueing(!control->cueing());
+	} else if(boost::regex_match(addr.c_str(), matches, sync_re)){
+		if(strcmp(matches[1].str().c_str(), "") == 0){
+			//set
+			if(arg_it == m.ArgumentsEnd())
+				throw osc::MissingArgumentException();
+			else
+				control->setSync(boolFromBoolOrInt(*arg_it));
+		} else 
+			control->setSync(!control->synced());
+	} else if(boost::regex_match(addr.c_str(), matches, seek_re)){
+		if(arg_it == m.ArgumentsEnd())
+			throw osc::MissingArgumentException();
+		int arg = intFromOsc(*arg_it);
+		if(strcmp(matches[1].str().c_str(), "") == 0){
+			control->setPlaybackPosition(arg);
+		} else 
+			control->seek(arg);
+	} else if(boost::regex_match(addr.c_str(), tempomul_re)){
+		if(arg_it == m.ArgumentsEnd())
+			throw osc::MissingArgumentException();
+		float mul = floatFromOscNumber(*arg_it);
+		control->setTempoMul(mul);
+	} else {
+		//XXX throw an error?
 	}
 }
 

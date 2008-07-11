@@ -15,7 +15,7 @@ MixerPanelModel::MixerPanelModel(unsigned int numMixers, QObject *parent) :
 		//we set up this mapping so that we can later map object pointers to
 		//indices
 		mMixerObjectIndexMap[djMixerModel] = i;
-		mMixerObjectIndexMap[djMixerModel->DJMixerControl()] = i;
+		mMixerObjectIndexMap[djMixerModel->control()] = i;
 		mMixerObjectIndexMap[djMixerModel->eq()] = i;
 
 		//signals
@@ -34,27 +34,27 @@ MixerPanelModel::MixerPanelModel(unsigned int numMixers, QObject *parent) :
 				this,
 				SLOT(setMixerVolume(QObject *)));
 		//dj mixer control
-		QObject::connect(djMixerModel->DJMixerControl(),
+		QObject::connect(djMixerModel->control(),
 				SIGNAL(cueModeChanged(QObject *)),
 				this,
 				SLOT(setMixerCueMode(QObject *)));
-		QObject::connect(djMixerModel->DJMixerControl(),
+		QObject::connect(djMixerModel->control(),
 				SIGNAL(pausedChanged(QObject *)),
 				this,
 				SLOT(setMixerPaused(QObject *)));
-		QObject::connect(djMixerModel->DJMixerControl(),
+		QObject::connect(djMixerModel->control(),
 				SIGNAL(syncModeChanged(QObject *)),
 				this,
 				SLOT(setMixerSyncMode(QObject *)));
-		QObject::connect(djMixerModel->DJMixerControl(),
+		QObject::connect(djMixerModel->control(),
 				SIGNAL(tempoMulChanged(QObject *)),
 				this,
 				SLOT(setMixerTempoMul(QObject *)));
-		QObject::connect(djMixerModel->DJMixerControl(),
+		QObject::connect(djMixerModel->control(),
 				SIGNAL(seeking(QObject *, int)),
 				this,
 				SLOT(mixerSeek(QObject *, int)));
-		QObject::connect(djMixerModel->DJMixerControl(),
+		QObject::connect(djMixerModel->control(),
 				SIGNAL(playbackPositionChanged(QObject *)),
 				this,
 				SLOT(mixerSetPlaybackPos(QObject *)));
@@ -180,12 +180,12 @@ void MixerPanelModel::crossFadeUpdate(){
 
 void MixerPanelModel::mixerUpdateProgress(unsigned int mixer, float progress){
 	if(mixer < mDJMixerChannels.size())
-		mDJMixerChannels[mixer]->DJMixerControl()->setProgress(progress);
+		mDJMixerChannels[mixer]->control()->setProgress(progress);
 }
 
 void MixerPanelModel::mixerSetTempoMul(unsigned int mixer, double mul){
 	if(mixer < mDJMixerChannels.size())
-		mDJMixerChannels[mixer]->DJMixerControl()->setTempoMul(mul);
+		mDJMixerChannels[mixer]->control()->setTempoMul(mul);
 }
 
 
@@ -217,11 +217,11 @@ bool MixerPanelModel::mixerAudible(unsigned int index) const {
 	if(index < mDJMixerChannels.size()){
 		DJMixerChannelModel * mixer = mDJMixerChannels.at(index);
 		if(!mixer->muted() &&
-				mixer->DJMixerControl()->playing() &&
-				!mixer->DJMixerControl()->cueing() &&
+				mixer->control()->playing() &&
+				!mixer->control()->cueing() &&
 				mXFade->scaleVolume(index, mixer->volume()) > 0.0f &&
-				mixer->DJMixerControl()->progress() > 0.0f &&
-				mixer->DJMixerControl()->progress() < 1.0f
+				mixer->control()->progress() > 0.0f &&
+				mixer->control()->progress() < 1.0f
 				)
 			return true;
 		return false;
@@ -238,7 +238,7 @@ float MixerPanelModel::mixerVolume(unsigned int index) const {
 	//if it is muted the volume is 0, if it isn't cueing we let the xfade scale it
 	if(djMixer->muted())
 		volume = 0.0f;
-	else if(!djMixer->DJMixerControl()->cueing())
+	else if(!djMixer->control()->cueing())
 		volume = mXFade->scaleVolume(index, volume);
 	return volume;
 }

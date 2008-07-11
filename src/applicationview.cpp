@@ -161,81 +161,81 @@ void ApplicationView::connectToModel(){
 
 		//cue
 		QObject::connect(
-				djMixerModel->DJMixerControl(),
+				djMixerModel->control(),
 				SIGNAL(cueModeChanged(bool)),
-				djMixerView->DJMixerControl(),
+				djMixerView->control(),
 				SLOT(setCueing(bool)));
 		QObject::connect(
-				djMixerView->DJMixerControl(),
+				djMixerView->control(),
 				SIGNAL(cueModeChanged(bool)),
-				djMixerModel->DJMixerControl(),
+				djMixerModel->control(),
 				SLOT(setCueing(bool)));
 		//pause
 		QObject::connect(
-				djMixerModel->DJMixerControl(),
+				djMixerModel->control(),
 				SIGNAL(pausedChanged(bool)),
-				djMixerView->DJMixerControl(),
+				djMixerView->control(),
 				SLOT(setPaused(bool)));
 		QObject::connect(
-				djMixerView->DJMixerControl(),
+				djMixerView->control(),
 				SIGNAL(pausedChanged(bool)),
-				djMixerModel->DJMixerControl(),
+				djMixerModel->control(),
 				SLOT(setPaused(bool)));
 		//sync mode
 		QObject::connect(
-				djMixerModel->DJMixerControl(),
+				djMixerModel->control(),
 				SIGNAL(syncModeChanged(bool)),
-				djMixerView->DJMixerControl(),
+				djMixerView->control(),
 				SLOT(setSync(bool)));
 		QObject::connect(
-				djMixerView->DJMixerControl(),
+				djMixerView->control(),
 				SIGNAL(syncModeChanged(bool)),
-				djMixerModel->DJMixerControl(),
+				djMixerModel->control(),
 				SLOT(setSync(bool)));
 		//tempo multiplier
 		QObject::connect(
-				djMixerModel->DJMixerControl(),
+				djMixerModel->control(),
 				SIGNAL(tempoMulChanged(double)),
-				djMixerView->DJMixerControl(),
+				djMixerView->control(),
 				SLOT(setTempoMul(double)));
 		QObject::connect(
-				djMixerView->DJMixerControl(),
+				djMixerView->control(),
 				SIGNAL(tempoMulChanged(double)),
-				djMixerModel->DJMixerControl(),
+				djMixerModel->control(),
 				SLOT(setTempoMul(double)));
 		//progress
 		QObject::connect(
-				djMixerModel->DJMixerControl(),
+				djMixerModel->control(),
 				SIGNAL(progressChanged(float)),
-				djMixerView->DJMixerControl(),
+				djMixerView->control(),
 				SLOT(setProgress(float)));
 		//seek [just from view to mixerModel]
 		QObject::connect(
-				djMixerView->DJMixerControl(),
+				djMixerView->control(),
 				SIGNAL(seekingFwd()),
-				djMixerModel->DJMixerControl(),
+				djMixerModel->control(),
 				SLOT(seekFwd()));
 		QObject::connect(
-				djMixerView->DJMixerControl(),
+				djMixerView->control(),
 				SIGNAL(seekingBwd()),
-				djMixerModel->DJMixerControl(),
+				djMixerModel->control(),
 				SLOT(seekBkwd()));
 		//beat offset
 		QObject::connect(
-				djMixerModel->DJMixerControl(),
+				djMixerModel->control(),
 				SIGNAL(beatOffsetChanged(int)),
-				djMixerView->DJMixerControl(),
+				djMixerView->control(),
 				SLOT(setBeatOffset(int)));
 		QObject::connect(
-				djMixerView->DJMixerControl(),
+				djMixerView->control(),
 				SIGNAL(beatOffsetChanged(int)),
-				djMixerModel->DJMixerControl(),
+				djMixerModel->control(),
 				SLOT(setBeatOffset(int)));
 		//reset 
 		QObject::connect(
-				djMixerView->DJMixerControl(),
+				djMixerView->control(),
 				SIGNAL(resetClicked()),
-				djMixerModel->DJMixerControl(),
+				djMixerModel->control(),
 				SLOT(resetWorkPosition()));
 	}
 

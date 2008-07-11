@@ -14,7 +14,7 @@ class DJMixerChannelModel : public MixerChannelModel {
 		//signals which don't change the model's state only go from this model to the other, not back
 		void syncToModel(DJMixerChannelModel * other, Qt::ConnectionType connectionType = Qt::AutoCompatConnection);
 
-		DJMixerControlModel * DJMixerControl() const;
+		DJMixerControlModel * control() const;
 		int work() const;
 	signals:
 		void workChanged(int work);

@@ -11,7 +11,7 @@ DJMixerChannelView::DJMixerChannelView(QWidget * parent)
 	mDJMixerWorkInfo = new DJMixerWorkInfoView(parent);
 }
 
-DJMixerControlView * DJMixerChannelView::DJMixerControl(){
+DJMixerControlView * DJMixerChannelView::control(){
 	return mDJMixerControl;
 }
 

@@ -32,11 +32,11 @@ void DJMixerChannelModel::syncToModel(DJMixerChannelModel * other, Qt::Connectio
 			connectionType);
 
 	//connect our children too
-	mDJMixerControl->syncToModel(other->DJMixerControl(), connectionType);
+	mDJMixerControl->syncToModel(other->control(), connectionType);
 	MixerChannelModel::syncToModel(other, connectionType);
 }
 
-DJMixerControlModel * DJMixerChannelModel::DJMixerControl() const {
+DJMixerControlModel * DJMixerChannelModel::control() const {
 	return mDJMixerControl;
 }
 

@@ -26,7 +26,7 @@ MixerPanelView::MixerPanelView(unsigned int numMixers, QWidget *parent)
 		DJMixerChannelView * cur = new DJMixerChannelView(this);
 		mDJMixerChannels.push_back(cur);
 		mLayout->addWidget(cur->DJMixerWorkInfo(), 0, i);
-		mLayout->addWidget(cur->DJMixerControl(), 1, i, Qt::AlignCenter);
+		mLayout->addWidget(cur->control(), 1, i, Qt::AlignCenter);
 		mLayout->addWidget(cur->mixerChannel()->eq(), 2, i, Qt::AlignCenter);
 		mLayout->addWidget(cur->mixerChannel()->muteButton(), 3, i, Qt::AlignCenter);
 		mLayout->addWidget(cur->mixerChannel()->volumeSlider(), 4, i, Qt::AlignHCenter);

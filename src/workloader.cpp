@@ -98,10 +98,10 @@ WorkLoader::WorkLoader(const QSqlDatabase & db, MixerPanelModel * model, MixerPa
 				SLOT(cannotLoad(unsigned int, int, QString, QString, QString)),
 				Qt::QueuedConnection);
 		//set up our mapper [object -> id]
-		mixerToIdMapper->setMapping(mixerView->mixerChannels()->at(i)->DJMixerControl(), (int)i);
+		mixerToIdMapper->setMapping(mixerView->mixerChannels()->at(i)->control(), (int)i);
 		//connect the loadClicked signal -> the mapper for this object
 		QObject::connect(
-				mixerView->mixerChannels()->at(i)->DJMixerControl(),
+				mixerView->mixerChannels()->at(i)->control(),
 				SIGNAL(loadClicked()),
 				mixerToIdMapper,
 				SLOT(map()));

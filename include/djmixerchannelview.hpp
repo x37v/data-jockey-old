@@ -11,7 +11,7 @@ class DJMixerChannelView : public QObject {
 	Q_OBJECT
 	public:
 		DJMixerChannelView(QWidget *parent = NULL);
-		DJMixerControlView * DJMixerControl();
+		DJMixerControlView * control();
 		DJMixerWorkInfoView * DJMixerWorkInfo();
 		MixerChannelView * mixerChannel();
 	public slots:
