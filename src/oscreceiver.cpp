@@ -7,6 +7,7 @@
 #include "mixerchannelmodel.hpp"
 #include "eqmodel.hpp"
 #include <stdlib.h>
+#include <iostream>
 
 bool boolFromBoolOrInt(const osc::ReceivedMessageArgument a){
 	if(a.IsBool())
@@ -36,8 +37,6 @@ OscReceiver::OscReceiver(MixerPanelModel * model){
 	mModel = model;
 }
 
-#include <iostream>
-using namespace std;
 
 void OscReceiver::ProcessMessage( const osc::ReceivedMessage& m, const IpEndpointName& remoteEndpoint ){
 	boost::regex top_re("^/datajockey/(\\w*)/(.*)$");
@@ -59,6 +58,8 @@ void OscReceiver::ProcessMessage( const osc::ReceivedMessage& m, const IpEndpoin
 			}
 		}
 	} catch( osc::Exception& e ){
+		std::cerr << "An Exception occured while processing incoming OSC packets." << std::endl;
+		std::cerr << e.what() << std::endl;
 	}
 }
 

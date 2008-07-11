@@ -73,7 +73,7 @@ float EQModel::value(band b){
 			return low();
 		case MID:
 			return mid();
-		case HIGH:
+		default:
 			return high();
 	}
 }
