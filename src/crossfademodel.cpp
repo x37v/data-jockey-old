@@ -74,14 +74,24 @@ void CrossFadeModel::syncToModel(CrossFadeModel * other, Qt::ConnectionType conn
 	mNumMixers = other->mNumMixers;
 	//this -> other
 	QObject::connect(this,
-			SIGNAL(mixersChanged(unsigned int, unsigned int)),
+			SIGNAL(enabled(bool)),
 			other,
-			SLOT(setMixers(unsigned int, unsigned int)),
+			SLOT(enable(bool)),
 			connectionType);
 	QObject::connect(this,
-			SIGNAL(disabled()),
+			SIGNAL(enabled(bool)),
 			other,
-			SLOT(disable()),
+			SLOT(enable(bool)),
+			connectionType);
+	QObject::connect(this,
+			SIGNAL(leftMixerChanged(unsigned int)),
+			other,
+			SLOT(setLeftMixer(unsigned int)),
+			connectionType);
+	QObject::connect(this,
+			SIGNAL(rightMixerChanged(unsigned int)),
+			other,
+			SLOT(setRightMixer(unsigned int)),
 			connectionType);
 	QObject::connect(this,
 			SIGNAL(positionChanged(float)),
@@ -90,14 +100,19 @@ void CrossFadeModel::syncToModel(CrossFadeModel * other, Qt::ConnectionType conn
 			connectionType);
 	//other -> this
 	QObject::connect(other,
-			SIGNAL(mixersChanged(unsigned int, unsigned int)),
-			this,
-			SLOT(setMixers(unsigned int, unsigned int)),
+			SIGNAL(enabled(bool)),
+         this,
+			SLOT(enable(bool)),
 			connectionType);
 	QObject::connect(other,
-			SIGNAL(disabled()),
-			this,
-			SLOT(disable()),
+			SIGNAL(leftMixerChanged(unsigned int)),
+         this,
+			SLOT(setLeftMixer(unsigned int)),
+			connectionType);
+	QObject::connect(other,
+			SIGNAL(rightMixerChanged(unsigned int)),
+         this,
+			SLOT(setRightMixer(unsigned int)),
 			connectionType);
 	QObject::connect(other,
 			SIGNAL(positionChanged(float)),
@@ -149,6 +164,13 @@ void CrossFadeModel::disable(){
 		emit(disabled());
 		emit(enabled(mEnabled));
 	}
+}
+
+void CrossFadeModel::enable(bool value){
+   if(mEnabled != value){
+		mEnabled = value;
+		emit(enabled(mEnabled));
+   }
 }
 
 void CrossFadeModel::updatePosition(float pos){
