@@ -1,6 +1,7 @@
 #include "oscreceiver.hpp"
 #include "osc/OscReceivedElements.h"
 #include <boost/regex.hpp>
+#include "crossfademodel.hpp"
 #include "mastermodel.hpp"
 #include "mixerpanelmodel.hpp"
 #include "djmixerchannelmodel.hpp"
@@ -49,24 +50,23 @@ OscReceiver::OscReceiver(MixerPanelModel * model){
 
 
 void OscReceiver::ProcessMessage( const osc::ReceivedMessage& m, const IpEndpointName& remoteEndpoint ){
-	boost::regex top_re("^/datajockey/(\\w*)/(.*)$");
+	boost::regex top_re("^/datajockey/(\\w*)(.*)$");
 	boost::regex mixer_re("^mixer$");
 	boost::regex xfade_re("^crossfade$");
 	boost::regex master_re("^master$");
 	boost::cmatch matches;
 	std::string addr;
 	try {
-		//matches /datajockey/(\w*)/(.*)
 		if(boost::regex_match(m.AddressPattern(), matches, top_re)){
 			std::string sub_match(matches[1]);
 			if(boost::regex_match(sub_match, mixer_re)){
 				processMixerMessage(matches[2], m);
-			} else if(boost::regex_match(sub_match, xfade_re)){
-				processXFadeMessage(matches[2], m);
 			} else if(boost::regex_match(sub_match, master_re)){
 				processMasterMessage(matches[2], m);
+			} else if(boost::regex_match(sub_match, xfade_re)){
+				processXFadeMessage(matches[2], m);
 			}
-		}
+		} 
 	} catch( osc::Exception& e ){
 		std::cerr << "An Exception occured while processing incoming OSC packets." << std::endl;
 		std::cerr << e.what() << std::endl;
@@ -74,7 +74,7 @@ void OscReceiver::ProcessMessage( const osc::ReceivedMessage& m, const IpEndpoin
 }
 
 void OscReceiver::processMixerMessage(const std::string addr, const osc::ReceivedMessage& m){
-	boost::regex mixer_re("^(\\d+)/(.+)");
+	boost::regex mixer_re("^/(\\d+)/(.+)");
 	boost::regex volume_re("^volume(/relative){0,1}/{0,1}$");
 	boost::regex mute_re("^mute(/toggle){0,1}/{0,1}$");
 	boost::regex eq_re("^eq/(high|mid|low)(/relative|/cut|/cut/toggle){0,1}/{0,1}$");
@@ -231,12 +231,27 @@ void OscReceiver::processDJControlMessage(const std::string addr,
 }
 
 void OscReceiver::processXFadeMessage(const std::string addr, const osc::ReceivedMessage& m){
+	boost::regex set_re("^(/relative){0,1}/{0,1}$");
+	boost::cmatch matches;
+	osc::ReceivedMessage::const_iterator arg_it = m.ArgumentsBegin();
+
+	std::cout << addr << " " << m.AddressPattern() << std::endl;
+
+	if(boost::regex_match(addr.c_str(), matches, set_re)){
+		if(arg_it == m.ArgumentsEnd())
+			throw osc::MissingArgumentException();
+		float arg = floatFromOscNumber(*arg_it);
+		if(strcmp("", matches[1].str().c_str()) == 0)
+			mModel->crossFade()->setPosition(arg);
+		else
+			mModel->crossFade()->setPosition(mModel->crossFade()->position() + arg);
+	}
 }
 
 void OscReceiver::processMasterMessage(const std::string addr, const osc::ReceivedMessage& m){
-	boost::regex volume_re("^volume(/relative){0,1}/{0,1}$");
-	boost::regex tempo_re("^tempo(/relative){0,1}/{0,1}$");
-	boost::regex sync_re("^syncsource/{0,1}$");
+	boost::regex volume_re("^/volume(/relative){0,1}/{0,1}$");
+	boost::regex tempo_re("^/tempo(/relative){0,1}/{0,1}$");
+	boost::regex sync_re("^/syncsource/{0,1}$");
 	boost::cmatch matches;
 	osc::ReceivedMessage::const_iterator arg_it = m.ArgumentsBegin();
 	if(boost::regex_match(addr.c_str(), matches, volume_re)){
@@ -268,6 +283,8 @@ void OscReceiver::processMasterMessage(const std::string addr, const osc::Receiv
 			mModel->master()->setSyncSource(src);
 		} else
 			throw osc::MissingArgumentException();
+	} else {
+		//XXX throw an error?
 	}
 }
 
