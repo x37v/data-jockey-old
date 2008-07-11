@@ -19,6 +19,10 @@ float MasterModel::tempo(){
 	return mTempo;
 }
 
+float MasterModel::volume(){
+	return mVolume;
+}
+
 void MasterModel::syncToModel(MasterModel * other, Qt::ConnectionType connectionType){
 	//make us have the same number of mixers
 	mNumMixers = other->mNumMixers;

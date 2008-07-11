@@ -7,6 +7,7 @@ class MasterModel {
       MasterModel();
       unsigned int syncSource() const ;
       float tempo();
+      float volume();
       void setVolume(float vol);
       void setTempo(float tempo);
       void setTempoMul(double mul);

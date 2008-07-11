@@ -13,6 +13,7 @@ class MasterModel : public QObject {
 		//zero means sync to clock, 1 means sync to mixer 0..
 		unsigned int syncSource() const ;
 		float tempo();
+		float volume();
 	signals:
 		void volumeChanged(float vol);
 		void tempoChanged(float tempo);
