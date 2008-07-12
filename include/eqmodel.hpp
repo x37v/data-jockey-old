@@ -22,7 +22,7 @@ class EQModel : public QObject {
 		void highCutChanged(bool cut);
 		void midCutChanged(bool cut);
 		void lowCutChanged(bool cut);
-		void valuesChanged(float low, float mid, float high);
+		void valuesChanged(float low, float mid, float high, QObject * ob);
 		void valuesChanged(QObject * ob);
 	public slots:
 		void reset();

@@ -21,9 +21,9 @@ MixerPanelModel::MixerPanelModel(unsigned int numMixers, QObject *parent) :
 		//signals
 		//mixer
 		QObject::connect(djMixerModel->eq(),
-				SIGNAL(valuesChanged(QObject *)),
+				SIGNAL(valuesChanged(float, float, float, QObject *)),
 				this,
-				SLOT(setEqVal(QObject *)));
+				SLOT(setEqVal(float, float, float, QObject *)));
 		QObject::connect(djMixerModel,
 				SIGNAL(volumeChanged(float, QObject *)),
 				this,
@@ -93,10 +93,10 @@ void MixerPanelModel::syncToModel(MixerPanelModel * other, Qt::ConnectionType co
 
 //we know the type of the object because these are protected slots and
 //we made the connections
-void MixerPanelModel::setEqVal(QObject * ob){
+void MixerPanelModel::setEqVal(float low, float mid, float high, QObject * ob){
 	EQModel * eq = (EQModel *)ob;
 	unsigned int index = mMixerObjectIndexMap[eq];
-	emit(mixerEQValuesChanged(index, eq->low(), eq->mid(), eq->high()));
+	emit(mixerEQValuesChanged(index, low, mid, high));
 }
 
 void MixerPanelModel::setMixerVolume(float vol, QObject * ob){

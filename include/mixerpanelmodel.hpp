@@ -41,7 +41,7 @@ class MixerPanelModel : public QObject {
 	//these protected slots are for relaying data from our members out to the above signals
 	protected slots:
 		//from mixer
-		void setEqVal(QObject * ob);
+		void setEqVal(float low, float mid, float high, QObject * ob);
 		void setMixerVolume(float vol, QObject * ob);
 		void setMixerMute(bool mute, QObject * ob);
 		//from dj mixer control

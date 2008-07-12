@@ -1,22 +1,11 @@
 #include "eqmodel.hpp"
-#include <QSignalMapper>
 
 EQModel::EQModel(QObject *parent) :
 	QObject(parent)
 {
-	QSignalMapper * mapper = new QSignalMapper(this);
 	mLow = mMid = mHigh = 0.0;
 	mLowLast = mMidLast = mHighLast = 0.0;
 	mCuttingHigh = mCuttingMid = mCuttingLow = false;
-	QObject::connect(this,
-			SIGNAL(valuesChanged(float,float,float)),
-			mapper,
-			SLOT(map()));
-	mapper->setMapping(this,this);
-	QObject::connect(mapper,
-			SIGNAL(mapped(QObject *)),
-			this,
-			SIGNAL(valuesChanged(QObject *)));
 }
 
 void EQModel::syncToModel(EQModel * other, Qt::ConnectionType connectionType){
@@ -181,7 +170,7 @@ void EQModel::setHigh(float val){
 		mHighLast = mHigh;
 		updateHigh(val);
 		emit(highChanged(mHigh));
-		emit(valuesChanged(mLow, mMid, mHigh));
+		emit(valuesChanged(mLow, mMid, mHigh, this));
 	}
 }
 
@@ -194,7 +183,7 @@ void EQModel::setMid(float val){
 		mMidLast = mMid;
 		updateMid(val);
 		emit(midChanged(mMid));
-		emit(valuesChanged(mLow, mMid, mHigh));
+		emit(valuesChanged(mLow, mMid, mHigh, this));
 	}
 }
 
@@ -207,7 +196,7 @@ void EQModel::setLow(float val){
 		mLowLast = mLow;
 		updateLow(val);
 		emit(lowChanged(mLow));
-		emit(valuesChanged(mLow, mMid, mHigh));
+		emit(valuesChanged(mLow, mMid, mHigh, this));
 	}
 }
 
