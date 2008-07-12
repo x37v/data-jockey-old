@@ -49,7 +49,7 @@ class MixerPanelModel : public QObject {
 		void setMixerSyncMode(QObject * ob);
 		void setMixerTempoMul(QObject * ob);
 		void mixerSeek(QObject * ob, int amt);
-		void mixerSetPlaybackPos(QObject * ob);
+		void mixerSetPlaybackPos(int pos, QObject * ob);
 		void mixerLoad(QObject * ob, int work_id);
 
 		void crossFadeUpdate();

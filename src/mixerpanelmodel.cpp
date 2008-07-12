@@ -55,9 +55,9 @@ MixerPanelModel::MixerPanelModel(unsigned int numMixers, QObject *parent) :
 				this,
 				SLOT(mixerSeek(QObject *, int)));
 		QObject::connect(djMixerModel->control(),
-				SIGNAL(playbackPositionChanged(QObject *)),
+				SIGNAL(playbackPositionChanged(int, QObject *)),
 				this,
-				SLOT(mixerSetPlaybackPos(QObject *)));
+				SLOT(mixerSetPlaybackPos(int, QObject *)));
 		QObject::connect(djMixerModel,
 				SIGNAL(loadingWork(QObject *, int)),
 				this,
@@ -150,10 +150,9 @@ void MixerPanelModel::mixerSeek(QObject * ob, int amt){
 	emit(mixerSeeking(index, amt));
 }
 
-void MixerPanelModel::mixerSetPlaybackPos(QObject * ob){
+void MixerPanelModel::mixerSetPlaybackPos(int pos, QObject * ob){
 	DJMixerControlModel * mixerControl = (DJMixerControlModel *)ob;
 	unsigned int index = mMixerObjectIndexMap[mixerControl];
-	int pos = mixerControl->beatOffset();
 	emit(mixerPlaybackPosChanged(index, pos));
 }
 

@@ -41,7 +41,7 @@ class DJMixerControlModel : public QObject {
 		void pausedChanged(bool paused);
 		void syncModeChanged(bool sync);
 		void progressChanged(float progress);
-		void playbackPositionChanged(int pos);
+		void playbackPositionChanged(int pos, QObject * ob);
 		void beatOffsetChanged(int offset);
 		void tempoMulChanged(double mul);
 		void load();
@@ -51,7 +51,6 @@ class DJMixerControlModel : public QObject {
 		void pausedChanged(QObject * ob);
 		void syncModeChanged(QObject * ob);
 		void seeking(QObject * ob, int amt);
-		void playbackPositionChanged(QObject * ob);
 		void load(QObject * ob);
 		void tempoMulChanged(QObject * ob);
 	private:

@@ -48,15 +48,6 @@ DJMixerControlModel::DJMixerControlModel(QObject *parent):
 			SIGNAL(mapped(QObject *)),
 			this,
 			SIGNAL(syncModeChanged(QObject *)));
-	//playback pos
-	QObject::connect(this,
-			SIGNAL(playbackPositionChanged(int)),
-			playposMapper,
-			SLOT(map()));
-	QObject::connect(playposMapper,
-			SIGNAL(mapped(QObject *)),
-			this,
-			SIGNAL(playbackPositionChanged(QObject *)));
 	//load
 	QObject::connect(this,
 			SIGNAL(load()),
@@ -86,7 +77,7 @@ void DJMixerControlModel::syncToModel(DJMixerControlModel * other, Qt::Connectio
 			SLOT(setSync(bool)),
 			connectionType);
 	QObject::connect(this,
-			SIGNAL(playbackPositionChanged(int)),
+			SIGNAL(playbackPositionChanged(int, QObject *)),
 			other,
 			SLOT(setPlaybackPosition(int)),
 			connectionType);
@@ -216,7 +207,7 @@ void DJMixerControlModel::setProgress(float progress){
 }
 
 void DJMixerControlModel::setPlaybackPosition(int pos){
-	emit(playbackPositionChanged(pos));
+	emit(playbackPositionChanged(pos, this));
 }
 
 void DJMixerControlModel::seekFwd(){
@@ -251,7 +242,7 @@ void DJMixerControlModel::setTempoMul(double mul){
 }
 
 void DJMixerControlModel::resetWorkPosition(){
-	emit(playbackPositionChanged(mBeatOffset));
+	emit(playbackPositionChanged(mBeatOffset, this));
 }
 
 void DJMixerControlModel::loadWork(){
