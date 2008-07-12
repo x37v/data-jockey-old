@@ -69,7 +69,11 @@ MixerPanelModel::MixerPanelModel(unsigned int numMixers, QObject *parent) :
 			this,
 			SLOT(crossFadeUpdate()));
 	QObject::connect(mXFade,
-			SIGNAL(mixersChanged(unsigned int, unsigned int)),
+			SIGNAL(rightMixerChanged(unsigned int)),
+			this,
+			SLOT(crossFadeUpdate()));
+	QObject::connect(mXFade,
+			SIGNAL(leftMixerChanged(unsigned int)),
 			this,
 			SLOT(crossFadeUpdate()));
 	QObject::connect(mXFade,
@@ -99,12 +103,12 @@ void MixerPanelModel::setEqVal(float low, float mid, float high, QObject * ob){
 	emit(mixerEQValuesChanged(index, low, mid, high));
 }
 
-void MixerPanelModel::setMixerVolume(float vol, QObject * ob){
+void MixerPanelModel::setMixerVolume(float , QObject * ob){
 	MixerChannelModel * mixer = (MixerChannelModel *)ob;
 	setMixerVolume(mMixerObjectIndexMap[mixer]);
 }
 
-void MixerPanelModel::setMixerMute(bool mute, QObject * ob){
+void MixerPanelModel::setMixerMute(bool , QObject * ob){
 	MixerChannelModel * mixer = (MixerChannelModel *)ob;
 	setMixerVolume(mMixerObjectIndexMap[mixer]);
 }

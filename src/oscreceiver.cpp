@@ -232,9 +232,10 @@ void OscReceiver::processDJControlMessage(const std::string addr,
 
 void OscReceiver::processXFadeMessage(const std::string addr, const osc::ReceivedMessage& m){
 	boost::regex position_re("^(/relative){0,1}/{0,1}$");
-	boost::regex leftmixer_re("^mixer/left/{0,1}$");
-	boost::regex rightmixer_re("^mixer/right/{0,1}$");
-	boost::regex enable_re("^enable/{0,1}$");
+	boost::regex leftmixer_re("^/mixer/left/{0,1}$");
+	boost::regex rightmixer_re("^/mixer/right/{0,1}$");
+	boost::regex mixers_re("^/mixers/{0,1}$");
+	boost::regex enable_re("^/enable/{0,1}$");
 	boost::cmatch matches;
 	osc::ReceivedMessage::const_iterator arg_it = m.ArgumentsBegin();
 
@@ -246,6 +247,15 @@ void OscReceiver::processXFadeMessage(const std::string addr, const osc::Receive
 			mModel->crossFade()->setPosition(arg);
 		else
 			mModel->crossFade()->setPosition(mModel->crossFade()->position() + arg);
+	} else if(boost::regex_match(addr.c_str(), mixers_re)){
+		if(arg_it == m.ArgumentsEnd())
+			throw osc::MissingArgumentException();
+		int left = intFromOsc(*arg_it);
+		arg_it++;
+		if(arg_it == m.ArgumentsEnd())
+			throw osc::MissingArgumentException();
+		int right = intFromOsc(*arg_it);
+		mModel->crossFade()->setMixers(left, right);
 	} else if(boost::regex_match(addr.c_str(), leftmixer_re)){
 		if(arg_it == m.ArgumentsEnd())
 			throw osc::MissingArgumentException();

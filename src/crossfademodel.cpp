@@ -68,7 +68,7 @@ float CrossFadeModel::scaleVolume(unsigned int index, float mixer_volume){
 }
 
 //sync this model's state to another model
-		//signals which don't change the model's state only go from this model to the other, not back
+//signals which don't change the model's state only go from this model to the other, not back
 void CrossFadeModel::syncToModel(CrossFadeModel * other, Qt::ConnectionType connectionType){
 	//make our number of mixers the same
 	mNumMixers = other->mNumMixers;
@@ -94,6 +94,11 @@ void CrossFadeModel::syncToModel(CrossFadeModel * other, Qt::ConnectionType conn
 			SLOT(setRightMixer(unsigned int)),
 			connectionType);
 	QObject::connect(this,
+			SIGNAL(mixersChanged(unsigned int, unsigned int)),
+			other,
+			SLOT(setMixers(unsigned int, unsigned int)),
+			connectionType);
+	QObject::connect(this,
 			SIGNAL(positionChanged(float)),
 			other,
 			SLOT(setPosition(float)),
@@ -113,6 +118,11 @@ void CrossFadeModel::syncToModel(CrossFadeModel * other, Qt::ConnectionType conn
 			SIGNAL(rightMixerChanged(unsigned int)),
          this,
 			SLOT(setRightMixer(unsigned int)),
+			connectionType);
+	QObject::connect(other,
+			SIGNAL(mixersChanged(unsigned int, unsigned int)),
+			this,
+			SLOT(setMixers(unsigned int, unsigned int)),
 			connectionType);
 	QObject::connect(other,
 			SIGNAL(positionChanged(float)),
