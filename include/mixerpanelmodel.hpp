@@ -42,15 +42,16 @@ class MixerPanelModel : public QObject {
 	protected slots:
 		//from mixer
 		void setEqVal(QObject * ob);
-		void setMixerVolume(QObject * ob);
+		void setMixerVolume(float vol, QObject * ob);
+		void setMixerMute(bool mute, QObject * ob);
 		//from dj mixer control
-		void setMixerCueMode(QObject * ob);
-		void setMixerPaused(QObject * ob);
-		void setMixerSyncMode(QObject * ob);
-		void setMixerTempoMul(QObject * ob);
-		void mixerSeek(QObject * ob, int amt);
+		void setMixerCueMode(bool cue, QObject * ob);
+		void setMixerPaused(bool paused, QObject * ob);
+		void setMixerSyncMode(bool sync, QObject * ob);
+		void setMixerTempoMul(double mul, QObject * ob);
+		void mixerSeek(int amt, QObject * ob);
 		void mixerSetPlaybackPos(int pos, QObject * ob);
-		void mixerLoad(QObject * ob, int work_id);
+		void mixerLoad(int work_id, QObject * ob);
 
 		void crossFadeUpdate();
 

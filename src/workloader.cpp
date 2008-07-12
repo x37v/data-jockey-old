@@ -13,9 +13,6 @@
 #include <QErrorMessage>
 #include <QSignalMapper>
 
-#include <iostream>
-using namespace std;
-
 BufferLoaderThread::BufferLoaderThread(QObject * parent) :
 	QThread(parent)
 {

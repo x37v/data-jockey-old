@@ -32,27 +32,22 @@ class DJMixerControlModel : public QObject {
 		void seek(int amt);
 		void setBeatOffset(int offset);
 		void setTempoMul(double mul);
+		//update, doesn't emit
+		void updateTempoMul(double mul);
 		void resetWorkPosition();
 		void loadWork();
 		//this resets the settings.. beat offset, etc.
 		void reset();
 	signals:
-		void cueModeChanged(bool cue);
-		void pausedChanged(bool paused);
-		void syncModeChanged(bool sync);
-		void progressChanged(float progress);
-		void playbackPositionChanged(int pos, QObject * ob);
-		void beatOffsetChanged(int offset);
-		void tempoMulChanged(double mul);
-		void load();
-		void seeking(int amt);
-
-		void cueModeChanged(QObject * ob);
-		void pausedChanged(QObject * ob);
-		void syncModeChanged(QObject * ob);
-		void seeking(QObject * ob, int amt);
-		void load(QObject * ob);
-		void tempoMulChanged(QObject * ob);
+		void cueModeChanged(bool cue, QObject *me);
+		void pausedChanged(bool paused, QObject *me);
+		void syncModeChanged(bool sync, QObject *me);
+		void progressChanged(float progress, QObject *me);
+		void playbackPositionChanged(int pos, QObject * me);
+		void beatOffsetChanged(int offset, QObject *me);
+		void tempoMulChanged(double mul, QObject *me);
+		void load(QObject *me);
+		void seeking(int amt, QObject *me);
 	private:
 		float mProgress;
 		bool mPaused;

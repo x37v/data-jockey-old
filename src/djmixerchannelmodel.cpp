@@ -26,7 +26,7 @@ void DJMixerChannelModel::syncToModel(DJMixerChannelModel * other, Qt::Connectio
 			connectionType);
 	//this -> other (non [direct] state changes)
 	QObject::connect(this,
-			SIGNAL(loadingWork(int)),
+			SIGNAL(loadingWork(int, QObject *)),
 			other,
 			SLOT(loadWork(int)),
 			connectionType);
@@ -53,8 +53,7 @@ void DJMixerChannelModel::setWork(int work){
 
 void DJMixerChannelModel::loadWork(int work){
 	if(mWork != work){
-		emit(loadingWork(work));
-		emit(loadingWork(this, work));
+		emit(loadingWork(work, this));
 	}
 }
 

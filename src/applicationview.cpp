@@ -106,7 +106,7 @@ void ApplicationView::connectToModel(){
 		//volume
 		QObject::connect(
 				djMixerModel,
-				SIGNAL(volumeChanged(float)),
+				SIGNAL(volumeChanged(float, QObject *)),
 				djMixerView->mixerChannel(),
 				SLOT(setVolume(float)));
 		QObject::connect(
@@ -117,7 +117,7 @@ void ApplicationView::connectToModel(){
 		//mute
 		QObject::connect(
 				djMixerModel,
-				SIGNAL(mutedChanged(bool)),
+				SIGNAL(mutedChanged(bool, QObject *)),
 				djMixerView->mixerChannel(),
 				SLOT(setMuted(bool)));
 		QObject::connect(
@@ -162,7 +162,7 @@ void ApplicationView::connectToModel(){
 		//cue
 		QObject::connect(
 				djMixerModel->control(),
-				SIGNAL(cueModeChanged(bool)),
+				SIGNAL(cueModeChanged(bool, QObject *)),
 				djMixerView->control(),
 				SLOT(setCueing(bool)));
 		QObject::connect(
@@ -173,7 +173,7 @@ void ApplicationView::connectToModel(){
 		//pause
 		QObject::connect(
 				djMixerModel->control(),
-				SIGNAL(pausedChanged(bool)),
+				SIGNAL(pausedChanged(bool, QObject *)),
 				djMixerView->control(),
 				SLOT(setPaused(bool)));
 		QObject::connect(
@@ -184,7 +184,7 @@ void ApplicationView::connectToModel(){
 		//sync mode
 		QObject::connect(
 				djMixerModel->control(),
-				SIGNAL(syncModeChanged(bool)),
+				SIGNAL(syncModeChanged(bool, QObject *)),
 				djMixerView->control(),
 				SLOT(setSync(bool)));
 		QObject::connect(
@@ -195,7 +195,7 @@ void ApplicationView::connectToModel(){
 		//tempo multiplier
 		QObject::connect(
 				djMixerModel->control(),
-				SIGNAL(tempoMulChanged(double)),
+				SIGNAL(tempoMulChanged(double, QObject *)),
 				djMixerView->control(),
 				SLOT(setTempoMul(double)));
 		QObject::connect(
@@ -206,7 +206,7 @@ void ApplicationView::connectToModel(){
 		//progress
 		QObject::connect(
 				djMixerModel->control(),
-				SIGNAL(progressChanged(float)),
+				SIGNAL(progressChanged(float, QObject *)),
 				djMixerView->control(),
 				SLOT(setProgress(float)));
 		//seek [just from view to mixerModel]
@@ -223,7 +223,7 @@ void ApplicationView::connectToModel(){
 		//beat offset
 		QObject::connect(
 				djMixerModel->control(),
-				SIGNAL(beatOffsetChanged(int)),
+				SIGNAL(beatOffsetChanged(int, QObject *)),
 				djMixerView->control(),
 				SLOT(setBeatOffset(int)));
 		QObject::connect(

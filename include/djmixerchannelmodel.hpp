@@ -18,8 +18,7 @@ class DJMixerChannelModel : public MixerChannelModel {
 		int work() const;
 	signals:
 		void workChanged(int work);
-		void loadingWork(int work);
-		void loadingWork(QObject * me, int work);
+		void loadingWork(int work, QObject *me);
 	public slots:
 		void setWork(int work);
 		//loadWork doesn't set our work.. though, eventually, once the work is
