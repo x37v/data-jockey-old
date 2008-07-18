@@ -78,21 +78,16 @@ void CrossFadeModel::syncToModel(CrossFadeModel * other, Qt::ConnectionType conn
 			other,
 			SLOT(enable(bool)),
 			connectionType);
-	QObject::connect(this,
-			SIGNAL(enabled(bool)),
-			other,
-			SLOT(enable(bool)),
-			connectionType);
-	QObject::connect(this,
-			SIGNAL(leftMixerChanged(unsigned int)),
-			other,
-			SLOT(setLeftMixer(unsigned int)),
-			connectionType);
-	QObject::connect(this,
-			SIGNAL(rightMixerChanged(unsigned int)),
-			other,
-			SLOT(setRightMixer(unsigned int)),
-			connectionType);
+	//QObject::connect(this,
+			//SIGNAL(leftMixerChanged(unsigned int)),
+			//other,
+			//SLOT(setLeftMixer(unsigned int)),
+			//connectionType);
+	//QObject::connect(this,
+			//SIGNAL(rightMixerChanged(unsigned int)),
+			//other,
+			//SLOT(setRightMixer(unsigned int)),
+			//connectionType);
 	QObject::connect(this,
 			SIGNAL(mixersChanged(unsigned int, unsigned int)),
 			other,
@@ -109,16 +104,16 @@ void CrossFadeModel::syncToModel(CrossFadeModel * other, Qt::ConnectionType conn
          this,
 			SLOT(enable(bool)),
 			connectionType);
-	QObject::connect(other,
-			SIGNAL(leftMixerChanged(unsigned int)),
-         this,
-			SLOT(setLeftMixer(unsigned int)),
-			connectionType);
-	QObject::connect(other,
-			SIGNAL(rightMixerChanged(unsigned int)),
-         this,
-			SLOT(setRightMixer(unsigned int)),
-			connectionType);
+	//QObject::connect(other,
+			//SIGNAL(leftMixerChanged(unsigned int)),
+         //this,
+			//SLOT(setLeftMixer(unsigned int)),
+			//connectionType);
+	//QObject::connect(other,
+			//SIGNAL(rightMixerChanged(unsigned int)),
+         //this,
+			//SLOT(setRightMixer(unsigned int)),
+			//connectionType);
 	QObject::connect(other,
 			SIGNAL(mixersChanged(unsigned int, unsigned int)),
 			this,
@@ -159,9 +154,12 @@ void CrossFadeModel::setRightMixer(unsigned int index){
 
 void CrossFadeModel::setMixers(unsigned int left, unsigned int right){
 	//make sure we're in range
-	if(left >= mNumMixers || right >= mNumMixers)
+	if(left >= mNumMixers || right >= mNumMixers){
 		return;
-	if(left != mLeft || right != mRight || !mEnabled){
+	}
+	if(left == right)
+		return;
+	if((left != mLeft) || (right != mRight) || !mEnabled){
 		setLeftMixer(left);
 		setRightMixer(right);
 		emit(mixersChanged(mLeft,mRight));

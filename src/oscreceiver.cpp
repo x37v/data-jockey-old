@@ -49,7 +49,7 @@ OscReceiver::OscReceiver(MixerPanelModel * model){
 }
 
 
-void OscReceiver::ProcessMessage( const osc::ReceivedMessage& m, const IpEndpointName& remoteEndpoint ){
+void OscReceiver::ProcessMessage( const osc::ReceivedMessage& m, const IpEndpointName&  ){
 	boost::regex top_re("^/datajockey/(\\w*)(.*)$");
 	boost::regex mixer_re("^mixer$");
 	boost::regex xfade_re("^crossfade$");
@@ -232,8 +232,8 @@ void OscReceiver::processDJControlMessage(const std::string addr,
 
 void OscReceiver::processXFadeMessage(const std::string addr, const osc::ReceivedMessage& m){
 	boost::regex position_re("^(/relative){0,1}/{0,1}$");
-	boost::regex leftmixer_re("^/mixer/left/{0,1}$");
-	boost::regex rightmixer_re("^/mixer/right/{0,1}$");
+	//boost::regex leftmixer_re("^/mixer/left/{0,1}$");
+	//boost::regex rightmixer_re("^/mixer/right/{0,1}$");
 	boost::regex mixers_re("^/mixers/{0,1}$");
 	boost::regex enable_re("^/enable/{0,1}$");
 	boost::cmatch matches;
@@ -256,6 +256,7 @@ void OscReceiver::processXFadeMessage(const std::string addr, const osc::Receive
 			throw osc::MissingArgumentException();
 		int right = intFromOsc(*arg_it);
 		mModel->crossFade()->setMixers(left, right);
+		/*
 	} else if(boost::regex_match(addr.c_str(), leftmixer_re)){
 		if(arg_it == m.ArgumentsEnd())
 			throw osc::MissingArgumentException();
@@ -266,6 +267,7 @@ void OscReceiver::processXFadeMessage(const std::string addr, const osc::Receive
 			throw osc::MissingArgumentException();
 		int arg = intFromOsc(*arg_it);
 		mModel->crossFade()->setRightMixer(arg);
+		*/
 	} else if(boost::regex_match(addr.c_str(), enable_re)){
 		if(arg_it == m.ArgumentsEnd())
 			mModel->crossFade()->enable();

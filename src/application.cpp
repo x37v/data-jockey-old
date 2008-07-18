@@ -34,7 +34,6 @@ using std::endl;
 
 #include "oscreceiver.hpp"
 
-
 //for now we'll just have a gui app
 int DataJockeyApplication::run(int argc, char *argv[]){
 

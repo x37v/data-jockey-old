@@ -25,6 +25,8 @@ CrossFadeView::CrossFadeView(unsigned int numMixers, QWidget *parent) :
 		for(unsigned int j = 0; j < numMixers; j++){
 			if(j != i){
 				unsigned int * pair = new unsigned int[2];
+				pair[0] = i;
+				pair[1] = j;
 				mPairList.push_back(pair);
 				std::stringstream rightNum; 
 				std::string label("");
@@ -32,8 +34,6 @@ CrossFadeView::CrossFadeView(unsigned int numMixers, QWidget *parent) :
 				label.append(leftNum.str());
 				label.append(" <-> ");
 				label.append(rightNum.str());
-				pair[0] = i;
-				pair[1] = j;
 				mSelection->addItem(label.c_str(), pair);
 			}
 		}
