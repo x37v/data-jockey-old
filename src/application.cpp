@@ -128,12 +128,12 @@ void OscThread::run(){
 }
 
 #include "ruby.h"
-extern "C" void Init_datajockey();
+//extern "C" void Init_datajockey();
 
 void RubyInterpreterThread::run(){
 	ruby_init();
 	ruby_init_loadpath();
-	Init_datajockey();
+	//Init_datajockey();
 	rb_load_file("ruby-interpreter.rb");
 	ruby_run();
 }

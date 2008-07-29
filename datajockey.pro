@@ -12,14 +12,16 @@ INCLUDEPATH += /usr/local/include/oscpack/
 
 QT += sql
 LIBS += -ljackcpp `pkg-config --libs jack` -lsndfile -lslv2 -lmad -lvorbisfile -lruby1.8 -loscpack -lboost_regex
+QMAKE_LFLAGS += -rdynamic
 
 MOC_DIR = moc
 OBJECTS_DIR = objects
 
-swigtarget.target = swig/datajockey_wrap.cxx
-swigtarget.commands = swig -Wall -c++ -ruby -o swig/datajockey_wrap.cxx swig/datajockey.i
-swigtarget.depends = swig/*.i
-QMAKE_EXTRA_TARGETS += swigtarget
+swigtarget.target = swig/datajockey.so
+swigtarget.commands = cd swig && ruby extconf.rb && make
+swigtarget.depends = swig/*.i swig/scriptcallbackfilter.cpp
+
+QMAKE_EXTRA_TARGETS += swigtarget 
 
 # Input
 HEADERS +=  include/application.hpp \
@@ -67,8 +69,7 @@ HEADERS +=  include/application.hpp \
 				include/workfiltermodel.hpp \
 				include/workloader.hpp \
 				include/worktablemodel.hpp \
-				include/worktagmodelfilter.hpp \
-				swig/scriptcallbackfilter.hpp 
+				include/worktagmodelfilter.hpp 
 
 SOURCES +=  src/application.cpp \
 				src/main.cpp \
@@ -116,7 +117,5 @@ SOURCES +=  src/application.cpp \
 				src/workfiltermodel.cpp \
 				src/workloader.cpp \
 				src/worktablemodel.cpp \
-				src/worktagmodelfilter.cpp \
-				swig/scriptcallbackfilter.cpp \
-				swig/datajockey_wrap.cxx 
+				src/worktagmodelfilter.cpp 
 

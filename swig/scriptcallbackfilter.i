@@ -46,7 +46,7 @@ $1 = NULL;
 class ScriptCallbackFilter : public RemoteWorkFilterModel {
    public:
       ScriptCallbackFilter(std::string name, std::string description, 
-            callback_t callback, void * user_data = NULL, void * other_data = NULL);
+            callback_t callback, void * user_data, void * other_data);
       void setWorks(std::vector<int> idlist);
       void clearWorks();
       void addWork(int id);

@@ -1,7 +1,9 @@
-
+%{
+#include "../include/remoteworkfiltermodel.hpp"
+   %}
 %rename(WorkFilter) RemoteWorkFilterModel;
 
-//%include std_vector.i
+%include std_vector.i
 
 class RemoteWorkFilterModel{
    public:

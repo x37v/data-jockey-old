@@ -1,4 +1,6 @@
 require 'irb'
+#just for now
+require 'swig/datajockey'
 
 # mercilessly borrowed from: http://errtheblog.com/posts/9-drop-to-irb
 #
