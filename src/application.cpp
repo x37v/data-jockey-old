@@ -135,6 +135,6 @@ void RubyInterpreterThread::run(){
 	ruby_init_loadpath();
 	//Init_datajockey();
 	rb_load_file("ruby-interpreter.rb");
-	ruby_run();
+  ruby_run();
 }
 

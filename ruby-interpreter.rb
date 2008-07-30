@@ -1,6 +1,16 @@
 require 'irb'
 #just for now
-require 'swig/datajockey'
+begin
+  require 'swig/datajockey'
+rescue LoadError 
+  STDERR.puts "\n\n*******************************************"
+  STDERR.puts "cannot load DataJockey library for Ruby, make sure you have it installed"
+  STDERR.puts "ruby intepreter will not execute properly"
+  STDERR.puts "*******************************************\n\n"
+  while true do
+    sleep(1)
+  end
+end
 
 # mercilessly borrowed from: http://errtheblog.com/posts/9-drop-to-irb
 #
