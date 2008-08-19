@@ -11,7 +11,7 @@ INCLUDEPATH += /usr/lib/ruby/1.8/i486-linux/
 INCLUDEPATH += /usr/local/include/oscpack/
 
 QT += sql
-LIBS += -ljackcpp `pkg-config --libs jack` -lsndfile -lslv2 -lmad -lvorbisfile -lruby1.8 -loscpack -lboost_regex
+LIBS += -ljackcpp `pkg-config --libs jack` -lsndfile -lslv2 -lmad -lvorbisfile -lruby1.8 -loscpack -lboost_regex -lyamlcpp -lsyck
 QMAKE_LFLAGS += -rdynamic
 
 MOC_DIR = moc

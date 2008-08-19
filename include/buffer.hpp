@@ -36,7 +36,7 @@ namespace DataJockey {
 
 	class BeatBuffer : public Object {
 		private:
-			std::vector<float> mBeatBuffer;
+			std::vector<double> mBeatBuffer;
 			unsigned int mId;
 			static unsigned int mIdCnt;
 			void load(std::string beatDataLocation) throw(std::runtime_error);

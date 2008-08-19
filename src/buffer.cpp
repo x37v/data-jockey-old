@@ -1,6 +1,9 @@
 #include "buffer.hpp"
 #include <fstream>
 #include <math.h>
+#include <yamlcpp/yaml.hpp>
+#include <yamlcpp/parser.hpp>
+
 using namespace DataJockey;
 #define READ_FRAME_SIZE 2048
 #define MIN(x,y) ((x) < (y) ? (x) : (y))
@@ -94,31 +97,57 @@ BeatBuffer::BeatBuffer(std::string beatDataLocation)
 	mId = mIdCnt++;
 }
 
+/*
+ * yaml format should be:
+ *
+ * beat locations :
+ * 	time points : [sequence of doubles]
+ * 	ctime: ..
+ * 	...
+ *
+ * OR
+ *
+ * beat locations :
+ * 	sequence [
+ * 		- timepoints : [sequence of doubles]
+ * 		  ctime:..
+ * 		- timepoints : [sequence of doubles]
+ * 		  ctime:...
+ *
+ */
+
 void BeatBuffer::load(std::string beatDataLocation)
 	throw(std::runtime_error)
 {
-	std::fstream beatFile(beatDataLocation.c_str(), std::fstream::in);
 	mBeatBuffer.clear();
 
-	//check to make sure beatfile exists
-	if(!beatFile){
-		std::string str("cannot open beat location file: ");
+	//read in the beat location information
+	try {
+		yaml::Parser y;
+		yaml::node top = y.parseFile(beatDataLocation);
+		yaml::map_ptr beatLocs = yaml::get<yaml::map_ptr>(top);
+		yaml::map::iterator it = beatLocs->find(std::string("beat locations"));
+		if(it == beatLocs->end())
+			throw std::runtime_error("cannot find beat locations");
+
+		//if it is a sequence just grab the first one for now
+		if(yaml::is<yaml::seq_ptr>(it->second)){
+			beatLocs = yaml::get<yaml::map_ptr>(
+					yaml::get<yaml::seq_ptr>(it->second)->at(0));
+		} else 
+			beatLocs = yaml::get<yaml::map_ptr>(it->second);
+
+		//grab the time point vector
+		it = beatLocs->find(std::string("time points"));
+		if(it == beatLocs->end())
+			throw std::runtime_error("cannot find time points");
+
+		//copy over the data
+		mBeatBuffer = yaml::getVector<double>(it->second);
+	} catch (...){
+		std::string str("error reading beat location file: ");
 		str.append(beatDataLocation);
 		throw std::runtime_error(str);
-	}
-
-	//read in the beat location information
-	float indata;
-	beatFile >> indata;
-	while(!beatFile.eof()){
-		if(beatFile.fail()){
-			std::string str("read failed for: ");
-			str.append(beatDataLocation);
-			str.append("does it have malformed data?");
-			throw std::runtime_error(str);
-		}
-		mBeatBuffer.push_back(indata);
-		beatFile >> indata;
 	}
 }
 
