@@ -1,8 +1,5 @@
 require 'irb'
 
-#just for now
-$:.push("../swig/")
-
 begin
   require 'datajockey'
 rescue LoadError 
@@ -31,10 +28,18 @@ end
 # >> continue
 # bye
 
-require 'ruby/applicationmodel'
-require 'ruby/mixerchannelmodel'
-require 'ruby/mixerpannelmodel'
-require 'ruby/workfilter'
+#before we install the files are in "ruby"
+if File.directory?("ruby") and File.exists?("ruby/applicationmodel.rb")
+  require 'ruby/applicationmodel'
+  require 'ruby/mixerchannelmodel'
+  require 'ruby/mixerpannelmodel'
+  require 'ruby/workfilter'
+else
+  require 'datajockey/applicationmodel'
+  require 'datajockey/mixerchannelmodel'
+  require 'datajockey/mixerpannelmodel'
+  require 'datajockey/workfilter'
+end
 
 class RedirectOutput < IO
     def initialize

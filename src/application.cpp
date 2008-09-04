@@ -134,8 +134,6 @@ void RubyInterpreterThread::run(){
 	ruby_init();
 	ruby_init_loadpath();
 	//Init_datajockey();
-	rb_eval_string("$:.push('swig')");
-	rb_eval_string("$:.push('ruby')");
 	rb_load_file("ruby/interpreter.rb");
 	ruby_run();
 }
