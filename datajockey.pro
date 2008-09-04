@@ -21,7 +21,17 @@ swigtarget.target = swig/datajockey.so
 swigtarget.commands = cd swig && ruby extconf.rb && make
 swigtarget.depends = swig/*.i swig/scriptcallbackfilter.cpp
 
+swigutilstarget.target = utils-swig/datajockey_utils.so
+swigutilstarget.commands = cd utils-swig/ && ruby extconf.rb && make
+swigutilstarget.depends = utils-swig/*.i
+
+install_swig.target = install_ruby
+install_swig.depends = $(swigutilstarget.target) $(swigtarget.target)
+install_swig.commands = cd utils-swig/ && make install && cd ../swig/ && make install
+
 QMAKE_EXTRA_TARGETS += swigtarget 
+QMAKE_EXTRA_TARGETS += swigutilstarget 
+QMAKE_EXTRA_TARGETS += install_swig 
 
 # Input
 HEADERS +=  include/application.hpp \
