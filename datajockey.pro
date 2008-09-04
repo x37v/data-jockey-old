@@ -26,12 +26,15 @@ swigutilstarget.commands = cd utils-swig/ && ruby extconf.rb && make
 swigutilstarget.depends = utils-swig/*.i
 
 install_swig.target = install_ruby
-install_swig.depends = $(swigutilstarget.target) $(swigtarget.target)
+install_swig.depends = $$swigutilstarget.target $$swigtarget.target
 install_swig.commands = cd utils-swig/ && make install && cd ../swig/ && make install
 
 QMAKE_EXTRA_TARGETS += swigtarget 
 QMAKE_EXTRA_TARGETS += swigutilstarget 
 QMAKE_EXTRA_TARGETS += install_swig 
+
+POST_TARGETDEPS += $$swigtarget.target
+POST_TARGETDEPS += $$swigutilstarget.target
 
 # Input
 HEADERS +=  include/application.hpp \
