@@ -28,4 +28,3 @@
 %include "interpreterioproxy.i"
 /*%include "remoteworkfiltermodel.i" */
 %include "scriptcallbackfilter.i"
-
