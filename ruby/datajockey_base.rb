@@ -1,7 +1,7 @@
 require 'rubygems'
 require 'active_record'
 
-RAILS_DIR = "../railscode"
+RAILS_DIR = "../../railscode"
 RAILS_MODEL_DIR = File.join(RAILS_DIR, 'app/models/')
 RAILS_DB_CONF_FILE = File.join(RAILS_DIR, 'config/database.yml')
 

@@ -1,7 +1,10 @@
 require 'irb'
+
 #just for now
+$:.push("../swig/")
+
 begin
-  require 'swig/datajockey'
+  require 'datajockey'
 rescue LoadError 
   STDERR.puts "\n\n*******************************************"
   STDERR.puts "cannot load DataJockey library for Ruby, make sure you have it installed"
