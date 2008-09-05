@@ -60,6 +60,16 @@ module Datajockey
           end
         end
       end
+
+      if annotation["descriptors"]
+        annotation["descriptors"].each do |name, value|
+          dt = DescriptorType.find_or_create_by_name(name)
+          d = Descriptor.find(:first, :conditions => {:audio_work_id => work.id, :descriptor_type_id => dt.id})
+          d = Descriptor.new(:audio_work_id => work.id, :descriptor_type_id => dt.id) unless d
+          d.update_attribute(:float_value, value)
+        end
+      end
+
       artist = nil
       if artist_name
         #find or create the artist

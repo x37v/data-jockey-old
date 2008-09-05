@@ -64,13 +64,13 @@ module Datajockey
       annotation["beat locations"] = Array.new
 
       cur = Hash.new
-      cur["timepoints"] = beats = getBeatLocations(audioFile)
+      cur["time points"] = beats = getBeatLocations(audioFile)
       cur["mtime"] = cur["ctime"] = Time.now
       cur["source"] = "Datajockey::Annotation::getBeatLocations(#{audioFile})"
       annotation["beat locations"] << cur
 
       cur = Hash.new
-      cur["timepoints"] = beats = smoothNumArray(beats, smoothing)
+      cur["time points"] = beats = smoothNumArray(beats, smoothing)
       cur["mtime"] = cur["ctime"] = DateTime.now
       cur["source"] = 
       "Datajockey::Annotation::smoothNumArray(Datajockey::Annotation::getBeatLocations(#{audioFile}), #{smoothing})"
