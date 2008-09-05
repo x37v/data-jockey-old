@@ -30,3 +30,4 @@ void DataJockey::soundFileToWave(std::string inFileName, std::string outFileName
 	while((frames_read = inFile.readf(inbuf, PCM_READ_SIZE / inFile.channels())) != 0)
 		outFile.writef(inbuf, frames_read);
 }
+
