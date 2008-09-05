@@ -28,7 +28,14 @@ models.each do |model|
   require model
 end
 
+unless ActiveRecord::Base.connected?
+  conf = YAML::load(File.open("/home/alex/.datajockey/config.yaml"))
+  ActiveRecord::Base.establish_connection(conf["database"])
+end
+
+=begin
 if !$datajockey_connected_to_db
+  conf["database"]["database"] = conf["database"]["name"] unless conf["database"]["database"]
   def connect_to_database(environment)
     conf = YAML::load(File.open(RAILS_DB_CONF_FILE))
     ActiveRecord::Base.establish_connection(conf[environment])
@@ -36,3 +43,4 @@ if !$datajockey_connected_to_db
   connect_to_database('development')
   $datajockey_connected_to_db = true
 end
+=end
