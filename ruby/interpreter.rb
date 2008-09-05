@@ -1,4 +1,6 @@
 
+#eventually it would be nice to test to see if we're in the graphical application
+
 begin
   require 'datajockey'
 rescue LoadError 
@@ -32,7 +34,6 @@ djclassfiles = [
   "database/audio_file_type", 
   "database/audio_work", 
   "database/audio_work_tag", 
-  "database/connect", 
   "database/descriptor", 
   "database/descriptor_type", 
   "database/tag_class", 
