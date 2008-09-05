@@ -1,10 +1,13 @@
-#XXX should test for other locations
-conf_file = File.join(ENV["HOME"], ".datajockey", "config.yaml")
-
 #eventually it would be nice to test to see if we're in the graphical application
 
 begin
   require 'datajockey'
+  if File.directory?("ruby") and File.exists?("ruby/base.rb")
+    $:.push("ruby")
+    require 'base'
+  else
+    require 'datajockey/base'
+  end
 rescue LoadError 
   STDERR.puts "\n\n*******************************************"
   STDERR.puts "cannot load DataJockey library for Ruby, make sure you have it installed"
@@ -13,12 +16,6 @@ rescue LoadError
   loop{ sleep(1) }
 end
 
-externallibs = [
-  'irb',
-  'rubygems',
-  'active_record',
-  'yaml',
-]
 
 djclassfiles = [
   "applicationmodel",
@@ -38,10 +35,8 @@ end
 #so we can see what it is and print the error
 curlib = nil
 begin
-  externallibs.each do |lib|
-    curlib = lib
-    require lib
-  end
+  curlib = 'irb'
+  require 'irb'
   djclassfiles.each do |lib|
     curlib = lib
     require lib
@@ -162,16 +157,13 @@ Thread.start {
   }
 }
 
-unless ActiveRecord::Base.connected?
-  conf = YAML::load(File.open(conf_file))
-  if conf["database"]
-    ActiveRecord::Base.establish_connection(conf["database"])
-  else
-    puts "NOTE:"
-    puts "No database entry in config file, cannot establish database connection."
-  end
-end
+Datajockey::setConfFile(File.join(ENV["HOME"], ".datajockey", "config.yaml"))
 
+begin
+  Datajockey::connect
+rescue
+  puts $!
+end
 #include Datajockey
 
 #set the binding

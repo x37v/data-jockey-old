@@ -1,6 +1,7 @@
 require 'yaml'
 require 'rubygems'
 require 'active_record'
+
 [
   "database/album_artist", 
   "database/album_audio_work", 
@@ -36,6 +37,15 @@ module Datajockey
       @@conf = YAML::load(File.open(@@conf_file))
     end
     return @@conf
+  end
+  def Datajockey::connect
+    unless ActiveRecord::Base.connected?
+      if Datajockey::config["database"]
+        ActiveRecord::Base.establish_connection(Datajockey::config["database"])
+      else
+        raise "No database entry in config file, cannot establish database connection."
+      end
+    end
   end
 end
 
