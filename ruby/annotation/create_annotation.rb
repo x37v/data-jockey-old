@@ -1,7 +1,11 @@
 #!/usr/bin/env ruby
+
+#
+#how to run: ruby -I ruby/ ./ruby/annotation/create_annotation.rb /tmp/test.mp3
+#
+
 require 'yaml'
-#this is in the same directory..
-require File.join(File.expand_path(File.dirname(__FILE__)), 'beatlocations')
+require 'annotation/beatlocations'
 
 module Datajockey
   module Annotation
