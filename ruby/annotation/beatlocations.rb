@@ -3,9 +3,9 @@ require 'tempfile'
 require 'fileutils'
 
 module Datajockey
-  module Analysis
+  module Annotation
     @@beatroot_jarfile_loc = nil
-    def Analysis::getBeatLocations(audioFile)
+    def Annotation::getBeatLocations(audioFile)
       unless @@beatroot_jarfile_loc
         #find beatroot jar file!
         if File.exists?("lib/beatroot-0.5.3.jar")
@@ -36,7 +36,7 @@ module Datajockey
       return a.readlines.collect{|l| l.to_f}
     end
 
-    def Analysis::smoothNumArray(a, numloops = 1)
+    def Annotation::smoothNumArray(a, numloops = 1)
       res = Array.new(a)
       numloops.times do
         for i in 1..(res.length - 2) do
@@ -54,4 +54,4 @@ module Datajockey
   end
 end
 
-#puts Datajockey::Analysis::smoothNumArray(Datajockey::Analysis::getBeatLocations("/tmp/test.mp3"), 10).join("\n")
+#puts Datajockey::Annotation::smoothNumArray(Datajockey::Annotation::getBeatLocations("/tmp/test.mp3"), 10).join("\n")
