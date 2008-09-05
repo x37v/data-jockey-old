@@ -17,17 +17,21 @@ class TagFile::File
       return true
     end
   end
+  def store_attribute_in_hash(hash, attr_name, newname = nil)
+    name = attr_name
+    if newname
+      name = newname
+    end
+    if has_attribute(attr_name)
+      hash[name] = self.send(attr_name)
+    else
+      return false
+    end
+  end
 end
 
 module Datajockey
   module Annotation
-    def Annotation::set_tag_data(tag_data,attribute,tag)
-      if !tag.send(attribute) or tag.send(attribute) =~ /^\s*$/
-        return false
-      else
-        tag_data[attribute] = tag.send(attribute)
-      end
-    end
     def Annotation::createAnnotation(audioFile)
       annotation = Hash.new
       smoothing = 1
@@ -43,26 +47,33 @@ module Datajockey
 
       cur = Hash.new
       cur["timepoints"] = beats = getBeatLocations(audioFile)
-      cur["mtime"] = cur["ctime"] = DateTime.now
+      cur["mtime"] = cur["ctime"] = Time.now
       cur["source"] = "Datajockey::Annotation::getBeatLocations(#{audioFile})"
       annotation["beat locations"] << cur
 
       cur = Hash.new
       cur["timepoints"] = smoothNumArray(beats, smoothing)
       cur["mtime"] = cur["ctime"] = DateTime.now
-      cur["source"] = "Datajockey::Annotation::smoothNumArray(Datajockey::Annotation::getBeatLocations(#{audioFile}), #{smoothing})"
+      cur["source"] = 
+      "Datajockey::Annotation::smoothNumArray(Datajockey::Annotation::getBeatLocations(#{audioFile}), #{smoothing})"
       annotation["beat locations"] << cur
-      annotation["tags"] = Hash.new
+
+      #get id3tag data from file if it exists
       begin
         tag = TagFile::File.new(audioFile)
-        set_tag_data(annotation,"title",tag)
-        set_tag_data(annotation,"artist",tag)
-        set_tag_data(annotation["tags"],"genre",tag)
-        set_tag_data(annotation,"year",tag)
+        tag.store_attribute_in_hash(annotation,"title")
+        tag.store_attribute_in_hash(annotation,"artist")
+        tag.store_attribute_in_hash(annotation,"year")
+
+        #genre is a tag
+        annotation["tags"] = Hash.new
+        tag.store_attribute_in_hash(annotation["tags"],"genre")
+
+        #album
         if tag.has_attribute("album")
           annotation["album"] = album = Hash.new
           album["name"] = tag.album
-          set_tag_data(album,"track",tag)
+          tag.store_attribute_in_hash(album,"track")
         end
       rescue TagFile::BadFile
       end
