@@ -33,9 +33,25 @@ module Datajockey
       ensure
         FileUtils.rm(tempwav)
       end
-      a.readlines.collect{|l| l.to_f}
+      return a.readlines.collect{|l| l.to_f}
     end
+
+    def Analysis::smoothNumArray(a, numloops = 1)
+      res = Array.new(a)
+      numloops.times do
+        for i in 1..(res.length - 2) do
+          #find the mid point
+          mid = (res[i + 1] - res[i - 1]) / 2.0 + res[i - 1]
+          #find the difference of the mid point and the actual point
+          dif = mid - res[i]
+          #add 1/2 of the difference to the actual point
+          res[i] += (dif / 2.0)
+        end
+      end
+      return res
+    end
+
   end
 end
 
-#puts Datajockey::Analysis::getBeatLocations("/tmp/test.mp3").join("\n")
+#puts Datajockey::Analysis::smoothNumArray(Datajockey::Analysis::getBeatLocations("/tmp/test.mp3"), 10).join("\n")
