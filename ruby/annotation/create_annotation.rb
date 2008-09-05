@@ -31,6 +31,27 @@ class TagFile::File
   end
 end
 
+class Array
+  def median
+    a = self.sort
+    #if the lenght is odd take the middle one
+    mid = a.length / 2
+    if a.size % 2 == 1
+      return a[mid]
+    else
+      return (a[mid - 1] + a[mid]).to_f / 2
+    end
+  end
+
+  def mean
+    sum = 0
+    self.each do |i|
+      sum = sum + i
+    end
+    return sum.to_f / self.length
+  end
+end
+
 module Datajockey
   module Annotation
     def Annotation::createAnnotation(audioFile)
@@ -49,11 +70,21 @@ module Datajockey
       annotation["beat locations"] << cur
 
       cur = Hash.new
-      cur["timepoints"] = smoothNumArray(beats, smoothing)
+      cur["timepoints"] = beats = smoothNumArray(beats, smoothing)
       cur["mtime"] = cur["ctime"] = DateTime.now
       cur["source"] = 
       "Datajockey::Annotation::smoothNumArray(Datajockey::Annotation::getBeatLocations(#{audioFile}), #{smoothing})"
       annotation["beat locations"] << cur
+
+      if beats.length > 4
+        annotation["descriptors"] = Hash.new
+        distances = Array.new
+        (1..beats.length - 1).each do |i|
+          distances << (beats[i].to_f - beats[i - 1].to_f)
+        end
+        annotation["descriptors"]["tempo median"] = 60.0 / distances.median
+        annotation["descriptors"]["tempo average"] = 60.0 / distances.mean
+      end
 
       #get id3tag data from file if it exists
       begin
