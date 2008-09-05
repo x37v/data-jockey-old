@@ -26,21 +26,6 @@ djclassfiles = [
   "mixerchannelmodel",
   "mixerpannelmodel",
   "workfilter",
-  "database/album_artist", 
-  "database/album_audio_work", 
-  "database/album", 
-  "database/annotation_file", 
-  "database/artist_audio_work", 
-  "database/artist", 
-  "database/artist_role", 
-  "database/audio_file", 
-  "database/audio_file_type", 
-  "database/audio_work", 
-  "database/audio_work_tag", 
-  "database/descriptor", 
-  "database/descriptor_type", 
-  "database/tag_class", 
-  "database/tag", 
 ]
 
 #before we install the files are in "ruby"

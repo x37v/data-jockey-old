@@ -4,6 +4,7 @@
 #how to run: ruby -I ruby/ ./ruby/annotation/create_annotation.rb /tmp/test.mp3
 #
 
+require 'base'
 require 'rubygems'
 require 'rtaglib'
 require 'yaml'
@@ -35,12 +36,8 @@ module Datajockey
     def Annotation::createAnnotation(audioFile)
       annotation = Hash.new
       smoothing = 1
-      conf_file = File.join(ENV["HOME"], ".datajockey", "config.yaml")
-      if File.exists?(conf_file)
-        config = YAML::load(File.open(conf_file))
-        if(config["annotation"]["beat locations"]["smoothing"])
-          smoothing = config["annotation"]["beat locations"]["smoothing"]
-        end
+      if(Datajockey::config["annotation"]["beat locations"]["smoothing"])
+        smoothing = Datajockey::config["annotation"]["beat locations"]["smoothing"]
       end
 
       annotation["beat locations"] = Array.new
@@ -64,6 +61,8 @@ module Datajockey
         tag.store_attribute_in_hash(annotation,"title")
         tag.store_attribute_in_hash(annotation,"artist")
         tag.store_attribute_in_hash(annotation,"year")
+        annotation["channels"] = tag.channels.to_i if tag.has_attribute("channels")
+        annotation["seconds"] = tag.length.to_i if tag.has_attribute("length")
 
         #genre is a tag
         annotation["tags"] = Hash.new
@@ -73,7 +72,7 @@ module Datajockey
         if tag.has_attribute("album")
           annotation["album"] = album = Hash.new
           album["name"] = tag.album
-          tag.store_attribute_in_hash(album,"track")
+          album["track"] = tag.track.to_i if tag.has_attribute("track")
         end
       rescue TagFile::BadFile
       end
@@ -84,6 +83,7 @@ module Datajockey
 end
 
 if __FILE__ == $0
+  Datajockey::setConfFile(File.join(ENV["HOME"], ".datajockey", "config.yaml"))
   puts Datajockey::Annotation::createAnnotation(ARGV[0]).to_yaml
 end
 
