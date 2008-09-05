@@ -1,3 +1,5 @@
+#XXX should test for other locations
+conf_file = File.join(ENV["HOME"], ".datajockey", "config.yaml")
 
 #eventually it would be nice to test to see if we're in the graphical application
 
@@ -14,7 +16,8 @@ end
 externallibs = [
   'irb',
   'rubygems',
-  'active_record'
+  'active_record',
+  'yaml',
 ]
 
 djclassfiles = [
@@ -173,6 +176,16 @@ Thread.start {
     Datajockey::InterpreterIOProxy.processEvents
   }
 }
+
+unless ActiveRecord::Base.connected?
+  conf = YAML::load(File.open(conf_file))
+  if conf["database"]
+    ActiveRecord::Base.establish_connection(conf["database"])
+  else
+    puts "NOTE:"
+    puts "No database entry in config file, cannot establish database connection."
+  end
+end
 
 #include Datajockey
 

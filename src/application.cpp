@@ -128,13 +128,26 @@ void OscThread::run(){
 }
 
 #include "ruby.h"
+
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
 //extern "C" void Init_datajockey();
 
 void RubyInterpreterThread::run(){
+	struct stat buf;
 	ruby_init();
 	ruby_init_loadpath();
-	//Init_datajockey();
-	rb_load_file("ruby/interpreter.rb");
-	ruby_run();
+
+	//if we are running from the build dir then just run the file from there
+	if(!stat("ruby/interpreter.rb", &buf) && S_ISREG(buf.st_mode))
+		rb_eval_string("load 'ruby/interpreter.rb'");
+	else {
+		rb_eval_string(
+				"begin; require 'datajockey/interpreter'\n"
+				"rescue LoadError; puts 'cannot load interpreter'\n"
+				"end");
+	}
 }
 
