@@ -1,4 +1,3 @@
-require 'irb'
 
 begin
   require 'datajockey'
@@ -7,9 +6,63 @@ rescue LoadError
   STDERR.puts "cannot load DataJockey library for Ruby, make sure you have it installed"
   STDERR.puts "ruby intepreter will not execute properly"
   STDERR.puts "*******************************************\n\n"
-  while true do
-    sleep(1)
+  loop{ sleep(1) }
+end
+
+externallibs = [
+  'irb',
+  'rubygems',
+  'active_record'
+]
+
+djclassfiles = [
+  "applicationmodel",
+  "interpreter",
+  "mixerchannelmodel",
+  "mixerpannelmodel",
+  "workfilter",
+  "database/album_artist", 
+  "database/album_audio_work", 
+  "database/album", 
+  "database/annotation_file", 
+  "database/artist_audio_work", 
+  "database/artist", 
+  "database/artist_role", 
+  "database/audio_file", 
+  "database/audio_file_type", 
+  "database/audio_work", 
+  "database/audio_work_tag", 
+  "database/connect", 
+  "database/descriptor", 
+  "database/descriptor_type", 
+  "database/tag_class", 
+  "database/tag", 
+]
+
+#before we install the files are in "ruby"
+if File.directory?("ruby") and File.exists?("ruby/applicationmodel.rb")
+  djclassfiles = djclassfiles.collect {|f| File.join("ruby", f)}
+else
+  djclassfiles = djclassfiles.collect {|f| File.join("datajockey", f)}
+end
+
+#so we can see what it is and print the error
+curlib = nil
+begin
+  externallibs.each do |lib|
+    curlib = lib
+    require lib
   end
+  djclassfiles.each do |lib|
+    curlib = lib
+    require lib
+  end
+rescue LoadError
+  STDERR.puts "\n\n*******************************************"
+  STDERR.puts "cannot load ruby library \"#{curlib}\" which datajockey requires"
+  STDERR.puts "ruby intepreter will not execute properly"
+  STDERR.puts "*******************************************\n\n"
+  loop{ sleep(1) }
 end
 
 # mercilessly borrowed from: http://errtheblog.com/posts/9-drop-to-irb
@@ -27,19 +80,6 @@ end
 # => [:baz, :bar, :foo]
 # >> continue
 # bye
-
-#before we install the files are in "ruby"
-if File.directory?("ruby") and File.exists?("ruby/applicationmodel.rb")
-  require 'ruby/applicationmodel'
-  require 'ruby/mixerchannelmodel'
-  require 'ruby/mixerpannelmodel'
-  require 'ruby/workfilter'
-else
-  require 'datajockey/applicationmodel'
-  require 'datajockey/mixerchannelmodel'
-  require 'datajockey/mixerpannelmodel'
-  require 'datajockey/workfilter'
-end
 
 class RedirectOutput < IO
     def initialize
@@ -114,30 +154,10 @@ end
 
 module IRBHelper
   def meths(o); puts (o.methods.sort - Class.new.methods).join("\n"); end
-  def quit!; irb_exit; ::Process.exit!; end
+  #def quit!; irb_exit; ::Process.exit!; end
   #def instance; IRB.instance; end
   #def continue; irb_exit; end
 end
-
-def dROP! object = nil
-  binding = case object
-  when Binding
-    object
-  when NilClass
-    Kernel.binding()
-  else
-    object.send(:binding)
-  end
-
-	if defined? IRBHelper
-		puts "Helper Methods: #{(Class.new.instance_eval {include IRBHelper;self}.new.methods.sort - Class.new.methods).join(', ')}"
-		puts "Variables: #{local_variables.map{|v| "#{v} # => #{eval(v).inspect}"}.join(', ')}"
-		include IRBHelper
-	end
-	
-	IRB.start_session binding
-end
-
 
 if defined? IRBHelper
   puts "Helper Methods: #{(Class.new.instance_eval {include IRBHelper;self}.new.methods.sort - Class.new.methods).join(', ')}"
@@ -153,14 +173,15 @@ Thread.start {
   }
 }
 
-dj_model = Datajockey::ApplicationModel.instance
-require 'datajockey_base'
-
 #include Datajockey
-IRB.set_binding(dj_model)
-while true
+
+#set the binding
+IRB.set_binding(Datajockey::ApplicationModel.instance)
+
+#evaluate the input [run the interp]
+loop {
   catch(:IRB_EXIT) do
     IRB.instance.eval_input
   end
-end
+}
 
