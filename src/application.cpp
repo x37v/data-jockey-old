@@ -141,8 +141,10 @@ void RubyInterpreterThread::run(){
 	ruby_init_loadpath();
 
 	//if we are running from the build dir then just run the file from there
-	if(!stat("ruby/interpreter.rb", &buf) && S_ISREG(buf.st_mode))
-		rb_eval_string("load 'ruby/interpreter.rb'");
+	if(!stat("ruby/datajockey/interpreter.rb", &buf) && S_ISREG(buf.st_mode))
+		rb_eval_string(
+				"$: << 'ruby'"
+				"load 'ruby/datajockey/interpreter.rb'");
 	else {
 		rb_eval_string(
 				"begin; require 'datajockey/interpreter'\n"

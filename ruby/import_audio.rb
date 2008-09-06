@@ -1,10 +1,10 @@
 #!/usr/bin/env ruby
 
-require 'base'
+require 'datajockey/base'
 require 'rubygems'
 require 'active_record'
 require 'yaml'
-require 'annotation/create_annotation'
+require 'datajockey/annotation/create_annotation'
 
 module Datajockey
   def Datajockey::importAudioFile(audioFile, title = nil, artist_name = nil, album_name = nil, album_track = nil)

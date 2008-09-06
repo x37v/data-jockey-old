@@ -1,14 +1,14 @@
 #!/usr/bin/env ruby
 
 #
-#how to run: ruby -I ruby/ ./ruby/annotation/create_annotation.rb /tmp/test.mp3
+#how to run: ruby -Iruby/ ./ruby/annotation/create_annotation.rb /tmp/test.mp3
 #
 
-require 'base'
+require 'datajockey/base'
+require 'datajockey/annotation/beatlocations'
 require 'rubygems'
 require 'rtaglib'
 require 'yaml'
-require 'annotation/beatlocations'
 
 class TagFile::File
   def has_attribute(name)

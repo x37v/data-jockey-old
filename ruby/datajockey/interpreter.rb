@@ -2,12 +2,7 @@
 
 begin
   require 'datajockey'
-  if File.directory?("ruby") and File.exists?("ruby/base.rb")
-    $:.push("ruby")
-    require 'base'
-  else
-    require 'datajockey/base'
-  end
+  require 'datajockey/base'
 rescue LoadError 
   STDERR.puts "\n\n*******************************************"
   STDERR.puts "cannot load DataJockey library for Ruby, make sure you have it installed"

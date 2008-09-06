@@ -3,21 +3,21 @@ require 'rubygems'
 require 'active_record'
 
 [
-  "database/album_artist", 
-  "database/album_audio_work", 
-  "database/album", 
-  "database/annotation_file", 
-  "database/artist_audio_work", 
-  "database/artist", 
-  "database/artist_role", 
-  "database/audio_file", 
-  "database/audio_file_type", 
-  "database/audio_work", 
-  "database/audio_work_tag", 
-  "database/descriptor", 
-  "database/descriptor_type", 
-  "database/tag_class", 
-  "database/tag", 
+  "datajockey/database/album_artist", 
+  "datajockey/database/album_audio_work", 
+  "datajockey/database/album", 
+  "datajockey/database/annotation_file", 
+  "datajockey/database/artist_audio_work", 
+  "datajockey/database/artist", 
+  "datajockey/database/artist_role", 
+  "datajockey/database/audio_file", 
+  "datajockey/database/audio_file_type", 
+  "datajockey/database/audio_work", 
+  "datajockey/database/audio_work_tag", 
+  "datajockey/database/descriptor", 
+  "datajockey/database/descriptor_type", 
+  "datajockey/database/tag_class", 
+  "datajockey/database/tag", 
 ].each do |m|
   require m
 end
