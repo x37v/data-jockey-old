@@ -31,7 +31,7 @@ swigutilstarget.commands = cd utils-swig/ && ruby extconf.rb && make
 swigutilstarget.depends = utils-swig/*.i
 
 install_ruby_files.target = install_ruby_files
-install_ruby_files.commands = rsync -vr --cvs-exclude ruby/datajockey/ $$RUBYLIBDEST
+install_ruby_files.commands = rsync -r --cvs-exclude ruby/datajockey/ $$RUBYLIBDEST
 
 install_ruby.target = install_ruby
 install_ruby.depends = $$swigutilstarget.target $$swigtarget.target install_ruby_files
