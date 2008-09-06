@@ -2,7 +2,7 @@
 
 #edit this for your system!
 PREFIX = /usr/local/
-
+RUBYLIBDEST = $$system("ruby -e 'require \"rbconfig\"; puts File.join(Config::CONFIG[\"sitelibdir\"].chomp, \"datajockey/\")'")
 
 TEMPLATE = app
 TARGET = datajockey
@@ -30,8 +30,11 @@ swigutilstarget.target = utils-swig/datajockey_utils.so
 swigutilstarget.commands = cd utils-swig/ && ruby extconf.rb && make
 swigutilstarget.depends = utils-swig/*.i
 
+install_ruby_files.target = install_ruby_files
+install_ruby_files.commands = rsync -vr --cvs-exclude ruby/datajockey/ $$RUBYLIBDEST
+
 install_ruby.target = install_ruby
-install_ruby.depends = $$swigutilstarget.target $$swigtarget.target
+install_ruby.depends = $$swigutilstarget.target $$swigtarget.target install_ruby_files
 install_ruby.commands = cd utils-swig/ && make install && cd ../swig/ && make install
 
 install_all.target = install_all
@@ -39,6 +42,7 @@ install_all.depends = $$install_ruby install
 
 QMAKE_EXTRA_TARGETS += swigtarget 
 QMAKE_EXTRA_TARGETS += swigutilstarget 
+QMAKE_EXTRA_TARGETS += install_ruby_files 
 QMAKE_EXTRA_TARGETS += install_ruby 
 QMAKE_EXTRA_TARGETS += install_all 
 
