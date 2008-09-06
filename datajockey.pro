@@ -4,6 +4,9 @@
 PREFIX = /usr/local/
 RUBYLIBDEST = $$system("ruby -e 'require \"rbconfig\"; puts File.join(Config::CONFIG[\"sitelibdir\"].chomp, \"datajockey/\")'")
 
+#change to release if you want to be optimized
+CONFIG += qt debug
+
 TEMPLATE = app
 TARGET = datajockey
 DEPENDPATH += .
@@ -49,7 +52,6 @@ QMAKE_EXTRA_TARGETS += install_all
 POST_TARGETDEPS += $$swigtarget.target
 POST_TARGETDEPS += $$swigutilstarget.target
 
-CONFIG += debug qt
 
 # Input
 HEADERS +=  include/application.hpp \

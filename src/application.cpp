@@ -143,7 +143,7 @@ void RubyInterpreterThread::run(){
 	//if we are running from the build dir then just run the file from there
 	if(!stat("ruby/datajockey/interpreter.rb", &buf) && S_ISREG(buf.st_mode))
 		rb_eval_string(
-				"$: << 'ruby'"
+				"$: << 'ruby'\n"
 				"load 'ruby/datajockey/interpreter.rb'");
 	else {
 		rb_eval_string(
