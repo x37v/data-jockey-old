@@ -130,10 +130,36 @@ void BeatBuffer::load(std::string beatDataLocation)
 		if(it == beatLocs->end())
 			throw std::runtime_error("cannot find beat locations");
 
-		//if it is a sequence just grab the first one for now
+		//if it is a sequence use the newest one for now!
 		if(yaml::is<yaml::seq_ptr>(it->second)){
-			beatLocs = yaml::get<yaml::map_ptr>(
-					yaml::get<yaml::seq_ptr>(it->second)->at(0));
+			yaml::seq_ptr beatLocSeq = yaml::get<yaml::seq_ptr>(it->second);
+
+			//store the first
+			beatLocs = yaml::get<yaml::map_ptr>( beatLocSeq->at(0));
+
+			try {
+				//do we have to check the first element?
+				for(yaml::seq::iterator seq_it = beatLocSeq->begin();
+						seq_it != beatLocSeq->end(); seq_it++){
+					//grab the map
+					yaml::map_ptr curBeats = yaml::get<yaml::map_ptr>(*seq_it);
+					yaml::map::iterator mtime0 = beatLocs->find(std::string("mtime"));
+					yaml::map::iterator mtime1 = curBeats->find(std::string("mtime"));;
+					//make sure these are valid
+					if(mtime0 != beatLocs->end() && mtime1 != curBeats->end()){
+						//grab the times
+						DateTimePtr t0 = yaml::get<DateTimePtr>(mtime0->second);
+						DateTimePtr t1 = yaml::get<DateTimePtr>(mtime1->second);
+						//if the beatlocs we're using was modified before the current beat locs, 
+						//use the current beat locs
+						if(*t0 < *t1)
+							beatLocs = curBeats;
+					}
+				}
+			} catch (...){
+				//do nothing we've still got the first one set
+			}
+
 		} else 
 			beatLocs = yaml::get<yaml::map_ptr>(it->second);
 
