@@ -5,6 +5,7 @@ require 'rubygems'
 require 'active_record'
 require 'yaml'
 require 'datajockey/annotation/create_annotation'
+require 'fileutils'
 
 module Datajockey
   def Datajockey::importAudioFile(audioFile, title = nil, artist_name = nil, album_name = nil, album_track = nil)
@@ -22,9 +23,17 @@ module Datajockey
     unless Datajockey::config["annotation"]["files"]
       raise 'Datajockey::config["annotation"]["files"] is not set'
     end
-    unless File.directory?(Datajockey::config["annotation"]["files"]) and
-      File.writable?(Datajockey::config["annotation"]["files"])
-      raise 'Datajockey::config["annotation"]["files"] is not a valid, writable directory'
+    annotation_files = File.expand_path(Datajockey::config["annotation"]["files"])
+    unless File.directory?(annotation_files) and
+      File.writable?(annotation_files)
+      puts "Datajockey::config[\"annotation\"][\"files\"] : #{annotation_files} is not a valid, writable directory"
+      puts "Create the directory? (y/n)"
+      if STDIN.gets() !~ /^y/
+        puts "aborting"
+        exit
+      else
+        FileUtils.mkdir_p(annotation_files)
+      end
     end
 
     #make sure we haven't already imported this
@@ -90,7 +99,7 @@ module Datajockey
       #create the annotation file info
       #write the annotation file
       annotation_file = AnnotationFile.find_or_create_by_audio_work_id(work.id)
-      location = File.join(Datajockey::config["annotation"]["files"], work.id.to_s + ".yaml")
+      location = File.join(File.expand_path(Datajockey::config["annotation"]["files"]), work.id.to_s + ".yaml")
       annotation_file.update_attribute(:location, location)
       File.open(location, "w") { |f| f.print annotation.to_yaml }
     end
@@ -98,7 +107,8 @@ module Datajockey
 end
 
 if __FILE__ == $0
-  Datajockey::setConfFile(File.join(ENV["HOME"], ".datajockey", "config.yaml"))
+  #Datajockey::setConfFile(File.join(ENV["HOME"], ".datajockey", "config.yaml"))
+  Datajockey::setConfFile("../config.yaml")
   badFiles = []
   ARGV.each do |f|
     begin

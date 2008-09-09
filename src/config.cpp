@@ -82,6 +82,8 @@ std::string Configuration::databaseAdapter() throw(std::runtime_error){
 		throw std::runtime_error("could not find database adapter");
 	else if (adapter == "mysql")
 		return std::string("QMYSQL");
+	else if (adapter == "sqlite")
+		return std::string("QSQLITE");
 	else
 		throw std::runtime_error("invalid database adapter");
 }

@@ -4,7 +4,9 @@ database:
   adapter: mysql
   database: datajockey
   username: alex
+#this can be blank if you didn't give the user a password: 'identified by'
   password:
+#this is standard, you probably won't have to mess with it for now
   host: 127.0.0.1
   port: 3306
 annotation:
