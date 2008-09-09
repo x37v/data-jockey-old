@@ -34,18 +34,29 @@ using std::endl;
 
 #include "oscreceiver.hpp"
 
+#include "config.hpp"
+
 //for now we'll just have a gui app
 int DataJockeyApplication::run(int argc, char *argv[]){
 
 	QApplication app(argc, argv);
 	app.setStyle(new QCleanlooksStyle);
 
+	datajockey::Configuration * config = datajockey::Configuration::instance();
+	config->loadFile("config.yaml");
+
 	try {
 		ApplicationModel::setNumberOfMixers(NUM_MIXERS);
-		ApplicationModel::setDataBase("QMYSQL", "dj_development");
+		ApplicationModel::setDataBase(
+				config->databaseAdapter(),
+				config->databaseName(),
+				config->databaseUserName(),
+				config->databasePassword()
+				);
 	} catch (std::exception& e) {
 		QString text(app.tr(e.what()));
-		text.append("\nClick Cancel to exit.");
+		text.append("\nMake sure the entries are correct in your config file"
+			"\nClick Cancel to exit.");
 		QMessageBox::critical(0, app.tr("Cannot open database"), text , QMessageBox::Cancel);
 		return false;
 	}
@@ -128,12 +139,9 @@ void OscThread::run(){
 }
 
 #include "ruby.h"
-
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
-
-//extern "C" void Init_datajockey();
 
 void RubyInterpreterThread::run(){
 	struct stat buf;

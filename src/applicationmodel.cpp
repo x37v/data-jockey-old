@@ -20,13 +20,17 @@ void ApplicationModel::setNumberOfMixers(unsigned int num){ if(num == 0)
 		cNumMixers = num;
 }
 
-void ApplicationModel::setDataBase(QString type, 
-		QString name, 
-		QString password, 
+void ApplicationModel::setDataBase(std::string type, 
+		std::string name, 
+		std::string username,
+		std::string password, 
 		int port, 
-		QString host){
-	cDB = QSqlDatabase::addDatabase(type);
-	cDB.setDatabaseName(name);
+		std::string host){
+	cDB = QSqlDatabase::addDatabase(type.c_str());
+	cDB.setDatabaseName(name.c_str());
+	if(username != "")
+		cDB.setUserName(username.c_str());
+	cDB.setPassword(password.c_str());
 	if(!cDB.open())
 		throw std::runtime_error("cannot open database");
 }

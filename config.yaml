@@ -1,0 +1,13 @@
+#this is the information for your database
+#your user must be able to create tables, and modify them
+database:
+  adapter: mysql
+  database: datajockey
+  username: alex
+  password:
+  host: 127.0.0.1
+  port: 3306
+annotation:
+  files: ~/.datajockey/annotation/
+  beat locations:
+    smoothing: 10

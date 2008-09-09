@@ -17,11 +17,12 @@ class ApplicationModel : public QObject {
 	Q_OBJECT
 	public:
 		static void setNumberOfMixers(unsigned int num);
-		static void setDataBase(QString type, 
-				QString name, 
-				QString password = "", 
+		static void setDataBase(std::string type, 
+				std::string name, 
+				std::string username = "",
+				std::string password = "", 
 				int port = -1, 
-				QString host = QString("localhost"));
+				std::string host = std::string("localhost"));
 		static ApplicationModel * instance();
 
 		QSqlDatabase db() const;

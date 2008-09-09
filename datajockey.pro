@@ -62,6 +62,7 @@ HEADERS +=  include/application.hpp \
 				include/buffer.hpp \
 				include/bufferplayer.hpp \
 				include/command.hpp \
+				include/config.hpp \
 				include/crossfademodel.hpp \
 				include/crossfadeview.hpp \
 				include/defaultworkfilters.hpp \
@@ -110,6 +111,7 @@ SOURCES +=  src/application.cpp \
 				src/buffer.cpp \
 				src/bufferplayer.cpp \
 				src/command.cpp \
+				src/config.cpp \
 				src/crossfademodel.cpp \
 				src/crossfadeview.cpp \
 				src/defaultworkfilters.cpp \
