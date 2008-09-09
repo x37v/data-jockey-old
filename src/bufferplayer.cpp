@@ -44,7 +44,8 @@ BufferPlayer::BufferPlayer(unsigned int sampleRate, TempoDriver * defaultSync, S
 	mPlaying = true;
 
 	//slv2
-	mEqPlugin = slv2_plugins_get_by_uri(slv2plugins, DJ_EQ_URI);
+	SLV2Value plugin_uri = slv2_value_new_uri(slv2world, DJ_EQ_URI);
+	mEqPlugin = slv2_plugins_get_by_uri(slv2plugins, plugin_uri);
 	if(!mEqPlugin){
 		cerr << "could not load eq lv2 plugin, do you have dj eq installed?:" << endl;
 		cerr << "\t\t" << DJ_EQ_URI << endl;
