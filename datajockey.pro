@@ -33,6 +33,9 @@ swigutilstarget.target = utils-swig/datajockey_utils.so
 swigutilstarget.commands = cd utils-swig/ && ruby extconf.rb && make
 swigutilstarget.depends = utils-swig/*.i
 
+buildswig.target = swig
+buildswig.depends = $$swigtarget.target $$swigutilstarget.target
+
 install_ruby_files.target = install_ruby_files
 install_ruby_files.commands = rsync -r --cvs-exclude ruby/datajockey/ $$RUBYLIBDEST
 
@@ -45,13 +48,12 @@ install_all.depends = $$install_ruby install
 
 QMAKE_EXTRA_TARGETS += swigtarget 
 QMAKE_EXTRA_TARGETS += swigutilstarget 
+QMAKE_EXTRA_TARGETS += buildswig 
 QMAKE_EXTRA_TARGETS += install_ruby_files 
 QMAKE_EXTRA_TARGETS += install_ruby 
 QMAKE_EXTRA_TARGETS += install_all 
 
-POST_TARGETDEPS += $$swigtarget.target
-POST_TARGETDEPS += $$swigutilstarget.target
-
+POST_TARGETDEPS += $$buildswig.target
 
 # Input
 HEADERS +=  include/application.hpp \

@@ -149,11 +149,15 @@ void RubyInterpreterThread::run(){
 	ruby_init_loadpath();
 
 	//if we are running from the build dir then just run the file from there
-	if(!stat("ruby/datajockey/interpreter.rb", &buf) && S_ISREG(buf.st_mode))
+	if(!stat("ruby/datajockey/interpreter.rb", &buf) && S_ISREG(buf.st_mode)){
+		if(!stat("swig/", &buf) && S_ISDIR(buf.st_mode))
+			rb_eval_string("$: << 'swig'\n");
+		if(!stat("utils-swig/", &buf) && S_ISDIR(buf.st_mode))
+			rb_eval_string("$: << 'utils-swig'\n");
 		rb_eval_string(
 				"$: << 'ruby'\n"
 				"load 'ruby/datajockey/interpreter.rb'");
-	else {
+	} else {
 		rb_eval_string(
 				"begin; require 'datajockey/interpreter'\n"
 				"rescue LoadError; puts 'cannot load interpreter'\n"
