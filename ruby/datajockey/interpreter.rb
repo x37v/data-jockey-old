@@ -152,7 +152,19 @@ Thread.start {
   }
 }
 
-Datajockey::setConfFile(File.join(ENV["HOME"], ".datajockey", "config.yaml"))
+if File.exists?("config.yaml")
+  Datajockey::setConfFile("config.yaml")
+elsif File.exists?("../config.yaml")
+  Datajockey::setConfFile("../config.yaml")
+elsif File.exists?(File.expand_path("~/config.yaml"))
+  Datajockey::setConfFile(File.expand_path("~/config.yaml"))
+else
+  STDERR.puts "\n\n*******************************************"
+  STDERR.puts "cannot find datajockey config.yaml file"
+  STDERR.puts "you will not be able to interact with the DB in the interpreter"
+  STDERR.puts "*******************************************\n\n"
+  loop{ sleep(1) }
+end
 
 begin
   Datajockey::connect

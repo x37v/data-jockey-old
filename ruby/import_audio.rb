@@ -1,9 +1,13 @@
 #!/usr/bin/env ruby
 
-require 'datajockey/base'
+$: << "ruby" if File.directory?("ruby")
+$: << "swig" if File.directory?("swig")
+$: << "utils-swig" if File.directory?("utils-swig")
+
 require 'rubygems'
 require 'active_record'
 require 'yaml'
+require 'datajockey/base'
 require 'datajockey/annotation/create_annotation'
 require 'fileutils'
 
@@ -107,8 +111,18 @@ module Datajockey
 end
 
 if __FILE__ == $0
-  #Datajockey::setConfFile(File.join(ENV["HOME"], ".datajockey", "config.yaml"))
+
+if File.exists?("config.yaml")
+  Datajockey::setConfFile("config.yaml")
+elsif File.exists?("../config.yaml")
   Datajockey::setConfFile("../config.yaml")
+elsif File.exists?(File.expand_path("~/config.yaml"))
+  Datajockey::setConfFile(File.expand_path("~/config.yaml"))
+else
+  puts "Cannot find config file, aborting!"
+  exit
+end
+
   badFiles = []
   ARGV.each do |f|
     begin

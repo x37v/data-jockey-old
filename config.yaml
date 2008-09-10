@@ -2,6 +2,7 @@
 #your user must be able to create tables, and modify them
 database:
   adapter: mysql
+#the name of your db (most likely just 'datajockey')
   database: datajockey
   username: alex
 #this can be blank if you didn't give the user a password: 'identified by'
@@ -10,6 +11,9 @@ database:
   host: 127.0.0.1
   port: 3306
 annotation:
+#where you want the datajockey produced annotation files to go
   files: ~/.datajockey/annotation/
   beat locations:
+#how much smoothing you want on the beat location data
+#(10 works well for me..)
     smoothing: 10
