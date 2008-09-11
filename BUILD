@@ -4,7 +4,7 @@ DEPENDENCIES:
 		fink to do something similar on OSX, if you do please provide me with the info!
 		I've also provided the URLS in case you cannot use a package manager.
 	apt (in one line):
-		apt-get install libjack0.100.0-dev libsyck0-dev libsndfile1-dev libvorbis-dev libmad0-dev libboost-regex-dev libboost-dev libqt4-dev libqt4-sql-mysql swig ruby1.8-dev rubygems
+		apt-get install libjack0.100.0-dev libsyck0-dev libsndfile1-dev libvorbis-dev libmad0-dev libboost-regex-dev libboost-dev libqt4-dev libqt4-sql-mysql swig ruby1.8-dev rubygems sun-java6-bin
 
 	broken down:
 		jack:
@@ -36,6 +36,8 @@ DEPENDENCIES:
 			apt-get install ruby1.8-dev rubygems
 			http://www.ruby-lang.org/en/downloads/
 			http://rubyforge.org/projects/rubygems
+		java:
+		 	apt-get install sun-java6-bin
 
 	*from others (not in apt):
 		activerecord rtaglib (ruby):
