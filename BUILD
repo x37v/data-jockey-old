@@ -46,6 +46,9 @@ DEPENDENCIES:
 			http://download.drobilla.net/slv2-0.6.0.tar.gz
 		oscpack:
 			http://www.audiomulch.com/~rossb/code/oscpack/
+		swh lv2 plugins:
+		 	http://plugin.org.uk/lv2/swh-lv2-1.0.15.tar.gz
+		 	http://plugin.org.uk/
 
 	*dependencies from me:
 		yaml_cpp:
