@@ -26,12 +26,12 @@ MOC_DIR = moc
 OBJECTS_DIR = objects
 
 unix:!macx { swigtarget.target = swig/datajockey.so }
-macx { swigtarget.target = swig/datajockey.dynlib }
+macx { swigtarget.target = swig/datajockey.bundle }
 swigtarget.commands = cd swig && ruby extconf.rb && make
 swigtarget.depends = swig/*.i swig/scriptcallbackfilter.cpp
 
 unix:!macx { swigutilstarget.target = utils-swig/datajockey_utils.so }
-macx { swigutilstarget.target = utils-swig/datajockey_utils.dynlib }
+macx { swigutilstarget.target = utils-swig/datajockey_utils.bundle }
 swigutilstarget.commands = cd utils-swig/ && ruby extconf.rb && make
 swigutilstarget.depends = utils-swig/*.i
 
