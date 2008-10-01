@@ -40,7 +40,7 @@ DEPENDENCIES:
 		 	apt-get install sun-java6-bin
 		taglib:
 		 	apt-get install libtag1-dev
-			 http://developer.kde.org/~wheeler/taglib.html
+			http://developer.kde.org/~wheeler/taglib.html
 
 	*from others (not in apt):
 		activerecord rtaglib (ruby):
