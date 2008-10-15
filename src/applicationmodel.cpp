@@ -26,11 +26,17 @@ void ApplicationModel::setDataBase(std::string type,
 		std::string password, 
 		int port, 
 		std::string host){
+
 	cDB = QSqlDatabase::addDatabase(type.c_str());
+
 	cDB.setDatabaseName(name.c_str());
+
 	if(username != "")
 		cDB.setUserName(username.c_str());
-	cDB.setPassword(password.c_str());
+
+	if(password != "")
+		cDB.setPassword(password.c_str());
+
 	if(!cDB.open())
 		throw std::runtime_error("cannot open database");
 }

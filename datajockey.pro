@@ -14,13 +14,27 @@ INCLUDEPATH += include/
 INCLUDEPATH += /usr/local/include/
 INCLUDEPATH += /usr/lib/ruby/1.8/i486-linux/
 INCLUDEPATH += /usr/local/include/oscpack/
+macx {
+	INCLUDEPATH += /opt/local/include/
+	INCLUDEPATH += /opt/local/lib/ruby/1.8/i686-darwin9/
+}
 
 target.path = $$PREFIX/bin
 INSTALLS += target
 
 QT += sql
-LIBS += -ljackcpp `pkg-config --libs jack` -lsndfile -lslv2 -lmad -lvorbisfile -lruby1.8 -loscpack -lboost_regex -lyamlcpp -lsyck
-QMAKE_LFLAGS += -rdynamic
+unix:!macx {
+	LIBS += -ljackcpp -lsndfile -lslv2 -lmad -lvorbisfile -lruby1.8 -loscpack -lboost_regex -lyamlcpp -lsyck $$system("pkg-config --libs jack") 
+}
+macx {
+	LIBS += -ljackcpp -lyamlcpp -lsyck -lsndfile -lslv2 -lmad -lvorbisfile -lruby.1.8 -loscpack -lboost_regex-mt $$system("pkg-config --libs jack") 
+}
+
+unix:!macx { QMAKE_LFLAGS += -rdynamic }
+macx { 
+	QMAKE_LFLAGS += -L/opt/local/lib/ 
+#QMAKE_LFLAGS += -Wl,-dylinker
+}
 
 MOC_DIR = moc
 OBJECTS_DIR = objects

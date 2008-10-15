@@ -3,7 +3,8 @@
 begin
   require 'datajockey'
   require 'datajockey/base'
-rescue LoadError 
+rescue LoadError => e
+	STDERR.puts e
   STDERR.puts "\n\n*******************************************"
   STDERR.puts "cannot load DataJockey library for Ruby, make sure you have it installed"
   STDERR.puts "ruby intepreter will not execute properly"
