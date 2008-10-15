@@ -6,16 +6,18 @@ DEPENDENCIES:
 	apt (in one line):
 		apt-get install libjack0.100.0-dev libsyck0-dev libsndfile1-dev libvorbis-dev libmad0-dev libboost-regex-dev libboost-dev libqt4-dev libqt4-sql-mysql swig ruby1.8-dev rubygems sun-java6-bin libtag1-dev mysql-server librdf0-dev
 	macports (in one line):
-		port install syck jack libmad libvorbis boost swig ruby rb-rubygems taglib redland && 
+
 		port install libsndfile +flac &&
+		port install syck jack libmad libvorbis boost swig ruby rb-rubygems taglib redland && 
 		port install mysql5 +server &&
-		port install qt4-mac +mysql5 +sqlite
+		port install qt4-mac +mysql5 +sqlite &&
+		port install fftw-3-single fftw-3
 		
 		had problems installing sqlite3 [i think swig requires it]
 		i followed the instructions here:
 		http://www.nabble.com/Building-sqlite3-fails-td19454313.html
 		port clean --work sqlite3 
-		then port install swig
+		then port install swig....
 
 	broken down:
 		jack:
@@ -89,9 +91,7 @@ DEPENDENCIES:
 		swh lv2 plugins:
 		 	http://plugin.org.uk/lv2/swh-lv2-1.0.15.tar.gz
 		 	http://plugin.org.uk/
-			requires fftw3
-			port install fftw-3-single fftw-3
-		
+			requires fftw3 [installed via ports above]
 
 	*dependencies from me:
 		yaml_cpp:
