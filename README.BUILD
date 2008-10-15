@@ -71,6 +71,7 @@ DEPENDENCIES:
 		redland rdf (for slv2):
 			apt-get install librdf0-dev
 			port install redland
+		mysql:
 
 	*from others (not in apt or macports):
 		activerecord rtaglib (ruby):
