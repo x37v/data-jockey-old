@@ -4,12 +4,19 @@
 #include <QWidget>
 #include <QSqlDatabase>
 #include <QMessageBox>
+#include <QSplitter>
+#include <QVBoxLayout>
 
 #include <boost/program_options.hpp>
 #include <iostream>
 #include <string>
 
 #include "config.hpp"
+#include "tagmodel.hpp"
+#include "tageditor.hpp"
+#include "workdetailview.hpp"
+#include "worktablemodel.hpp"
+#include "workdbview.hpp"
 
 namespace po = boost::program_options;
 using std::cout;
@@ -102,7 +109,8 @@ int main(int argc, char *argv[]){
 		cout << *it << endl;
 
 	if(runGui){
-		QWidget topWidget;
+		QWidget * topWidget = new QWidget;
+		topWidget->setWindowTitle("Data Jockey Annotator");
 		QErrorMessage::qtHandler();
 		app.setStyle(new QCleanlooksStyle);
 
@@ -116,7 +124,25 @@ int main(int argc, char *argv[]){
 			return 1;
 		}
 
-		topWidget.show();
+		QVBoxLayout * layout = new QVBoxLayout;
+		QSplitter * vertSplit = new QSplitter(Qt::Vertical, topWidget);
+		QSplitter * horiSplit = new QSplitter(Qt::Horizontal, topWidget);
+
+		TagModel * tagModel = new TagModel(db);
+		TagEditor * tagEditor = new TagEditor(tagModel);
+		WorkDetailView * workDetailView = new WorkDetailView(tagModel, db);
+		WorkTableModel * workTableModel = new WorkTableModel(db);
+		WorkDBView * workDBView = new WorkDBView(workTableModel);
+
+		horiSplit->addWidget(workDetailView);
+		horiSplit->addWidget(tagEditor);
+		vertSplit->addWidget(horiSplit);
+		vertSplit->addWidget(workDBView);
+
+		layout->addWidget(vertSplit);
+		topWidget->setLayout(layout);
+		topWidget->show();
+
 		return app.exec();
 	} else {
 		if(!db.open()){

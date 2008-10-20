@@ -28,7 +28,9 @@ HEADERS +=  \
 				../include/tagview.hpp \
 				../include/treeitem.h \
 				../include/treemodel.h \
+				../include/workdbview.hpp \
 				../include/workdetailview.hpp \
+				../include//worktablemodel.hpp \
 				../include/worktagmodelfilter.hpp
 
 SOURCES +=  \
@@ -39,7 +41,9 @@ SOURCES +=  \
 				../src/tagview.cpp \
 				../src/treeitem.cpp \
 				../src/treemodel.cpp \
+				../src/workdbview.cpp \
 				../src/workdetailview.cpp \
+				../src/worktablemodel.cpp \
 				../src/worktagmodelfilter.cpp \
 				../src/annotator.cpp
 
