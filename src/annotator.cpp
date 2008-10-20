@@ -130,14 +130,20 @@ int main(int argc, char *argv[]){
 
 		TagModel * tagModel = new TagModel(db);
 		TagEditor * tagEditor = new TagEditor(tagModel);
-		WorkDetailView * workDetailView = new WorkDetailView(tagModel, db);
 		WorkTableModel * workTableModel = new WorkTableModel(db);
+		WorkDetailView * workDetailView = new WorkDetailView(tagModel, db);
 		WorkDBView * workDBView = new WorkDBView(workTableModel);
 
 		horiSplit->addWidget(workDetailView);
 		horiSplit->addWidget(tagEditor);
 		vertSplit->addWidget(horiSplit);
 		vertSplit->addWidget(workDBView);
+
+		//connect stuff up!
+		QObject::connect(workDBView,
+				SIGNAL(workSelected(int)),
+				workDetailView,
+				SLOT(setWork(int)));
 
 		layout->addWidget(vertSplit);
 		topWidget->setLayout(layout);
