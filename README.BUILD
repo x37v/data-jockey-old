@@ -5,7 +5,7 @@ DEPENDENCIES:
 		I've also provided the URLS in case you cannot use a package manager.
 
 	apt (in one line):
-		apt-get install libjack0.100.0-dev libsyck0-dev libsndfile1-dev libvorbis-dev libmad0-dev libboost-regex-dev libboost-dev libqt4-dev libqt4-sql-mysql swig ruby1.8-dev rubygems sun-java6-bin libtag1-dev mysql-server librdf0-dev
+		apt-get install libjack0.100.0-dev libsyck0-dev libsndfile1-dev libvorbis-dev libmad0-dev libboost-regex-dev libboost-dev libqt4-dev libqt4-sql-mysql swig ruby1.8-dev rubygems sun-java6-bin libtag1-dev mysql-server librdf0-dev libboost-program-options-dev
 
 	macports (in one command):
 		port install libsndfile +flac &&
@@ -42,8 +42,8 @@ DEPENDENCIES:
 			apt-get install libmad0-dev
 			port install libmad
 			http://sourceforge.net/project/showfiles.php?group_id=12349
-		boost (just need the regex part [a library] and the shared/intrusive ptr [header]):
-			apt-get install libboost-regex-dev libboost-dev
+		boost (just need the regex part [a library], program options [a lib] and the shared/intrusive ptr [header]):
+			apt-get install libboost-regex-dev libboost-dev libboost-program-options-dev
 			port install boost
 			http://www.boost.org/users/download/
 		qt4: (qt and qtsql)
