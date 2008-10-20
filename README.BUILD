@@ -3,10 +3,11 @@ DEPENDENCIES:
 		I've given the ubuntu package info when possible.. you might be able to use
 		fink to do something similar on OSX, if you do please provide me with the info!
 		I've also provided the URLS in case you cannot use a package manager.
+
 	apt (in one line):
 		apt-get install libjack0.100.0-dev libsyck0-dev libsndfile1-dev libvorbis-dev libmad0-dev libboost-regex-dev libboost-dev libqt4-dev libqt4-sql-mysql swig ruby1.8-dev rubygems sun-java6-bin libtag1-dev mysql-server librdf0-dev
-	macports (in one line):
 
+	macports (in one command):
 		port install libsndfile +flac &&
 		port install syck jack libmad libvorbis boost swig ruby rb-rubygems taglib redland && 
 		port install mysql5 +server &&
