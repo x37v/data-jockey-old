@@ -87,6 +87,7 @@ WorkTableModel::WorkTableModel(
 	QSqlQueryModel(parent)
 {
 	std::stringstream query;
+	mDB = &db;
 	if(!cInited)
 		init(db);
 	setQuery(cQuery, db);
@@ -109,5 +110,23 @@ QVariant WorkTableModel::data( const QModelIndex & index, int role) const {
 		}
 	}
 	return ret;
+}
+
+int WorkTableModel::findWorkByPath(std::string path){
+	QString queryStr;
+	//construct the query
+	queryStr.append("select audio_works.id from audio_files"
+			" left join audio_works on audio_files.id = audio_works.audio_file_id"
+			" where location = '");
+	queryStr.append(path.c_str());
+	queryStr.append("'");
+
+	//execute the query
+	QSqlQuery query(queryStr, *mDB);
+	query.exec();
+	//if there are results return the index, otherwise return -1
+	if(query.next())
+		return query.value(0).toInt();
+	return -1;
 }
 

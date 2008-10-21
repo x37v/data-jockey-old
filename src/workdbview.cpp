@@ -67,6 +67,22 @@ QPushButton * WorkDBView::removeFilterButton(){
 	return mRemoveFilterButton;
 }
 
+void WorkDBView::selectWork(int work_id){
+	//get the first index
+	int rows = mTableView->model()->rowCount();
+	//iterate to find our work
+	for(int i = 0; i < rows; i++){
+		QModelIndex index = mTableView->model()->index(i,WorkTableModel::idColumn);
+		QVariant data = index.data();
+		if(data.isValid() && data.canConvert(QVariant::Int) && data.toInt() == work_id){
+			mTableView->scrollTo(index, QAbstractItemView::PositionAtCenter);
+			emit(workSelected(work_id));
+			return;
+		}
+	}
+}
+
+/*
 void WorkDBView::selectWork(const QModelIndex & index ){
 	QSqlRecord record = ((QSqlTableModel *)mTableView->model())->record(index.row());
 	QVariant itemData = record.value(WorkTableModel::idColumn);
@@ -76,6 +92,7 @@ void WorkDBView::selectWork(const QModelIndex & index ){
 		emit(workSelected(work));
 	}
 }
+*/
 
 void WorkDBView::setSelection( const QItemSelection & selected){
 	Q_UNUSED(selected);

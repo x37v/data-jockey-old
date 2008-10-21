@@ -25,10 +25,14 @@ class WorkTableModel : public QSqlQueryModel {
 		const static unsigned int albumColumn;
 		const static unsigned int titleColumn;
 		const static unsigned int trackColumn;
+
+		//returns a work id, or -1 on failure
+		int findWorkByPath(std::string path);
 	private:
 		static void init(const QSqlDatabase & db);
 		static bool cInited;
 		static QString cQuery;
+		const QSqlDatabase * mDB;
 };
 
 #endif

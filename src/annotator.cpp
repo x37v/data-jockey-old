@@ -157,6 +157,12 @@ int main(int argc, char *argv[]){
 		topWidget->setLayout(layout);
 		topWidget->show();
 
+		if(!inputFile.empty()){
+			int id = workTableModel->findWorkByPath(inputFile);
+			if(id > 0)
+				workDBView->selectWork(id);
+		}
+
 		return app.exec();
 	} else {
 		if(!db.open()){

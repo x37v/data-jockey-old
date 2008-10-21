@@ -16,8 +16,10 @@ class WorkDBView : public QWidget {
 		QTableView * tableView();
 		QPushButton * applyFilterButton();
 		QPushButton * removeFilterButton();
+	public slots:
+		void selectWork(int work_id);
 	protected slots:
-		void selectWork(const QModelIndex & index);
+		//void selectWork(const QModelIndex & index);
 		void setSelection( const QItemSelection & selected);
 		void setFiltered();
 		void setUnFiltered();
