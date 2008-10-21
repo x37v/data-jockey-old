@@ -75,7 +75,7 @@ void WorkDBView::selectWork(int work_id){
 		QModelIndex index = mTableView->model()->index(i,WorkTableModel::idColumn);
 		QVariant data = index.data();
 		if(data.isValid() && data.canConvert(QVariant::Int) && data.toInt() == work_id){
-			mTableView->scrollTo(index, QAbstractItemView::PositionAtCenter);
+			mTableView->selectRow(index.row());
 			emit(workSelected(work_id));
 			return;
 		}

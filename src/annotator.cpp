@@ -147,21 +147,22 @@ int main(int argc, char *argv[]){
 		vertSplit->addWidget(horiSplit);
 		vertSplit->addWidget(workDBView);
 
+		layout->addWidget(vertSplit);
+
 		//connect stuff up!
 		QObject::connect(workDBView,
 				SIGNAL(workSelected(int)),
 				workDetailView,
 				SLOT(setWork(int)));
 
-		layout->addWidget(vertSplit);
-		topWidget->setLayout(layout);
-		topWidget->show();
-
 		if(!inputFile.empty()){
 			int id = workTableModel->findWorkByPath(inputFile);
 			if(id > 0)
 				workDBView->selectWork(id);
 		}
+
+		topWidget->setLayout(layout);
+		topWidget->show();
 
 		return app.exec();
 	} else {
