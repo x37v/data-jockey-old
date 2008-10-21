@@ -141,6 +141,7 @@ int main(int argc, char *argv[]){
 		WorkTableModel * workTableModel = new WorkTableModel(db);
 		WorkDetailView * workDetailView = new WorkDetailView(tagModel, db);
 		WorkDBView * workDBView = new WorkDBView(workTableModel);
+		workDBView->showFilterButtons(false);
 
 		horiSplit->addWidget(workDetailView);
 		horiSplit->addWidget(tagEditor);

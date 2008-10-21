@@ -94,6 +94,11 @@ void WorkDBView::selectWork(const QModelIndex & index ){
 }
 */
 
+void WorkDBView::showFilterButtons(bool show){
+	mApplyFilterButton->setVisible(show);
+	mRemoveFilterButton->setVisible(show);
+}
+
 void WorkDBView::setSelection( const QItemSelection & selected){
 	Q_UNUSED(selected);
 	QModelIndex index = mTableView->selectionModel()->currentIndex(); 
