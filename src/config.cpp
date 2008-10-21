@@ -50,12 +50,12 @@ void Configuration::loadDefault() throw(std::runtime_error) {
 		try {
 			if((stat(it->c_str(), &statbuf) == 0) && S_ISREG(statbuf.st_mode)){
 				loadFile(*it);
-				std::cerr << "loaded " << *it << std::endl;
+				std::cerr << "Loaded configuration file: " << *it << std::endl;
 				return;
 			} 
 		} catch (...){
 			//we don't actually do anything because we're going to try another location
-			std::cerr << *it << " is not a valid config file, trying the next location" << std::endl;
+			std::cerr << *it << " is not a valid configuration file, trying the next location" << std::endl;
 		}
 	}
 	//if we're here then we didn't find or successfully load a config file

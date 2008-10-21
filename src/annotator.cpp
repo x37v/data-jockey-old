@@ -40,17 +40,17 @@ int main(int argc, char *argv[]){
 		po::positional_options_description p;
 
 		desc.add_options()
-			("help,h", "Produce this help message")
-			("non-graphical,a", "Apply tags and rating then exit, don't show any GUI.")
-			("config,c", po::value<std::string>(), "Specify the config file")
-			("input-file,f", po::value<std::string>(), "The input file")
-			("rating,r", po::value<int>(), "Apply a rating")
+			("help,h", "Produce this help message.")
+			("non-graphical,a", "Apply tags and/or rating then exit, don't show any GUI.")
+			("config,c", po::value<std::string>(), "Specify a configuration file to use.")
+			("input-file,f", po::value<std::string>(), "An input sound file to annotate.")
+			("rating,r", po::value<int>(), "Apply a rating.")
 			("tag,t", po::value<std::vector<std::string> >(), 
 			 "Apply the tag to this file."
 			 "\nThe format is tag_name[,tag_class]"
-			 "\nUse quotes to get multi word names or classes"
-			 "\nIf the tag class is not found then the first tag with the name given will be applied"
-			 "\nIf the tag does not exist the program will attempt to create it, the class must be provided in this case"
+			 "\nUse quotes to get multi word names or classes."
+			 "\nIf the tag class is not found then the first tag with the name given will be applied."
+			 "\nIf the tag does not exist the program will attempt to create it, the class must be provided in this case."
 			 )
 			;
 		p.add("input-file", -1);
@@ -84,10 +84,11 @@ int main(int argc, char *argv[]){
 		if (vm.count("tag")) 
 			tags = vm["tag"].as<std::vector<std::string> >();
 
+		//if we're not running graphically we must provide an input file
 		if (vm.count("input-file")) {
 			inputFile = vm["input-file"].as<std::string>();
-		} else {
-			cout << "You must specify an input file" << endl;
+		} else if(!runGui){
+			cout << endl << "You must specify an input file!" << endl << endl;
 			cout << desc << endl;
 			return 1;
 		}
