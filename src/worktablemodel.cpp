@@ -92,55 +92,6 @@ WorkTableModel::WorkTableModel(
 	setQuery(cQuery, db);
 }
 
-/*
-//XXX this is sort of a hack..
-void WorkTableModel::sort(int column, Qt::SortOrder order){
-	std::stringstream queryStr;
-	//build up the sortBy string..
-	switch(column){
-		case 1:
-			if(order == Qt::AscendingOrder)
-				mSortString = cSortByArtistASC;
-			else
-				mSortString = cSortByArtistDESC;
-			break;
-		case 2:
-			if(order == Qt::AscendingOrder)
-				mSortString = cSortByTitleASC;
-			else
-				mSortString = cSortByTitleDESC;
-			break;
-		case 3:
-			if(order == Qt::AscendingOrder)
-				mSortString = cSortByAlbumASC;
-			else
-				mSortString = cSortByAlbumDESC;
-			break;
-		default:
-			//if we're not in one of the above columns then first sort by
-			//that columns data up/down, then by artist down, album down, title down.
-			QVariant header = headerData(column, Qt::Horizontal);
-			if(header.isValid() && header.canConvert(QVariant::String)){
-				std::stringstream tmp;
-				tmp << "order by `" << header.toString().toStdString();
-				if(order == Qt::AscendingOrder)
-					tmp << "` ASC" << cSortByOther << std::endl;
-				else
-					tmp << "` DESC" << cSortByOther << std::endl;
-				mSortString = tmp.str();
-			}
-			break;
-	};
-
-	if(mFiltered)
-		queryStr << cFilteredQuery.c_str() << std::endl << mSortString;
-	else
-		queryStr << cUnFilteredQuery.c_str() << std::endl << mSortString;
-	setQuery(queryStr.str().c_str());
-	query();
-}
-*/
-
 //reformat the time display role so that it is in MM:SS not milliseconds
 QVariant WorkTableModel::data( const QModelIndex & index, int role) const {
 	QVariant ret = QSqlQueryModel::data(index,role);
