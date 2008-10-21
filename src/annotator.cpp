@@ -64,10 +64,17 @@ int main(int argc, char *argv[]){
 		}
 
 		//load the config file if specified
-		//XXX otherwise we need to search for it!
-		if (vm.count("config")) {
+		//otherwise we need to search for it!
+		if (vm.count("config"))
 			config->loadFile(vm["config"].as<std::string>());
-		} else {
+		else {
+			try {
+				config->loadDefault();
+			} catch(std::exception& e) {
+				cout << "Error loading config file:" << endl << e.what() << endl;
+				cout << "You can specify a config file location with the -c switch" << endl;
+				return 1;
+			}
 		}
 
 		if (vm.count("non-graphical"))
@@ -86,7 +93,7 @@ int main(int argc, char *argv[]){
 		}
 
 	} catch(std::exception& e) {
-		cout << "error in command line arguments: " << e.what() << endl;
+		cout << "Error in command line arguments: " << e.what() << endl;
 		return 1;
 	}
 

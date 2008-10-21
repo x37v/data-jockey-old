@@ -7,6 +7,8 @@ namespace datajockey {
 	class Configuration {
 		public:
 			static Configuration * instance();
+			//this finds a config file in a default location
+			void loadDefault() throw(std::runtime_error);
 			//void load(std::string yaml_data);
 			void loadFile(std::string path) throw(std::runtime_error);
 			//std::string tostr();

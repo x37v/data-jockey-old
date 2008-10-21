@@ -1,5 +1,8 @@
 #include <yamlcpp/parser.hpp>
 #include "config.hpp"
+#include <sys/stat.h>
+#include <stdlib.h>
+#include <iostream>
 
 using namespace datajockey;
 
@@ -25,6 +28,44 @@ void Configuration::load(std::string yaml_data){
 	return false;
 }
 */
+
+//search for (in order):
+//./config.yaml
+//~/.datajockey/config.yaml
+///usr/local/share/datajockey/config.yaml
+///usr/share/datajockey/config.yaml
+
+void Configuration::loadDefault() throw(std::runtime_error) {
+	std::vector<std::string> search_paths;
+	struct stat statbuf;
+	std::string homeConfig(getenv("HOME"));
+	homeConfig.append("/.datajockey/config.yaml");
+
+	search_paths.push_back("./config.yaml");
+	search_paths.push_back(homeConfig);
+	search_paths.push_back("/usr/local/share/datajockey/config.yaml");
+	search_paths.push_back("/usr/share/datajockey/config.yaml");
+
+	for(std::vector<std::string>::iterator it = search_paths.begin(); it != search_paths.end(); it++){
+		try {
+			if((stat(it->c_str(), &statbuf) == 0) && S_ISREG(statbuf.st_mode)){
+				loadFile(*it);
+				std::cerr << "loaded " << *it << std::endl;
+				return;
+			} 
+		} catch (...){
+			//we don't actually do anything because we're going to try another location
+			std::cerr << *it << " is not a valid config file, trying the next location" << std::endl;
+		}
+	}
+	//if we're here then we didn't find or successfully load a config file
+	std::string str("Cannot find a valid configuration file to load in one of the standard locations:");
+	for(std::vector<std::string>::iterator it = search_paths.begin(); it != search_paths.end(); it++){
+		str.append("\n");
+		str.append(*it);
+	}
+	throw std::runtime_error(str);
+}
 
 void Configuration::loadFile(std::string path) throw(std::runtime_error) {
 	try {
