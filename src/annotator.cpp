@@ -16,6 +16,7 @@
 #include "tageditor.hpp"
 #include "workdetailview.hpp"
 #include "worktablemodel.hpp"
+#include "workfiltermodel.hpp"
 #include "workdbview.hpp"
 
 namespace po = boost::program_options;
@@ -139,8 +140,9 @@ int main(int argc, char *argv[]){
 		TagModel * tagModel = new TagModel(db);
 		TagEditor * tagEditor = new TagEditor(tagModel);
 		WorkTableModel * workTableModel = new WorkTableModel(db);
+		WorkFilterModelProxy * filteredWorkTableModel = new WorkFilterModelProxy(workTableModel);
 		WorkDetailView * workDetailView = new WorkDetailView(tagModel, db);
-		WorkDBView * workDBView = new WorkDBView(workTableModel);
+		WorkDBView * workDBView = new WorkDBView(filteredWorkTableModel);
 		workDBView->showFilterButtons(false);
 
 		horiSplit->addWidget(workDetailView);
