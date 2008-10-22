@@ -45,6 +45,9 @@ class TagModel : public TreeModel {
 		virtual QMimeData * mimeData ( const QModelIndexList & indexes ) const;
 		//idicates if this index is a tag or class..
 		bool isTag(const QModelIndex index) const;
+		//returns -1 on failure
+		int find(std::string tag_name);
+		int find(std::string tag_name, std::string class_name);
 	signals:
 		void classAdded(QPair<int, QString> classInfo);
 	public slots:

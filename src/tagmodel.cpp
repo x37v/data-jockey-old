@@ -138,6 +138,40 @@ bool TagModel::isTag(const QModelIndex index) const {
 		return false;
 }
 
+//simply find the first tag with this name
+int TagModel::find(std::string tag_name){
+	if(mQuery.first()){
+		QSqlRecord rec = mQuery.record();
+		for(int i = 0; i < root()->childCount(); i++){
+			TreeItem * classItem = root()->child(i);
+			for(int j = 0; j < classItem->childCount(); j++){
+				TreeItem * tagItem = classItem->child(j);
+				if(tagItem->data(0).toString().toStdString() == tag_name)
+					return tagItem->data(ID_COL).toInt();
+			}
+		}
+	}
+	return -1;
+}
+
+//find the first tag with the class name and tag name given
+int TagModel::find(std::string tag_name, std::string class_name){
+	if(mQuery.first()){
+		QSqlRecord rec = mQuery.record();
+		for(int i = 0; i < root()->childCount(); i++){
+			TreeItem * classItem = root()->child(i);
+			if(classItem->data(0).toString().toStdString() == class_name){
+				for(int j = 0; j < classItem->childCount(); j++){
+					TreeItem * tagItem = classItem->child(j);
+					if(tagItem->data(0).toString().toStdString() == tag_name)
+						return tagItem->data(ID_COL).toInt();
+				}
+			}
+		}
+	}
+	return -1;
+}
+
 void TagModel::addWorkTagAssociation(int work_id, int tag_id){
 	QString queryStr;
 	//first make sure this association doesn't already exist

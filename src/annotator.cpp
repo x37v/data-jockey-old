@@ -33,6 +33,7 @@ int main(int argc, char *argv[]){
 	bool runGui = true;
 	int rating = UNDEFINED_RATING;
 	std::vector<std::string> tags;
+	QSqlDatabase db;
 
 	try {
 		// Declare the supported options.
@@ -99,7 +100,6 @@ int main(int argc, char *argv[]){
 		return 1;
 	}
 
-	QSqlDatabase db;
 	try {
 		db = QSqlDatabase::addDatabase(config->databaseAdapter().c_str());
 		db.setDatabaseName(config->databaseName().c_str());
@@ -112,47 +112,45 @@ int main(int argc, char *argv[]){
 		return 1;
 	}
 
-	//QWidget w;
-	//w.show();
-	for(std::vector<std::string>::iterator it = tags.begin(); it != tags.end(); it++)
-		cout << *it << endl;
+	if(!db.open()){
+		qFatal("Cannot open database"
+				"\nMake sure the entries are correct in your config file.");
+		return app.exec();
+	}
+
+	//models
+	TagModel * tagModel = new TagModel(db);
+	WorkTableModel * workTableModel = new WorkTableModel(db);
+	WorkFilterModelProxy * filteredWorkTableModel = new WorkFilterModelProxy(workTableModel);
+
+	//if there is an input file and there are tags, deal with them
+	if(!inputFile.empty() && !tags.empty()){
+		for(std::vector<std::string>::iterator it = tags.begin(); it != tags.end(); it++){
+		}
+	}
 
 	if(runGui){
 		QWidget * topWidget = new QWidget;
 		topWidget->setWindowTitle("Data Jockey Annotator");
-		QErrorMessage::qtHandler();
 		app.setStyle(new QCleanlooksStyle);
 
-		//make the warning messages graphical
-		if(!db.open()){
-			QString text(
-					"\nCannot open database."
-					"\nMake sure the entries are correct in your config file."
-					"\nClick Cancel to exit.");
-			QMessageBox::critical(0, app.tr("Cannot open database"), text, QMessageBox::Cancel);
-			return 1;
-		}
-
-		QVBoxLayout * layout = new QVBoxLayout;
-		QSplitter * vertSplit = new QSplitter(Qt::Vertical, topWidget);
-		QSplitter * horiSplit = new QSplitter(Qt::Horizontal, topWidget);
-
-		TagModel * tagModel = new TagModel(db);
+		//views
 		TagEditor * tagEditor = new TagEditor(tagModel);
-		WorkTableModel * workTableModel = new WorkTableModel(db);
-		WorkFilterModelProxy * filteredWorkTableModel = new WorkFilterModelProxy(workTableModel);
 		WorkDetailView * workDetailView = new WorkDetailView(tagModel, db);
 		WorkDBView * workDBView = new WorkDBView(filteredWorkTableModel);
 		workDBView->showFilterButtons(false);
 
+		//layouts
+		QVBoxLayout * layout = new QVBoxLayout;
+		QSplitter * vertSplit = new QSplitter(Qt::Vertical, topWidget);
+		QSplitter * horiSplit = new QSplitter(Qt::Horizontal, topWidget);
 		horiSplit->addWidget(workDetailView);
 		horiSplit->addWidget(tagEditor);
 		vertSplit->addWidget(horiSplit);
 		vertSplit->addWidget(workDBView);
-
 		layout->addWidget(vertSplit);
 
-		//connect stuff up!
+		//connections
 		QObject::connect(workDBView,
 				SIGNAL(workSelected(int)),
 				workDetailView,
