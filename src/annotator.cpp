@@ -30,9 +30,10 @@ int main(int argc, char *argv[]){
 	QApplication app(argc, argv);
 	datajockey::Configuration * config = datajockey::Configuration::instance();
 	std::string inputFile;
+	int selectedWorkId = -1;
 	bool runGui = true;
 	int rating = UNDEFINED_RATING;
-	std::vector<std::string> tags;
+	std::vector<std::string> inputTags;
 	QSqlDatabase db;
 
 	try {
@@ -84,7 +85,7 @@ int main(int argc, char *argv[]){
 		if (vm.count("rating")) 
 			rating = vm["rating"].as<int>();
 		if (vm.count("tag")) 
-			tags = vm["tag"].as<std::vector<std::string> >();
+			inputTags = vm["tag"].as<std::vector<std::string> >();
 
 		//if we're not running graphically we must provide an input file
 		if (vm.count("input-file")) {
@@ -114,7 +115,7 @@ int main(int argc, char *argv[]){
 
 	if(!db.open()){
 		qFatal("Cannot open database"
-				"\nMake sure the entries are correct in your config file.");
+				"\nMake sure the entries are correct in your configuration file.");
 		return app.exec();
 	}
 
@@ -123,9 +124,45 @@ int main(int argc, char *argv[]){
 	WorkTableModel * workTableModel = new WorkTableModel(db);
 	WorkFilterModelProxy * filteredWorkTableModel = new WorkFilterModelProxy(workTableModel);
 
+	if(!inputFile.empty())
+		selectedWorkId = workTableModel->findWorkByPath(inputFile);
+
 	//if there is an input file and there are tags, deal with them
-	if(!inputFile.empty() && !tags.empty()){
-		for(std::vector<std::string>::iterator it = tags.begin(); it != tags.end(); it++){
+	if(!inputFile.empty() && !inputTags.empty()){
+		for(std::vector<std::string>::iterator it = inputTags.begin(); it != inputTags.end(); it++){
+			std::string tagName;
+			size_t pos = it->find_first_of(',');
+			int tagId = -1;
+			//found a comma
+			if(pos != std::string::npos){
+				//make sure there isn't another one
+				if(it->find_first_of(',', pos + 1) == std::string::npos){
+					std::string tagClass;
+					tagName.assign(*it, 0, pos);
+					tagClass.assign(*it, pos + 1, it->length() - 1);
+					tagId = tagModel->find(tagName, tagClass);
+					//if the tag isn't found then the id is negative, create new tag
+					//otherwise apply the tag to the selected work
+					if(tagId < 0){
+						tagModel->addClassAndTag(QString(tagClass.c_str()), QString(tagName.c_str()));
+						tagId = tagModel->find(tagName, tagClass);
+					} 
+					//just in case, this shouldn't ever be false..
+					if(tagId > 0)
+						tagModel->addWorkTagAssociation(selectedWorkId, tagId);
+				} else {
+					std::cerr << "Skipping ambiguous tag definition: " <<  *it << endl;
+					continue;
+				}
+			} else {
+				tagId = tagModel->find(*it);
+				//if we cannot find the tag then we skip it
+				//otherwise we apply it to the selected work
+				if(tagId < 0)
+					std::cerr << "Cannot find tag: " << *it << " skipping." << std::endl;
+				else 
+					tagModel->addWorkTagAssociation(selectedWorkId, tagId);
+			}
 		}
 	}
 
@@ -156,11 +193,8 @@ int main(int argc, char *argv[]){
 				workDetailView,
 				SLOT(setWork(int)));
 
-		if(!inputFile.empty()){
-			int id = workTableModel->findWorkByPath(inputFile);
-			if(id > 0)
-				workDBView->selectWork(id);
-		}
+		if(selectedWorkId >= 0)
+			workDBView->selectWork(selectedWorkId);
 
 		topWidget->setLayout(layout);
 		topWidget->show();
