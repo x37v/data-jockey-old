@@ -117,7 +117,8 @@ int main(int argc, char *argv[]){
 		if(config->databasePassword() != "")
 			db.setPassword(config->databasePassword().c_str());
 	} catch(std::exception& e) {
-		qFatal("Invalid database configuration data, have you provided a correct configuration file?");
+		qFatal("Invalid database configuration data."
+				"\nHave you provided a correct configuration file?");
 		return app.exec();
 	}
 
@@ -132,44 +133,55 @@ int main(int argc, char *argv[]){
 	WorkTableModel * workTableModel = new WorkTableModel(db);
 	WorkFilterModelProxy * filteredWorkTableModel = new WorkFilterModelProxy(workTableModel);
 
-	if(!inputFile.empty())
+	if(!inputFile.empty()){
 		selectedWorkId = workTableModel->findWorkByPath(inputFile);
-
-	//if there is an input file and there are tags, deal with them
-	if(!inputFile.empty() && !inputTags.empty()){
-		for(std::vector<std::string>::iterator it = inputTags.begin(); it != inputTags.end(); it++){
-			std::string tagName;
-			size_t pos = it->find_first_of(',');
-			int tagId = -1;
-			//found a comma
-			if(pos != std::string::npos){
-				//make sure there isn't another one
-				if(it->find_first_of(',', pos + 1) == std::string::npos){
-					std::string tagClass;
-					tagName.assign(*it, 0, pos);
-					tagClass.assign(*it, pos + 1, it->length() - 1);
-					tagId = tagModel->find(tagName, tagClass);
-					//if the tag isn't found then the id is negative, create new tag
-					//otherwise apply the tag to the selected work
-					if(tagId < 0){
-						tagModel->addClassAndTag(QString(tagClass.c_str()), QString(tagName.c_str()));
-						tagId = tagModel->find(tagName, tagClass);
-					} 
-					//just in case, this shouldn't ever be false..
-					if(tagId > 0)
-						tagModel->addWorkTagAssociation(selectedWorkId, tagId);
-				} else {
-					std::cerr << "Skipping ambiguous tag definition: " <<  *it << endl;
-					continue;
+		if(selectedWorkId < 0){
+			std::string str("Selected work:\n");
+			str.append(inputFile);
+			str.append("\ncannot be found in the database");
+			//XXX make graphical
+			qWarning(str.c_str());
+		} else {
+			//if there are tags, deal with them
+			if(!inputTags.empty()){
+				for(std::vector<std::string>::iterator it = inputTags.begin(); it != inputTags.end(); it++){
+					std::string tagName;
+					size_t pos = it->find_first_of(',');
+					int tagId = -1;
+					//found a comma
+					if(pos != std::string::npos){
+						//make sure there isn't another one
+						if(it->find_first_of(',', pos + 1) == std::string::npos){
+							std::string tagClass;
+							tagName.assign(*it, 0, pos);
+							tagClass.assign(*it, pos + 1, it->length() - 1);
+							tagId = tagModel->find(tagName, tagClass);
+							//if the tag isn't found then the id is negative, create new tag
+							//otherwise apply the tag to the selected work
+							if(tagId < 0){
+								tagModel->addClassAndTag(QString(tagClass.c_str()), QString(tagName.c_str()));
+								tagId = tagModel->find(tagName, tagClass);
+							} 
+							//just in case, this shouldn't ever be false..
+							if(tagId > 0)
+								tagModel->addWorkTagAssociation(selectedWorkId, tagId);
+						} else {
+							std::cerr << "Skipping ambiguous tag definition: " <<  *it << endl;
+							continue;
+						}
+					} else {
+						tagId = tagModel->find(*it);
+						//if we cannot find the tag then we skip it
+						//otherwise we apply it to the selected work
+						if(tagId < 0)
+							std::cerr << "Cannot find tag: " << *it << " skipping." << std::endl;
+						else 
+							tagModel->addWorkTagAssociation(selectedWorkId, tagId);
+					}
 				}
-			} else {
-				tagId = tagModel->find(*it);
-				//if we cannot find the tag then we skip it
-				//otherwise we apply it to the selected work
-				if(tagId < 0)
-					std::cerr << "Cannot find tag: " << *it << " skipping." << std::endl;
-				else 
-					tagModel->addWorkTagAssociation(selectedWorkId, tagId);
+			}
+			//XXX deal with a rating
+			if(rating != UNDEFINED_RATING){
 			}
 		}
 	}
