@@ -269,5 +269,5 @@ int main(int argc, char *argv[]){
 		return app.exec();
 	} else 
 		delete model;
-		return 0;
+	return 0;
 }
