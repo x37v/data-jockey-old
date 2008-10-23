@@ -21,6 +21,7 @@ OBJECTS_DIR = ../objects
 
 # Input
 HEADERS +=  \
+				../include/annotator.hpp \
 				../include/config.hpp \
 				../include/object.hpp \
 				../include/tageditor.hpp \

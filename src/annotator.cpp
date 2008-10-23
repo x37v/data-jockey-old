@@ -19,6 +19,84 @@
 #include "workfiltermodel.hpp"
 #include "workdbview.hpp"
 
+#include "annotator.hpp"
+
+AnnotatorModel::AnnotatorModel(datajockey::Configuration * config, QObject * parent) 
+	throw(std::runtime_error) : QObject(parent) {
+	//open the database
+	try {
+		mDB = QSqlDatabase::addDatabase(config->databaseAdapter().c_str());
+		mDB.setDatabaseName(config->databaseName().c_str());
+		if(config->databaseUserName() != "")
+			mDB.setUserName(config->databaseUserName().c_str());
+		if(config->databasePassword() != "")
+			mDB.setPassword(config->databasePassword().c_str());
+		//open, and if it won't open, throw an error
+		if(!mDB.open())
+			throw std::exception();
+	} catch(std::exception& e) {
+		throw std::runtime_error("Invalid database configuration data."
+				"\nHave you provided a correct configuration file?");
+	}
+	mTagModel = new TagModel(mDB);
+	mWorkTableModel = new WorkTableModel(mDB);
+	mFilteredWorkTableModel = new WorkFilterModelProxy(mWorkTableModel);
+}
+
+AnnotatorModel::~AnnotatorModel(){
+	delete mFilteredWorkTableModel;
+	delete mWorkTableModel;
+	delete mTagModel;
+	mDB.close();
+}
+
+TagModel * AnnotatorModel::tagModel(){
+	return mTagModel;
+}
+
+WorkTableModel * AnnotatorModel::workTableModel(){
+	return mWorkTableModel;
+}
+
+WorkFilterModelProxy * AnnotatorModel::filteredWorkTableModel(){
+	return mFilteredWorkTableModel;
+}
+
+QSqlDatabase * AnnotatorModel::db(){
+	return &mDB;
+}
+
+AnnotatorView::AnnotatorView(AnnotatorModel * model){
+	setWindowTitle("Data Jockey Annotator");
+
+	//views
+	mTagEditor = new TagEditor(model->tagModel());
+	mWorkDetailView = new WorkDetailView(model->tagModel(), *model->db());
+	mWorkDBView = new WorkDBView(model->filteredWorkTableModel());
+	mWorkDBView->showFilterButtons(false);
+
+	//layouts
+	QVBoxLayout * layout = new QVBoxLayout(this);
+	QSplitter * vertSplit = new QSplitter(Qt::Vertical, this);
+	QSplitter * horiSplit = new QSplitter(Qt::Horizontal, this);
+	horiSplit->addWidget(mWorkDetailView);
+	horiSplit->addWidget(mTagEditor);
+	vertSplit->addWidget(horiSplit);
+	vertSplit->addWidget(mWorkDBView);
+	layout->addWidget(vertSplit);
+
+	//connections
+	QObject::connect(mWorkDBView,
+			SIGNAL(workSelected(int)),
+			mWorkDetailView,
+			SLOT(setWork(int)));
+}
+
+void AnnotatorView::selectWork(int work_id){
+	if(work_id >= 0)
+		mWorkDBView->selectWork(work_id);
+}
+
 namespace po = boost::program_options;
 using std::cout;
 using std::endl;
@@ -28,13 +106,13 @@ using std::endl;
 int main(int argc, char *argv[]){
 
 	QApplication app(argc, argv);
+	AnnotatorModel * model;
 	datajockey::Configuration * config = datajockey::Configuration::instance();
 	std::string inputFile;
 	int selectedWorkId = -1;
 	bool runGui = true;
 	int rating = UNDEFINED_RATING;
 	std::vector<std::string> inputTags;
-	QSqlDatabase db;
 
 	//parse command line arguments
 	try {
@@ -108,33 +186,16 @@ int main(int argc, char *argv[]){
 		return app.exec();
 	}
 
-	//open the database
+	//open the database (by creating the model)
 	try {
-		db = QSqlDatabase::addDatabase(config->databaseAdapter().c_str());
-		db.setDatabaseName(config->databaseName().c_str());
-		if(config->databaseUserName() != "")
-			db.setUserName(config->databaseUserName().c_str());
-		if(config->databasePassword() != "")
-			db.setPassword(config->databasePassword().c_str());
+		model = new AnnotatorModel(config);
 	} catch(std::exception& e) {
-		qFatal("Invalid database configuration data."
-				"\nHave you provided a correct configuration file?");
+		qFatal(e.what());
 		return app.exec();
 	}
-
-	if(!db.open()){
-		qFatal("Cannot open database"
-				"\nMake sure the entries are correct in your configuration file.");
-		return app.exec();
-	}
-
-	//models
-	TagModel * tagModel = new TagModel(db);
-	WorkTableModel * workTableModel = new WorkTableModel(db);
-	WorkFilterModelProxy * filteredWorkTableModel = new WorkFilterModelProxy(workTableModel);
 
 	if(!inputFile.empty()){
-		selectedWorkId = workTableModel->findWorkByPath(inputFile);
+		selectedWorkId = model->workTableModel()->findWorkByPath(inputFile);
 		if(selectedWorkId < 0){
 			std::string str("Selected work:\n");
 			str.append(inputFile);
@@ -155,28 +216,28 @@ int main(int argc, char *argv[]){
 							std::string tagClass;
 							tagName.assign(*it, 0, pos);
 							tagClass.assign(*it, pos + 1, it->length() - 1);
-							tagId = tagModel->find(tagName, tagClass);
+							tagId = model->tagModel()->find(tagName, tagClass);
 							//if the tag isn't found then the id is negative, create new tag
 							//otherwise apply the tag to the selected work
 							if(tagId < 0){
-								tagModel->addClassAndTag(QString(tagClass.c_str()), QString(tagName.c_str()));
-								tagId = tagModel->find(tagName, tagClass);
+								model->tagModel()->addClassAndTag(QString(tagClass.c_str()), QString(tagName.c_str()));
+								tagId = model->tagModel()->find(tagName, tagClass);
 							} 
 							//just in case, this shouldn't ever be false..
 							if(tagId > 0)
-								tagModel->addWorkTagAssociation(selectedWorkId, tagId);
+								model->tagModel()->addWorkTagAssociation(selectedWorkId, tagId);
 						} else {
 							std::cerr << "Skipping ambiguous tag definition: " <<  *it << endl;
 							continue;
 						}
 					} else {
-						tagId = tagModel->find(*it);
+						tagId = model->tagModel()->find(*it);
 						//if we cannot find the tag then we skip it
 						//otherwise we apply it to the selected work
 						if(tagId < 0)
 							std::cerr << "Cannot find tag: " << *it << " skipping." << std::endl;
 						else 
-							tagModel->addWorkTagAssociation(selectedWorkId, tagId);
+							model->tagModel()->addWorkTagAssociation(selectedWorkId, tagId);
 					}
 				}
 			}
@@ -187,39 +248,12 @@ int main(int argc, char *argv[]){
 	}
 
 	if(runGui){
-		QWidget * topWidget = new QWidget;
-		topWidget->setWindowTitle("Data Jockey Annotator");
+		AnnotatorView * view = new AnnotatorView(model);
 		app.setStyle(new QCleanlooksStyle);
-
-		//views
-		TagEditor * tagEditor = new TagEditor(tagModel);
-		WorkDetailView * workDetailView = new WorkDetailView(tagModel, db);
-		WorkDBView * workDBView = new WorkDBView(filteredWorkTableModel);
-		workDBView->showFilterButtons(false);
-
-		//layouts
-		QVBoxLayout * layout = new QVBoxLayout;
-		QSplitter * vertSplit = new QSplitter(Qt::Vertical, topWidget);
-		QSplitter * horiSplit = new QSplitter(Qt::Horizontal, topWidget);
-		horiSplit->addWidget(workDetailView);
-		horiSplit->addWidget(tagEditor);
-		vertSplit->addWidget(horiSplit);
-		vertSplit->addWidget(workDBView);
-		layout->addWidget(vertSplit);
-
-		//connections
-		QObject::connect(workDBView,
-				SIGNAL(workSelected(int)),
-				workDetailView,
-				SLOT(setWork(int)));
-
-		if(selectedWorkId >= 0)
-			workDBView->selectWork(selectedWorkId);
-
-		topWidget->setLayout(layout);
-		topWidget->show();
-
+		view->selectWork(selectedWorkId);
+		view->show();
 		return app.exec();
 	} else 
+		delete model;
 		return 0;
 }

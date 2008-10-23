@@ -1,4 +1,6 @@
 //this is all about the configuration!
+#ifndef DATAJOCKEY_CONFIGURATION_HPP
+#define DATAJOCKEY_CONFIGURATION_HPP
 
 #include <yamlcpp/yaml.hpp>
 #include <stdexcept>
@@ -33,3 +35,5 @@ namespace datajockey {
 			bool mValid;
 	};
 }
+
+#endif
