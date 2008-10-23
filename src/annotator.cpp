@@ -36,6 +36,7 @@ int main(int argc, char *argv[]){
 	std::vector<std::string> inputTags;
 	QSqlDatabase db;
 
+	//parse command line arguments
 	try {
 		// Declare the supported options.
 		po::options_description desc("Data Jockey Annotator options");
@@ -74,9 +75,13 @@ int main(int argc, char *argv[]){
 			try {
 				config->loadDefault();
 			} catch(std::exception& e) {
-				cout << "Error loading config file:" << endl << e.what() << endl;
-				cout << "You can specify a config file location with the -c switch" << endl;
-				return 1;
+				std::string str("Error loading config file:");
+				str.append("\n");
+				str.append(e.what());
+				str.append("\n");
+				str.append("You can specify a config file location with the -c switch");
+				qFatal(str.c_str());
+				return app.exec();
 			}
 		}
 
@@ -97,10 +102,13 @@ int main(int argc, char *argv[]){
 		}
 
 	} catch(std::exception& e) {
-		cout << "Error in command line arguments: " << e.what() << endl;
-		return 1;
+		std::string str("Error in command line arguments: ");
+		str.append(e.what());
+		qFatal(str.c_str());
+		return app.exec();
 	}
 
+	//open the database
 	try {
 		db = QSqlDatabase::addDatabase(config->databaseAdapter().c_str());
 		db.setDatabaseName(config->databaseName().c_str());
@@ -109,8 +117,8 @@ int main(int argc, char *argv[]){
 		if(config->databasePassword() != "")
 			db.setPassword(config->databasePassword().c_str());
 	} catch(std::exception& e) {
-		cout << "Invalid database configuration data, have you provided a correct configuration file?" << endl;
-		return 1;
+		qFatal("Invalid database configuration data, have you provided a correct configuration file?");
+		return app.exec();
 	}
 
 	if(!db.open()){
@@ -200,11 +208,6 @@ int main(int argc, char *argv[]){
 		topWidget->show();
 
 		return app.exec();
-	} else {
-		if(!db.open()){
-			cout <<  "ERROR: cannot open database" << endl;
-			return 1;
-		}
+	} else 
 		return 0;
-	}
 }
