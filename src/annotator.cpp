@@ -7,6 +7,8 @@
 #include <QSplitter>
 #include <QVBoxLayout>
 
+#include <QMainWindow>
+
 #include <boost/program_options.hpp>
 #include <iostream>
 #include <string>
@@ -66,8 +68,11 @@ QSqlDatabase * AnnotatorModel::db(){
 	return &mDB;
 }
 
-AnnotatorView::AnnotatorView(AnnotatorModel * model){
+AnnotatorView::AnnotatorView(AnnotatorModel * model, QWidget * parent) 
+: QWidget(parent)
+{
 	setWindowTitle("Data Jockey Annotator");
+	mModel = model;
 
 	//views
 	mTagEditor = new TagEditor(model->tagModel());
@@ -95,6 +100,10 @@ AnnotatorView::AnnotatorView(AnnotatorModel * model){
 void AnnotatorView::selectWork(int work_id){
 	if(work_id >= 0)
 		mWorkDBView->selectWork(work_id);
+}
+
+void AnnotatorView::deleteModel(){
+	delete mModel;
 }
 
 namespace po = boost::program_options;
@@ -248,10 +257,15 @@ int main(int argc, char *argv[]){
 	}
 
 	if(runGui){
-		AnnotatorView * view = new AnnotatorView(model);
+		QMainWindow * mainWindow = new QMainWindow();
+		AnnotatorView * view = new AnnotatorView(model, mainWindow);
 		app.setStyle(new QCleanlooksStyle);
 		view->selectWork(selectedWorkId);
-		view->show();
+		//XXX I think this is a hack.. 
+		//There should be some nicely set up dependency graph
+		app.connect( &app, SIGNAL( aboutToQuit() ), view, SLOT( deleteModel() ) );
+		mainWindow->setCentralWidget(view);
+		mainWindow->show();
 		return app.exec();
 	} else 
 		delete model;
