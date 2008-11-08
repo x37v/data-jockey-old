@@ -73,8 +73,8 @@ namespace DataJockey {
 			//so that we can do vu meters etc
 			float mMaxSample;
 
-			//XXX tmp
-			double mIndex;
+			//this is the sample index for running in free mode
+			double mSampleIndex;
 
 			bool mPlaying;
 

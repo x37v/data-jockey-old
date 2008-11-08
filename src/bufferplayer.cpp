@@ -26,7 +26,7 @@ BufferPlayer::BufferPlayer(unsigned int sampleRate, TempoDriver * defaultSync, S
 	Object(), mMyTempoDriver(sampleRate)
 {
 	//XXX tmp
-	mIndex = 0;
+	mSampleIndex = 0;
 
 	mOutPort = cueOut;
 	mLoop = false;
@@ -98,11 +98,11 @@ void BufferPlayer::setBeatIndex(unsigned int index){
 	if(mBeatBuffer != NULL && index <= mBeatBuffer->length())
 		mBeatIndex = index;
 	if(mBeatBuffer != NULL && mAudioBuffer != NULL) 
-		mIndex = mBeatBuffer->getValue(mBeatIndex + mBeatOffset);
+		mSampleIndex = mBeatBuffer->getValue(mBeatIndex + mBeatOffset);
 }
 
 void BufferPlayer::reset(){
-	mIndex = 0.0;
+	mSampleIndex = 0.0;
 	setBeatIndex(0);
 }
 
@@ -120,7 +120,7 @@ void BufferPlayer::advanceBeat(int num_beats){
 	}
 
 	if(mBeatBuffer != NULL && mAudioBuffer != NULL)
-		mIndex = mBeatBuffer->getValue(mBeatIndex + mBeatOffset) * mAudioBuffer->getSampleRate();
+		mSampleIndex = mBeatBuffer->getValue(mBeatIndex + mBeatOffset) * mAudioBuffer->getSampleRate();
 }
 
 void BufferPlayer::sync(){
@@ -136,10 +136,10 @@ void BufferPlayer::sync(){
 
 		//increment our index if we're not paused
 		if(mPlaying)
-			mIndex += mMyTempoDriver.getTempoScale();
+			mSampleIndex += mMyTempoDriver.getTempoScale();
 
-		//get the beat index at this point in time based on our mIndex;
-		newBeatIndex = mBeatBuffer->getBeatIndexAtTime(mIndex / mAudioBuffer->getSampleRate(), mBeatIndex + mBeatOffset);
+		//get the beat index at this point in time based on our mSampleIndex;
+		newBeatIndex = mBeatBuffer->getBeatIndexAtTime(mSampleIndex / mAudioBuffer->getSampleRate(), mBeatIndex + mBeatOffset);
 
 		//update the tempo driver accordingly
 		if ((newBeatIndex - prevIndex) > 1)
@@ -179,14 +179,14 @@ float BufferPlayer::getSample(unsigned int chan){
 
 	//if we're in free mode then our tempo driver sets the period mul for us..
 	if (mPlayMode == freePlayback || syncSrcSynchingToMe){
-		val = mVolScale * mAudioBuffer->getSampleAtIndex(chan, mIndex);
+		val = mVolScale * mAudioBuffer->getSampleAtIndex(chan, mSampleIndex);
 	} else {
 		double time;
 		index = (1.0 / mMyTempoDriver.getPeriodMul()) * (mBeatOffset + beatIndexOffset + mBeatIndex);
-		//update mIndex, we might update this ourselves later if we switch to free mode
+		//update mSampleIndex, we might update this ourselves later if we switch to free mode
 		time = mBeatBuffer->getValue(index);
 		val = mVolScale * mAudioBuffer->getSample(chan, time);
-		mIndex = time * mAudioBuffer->getSampleRate();
+		mSampleIndex = time * mAudioBuffer->getSampleRate();
 	}
 
 	mMaxSample = abs_max(mMaxSample, val);
