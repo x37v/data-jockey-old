@@ -102,6 +102,7 @@ void AnnotatorView::selectWork(int work_id){
 		mWorkDBView->selectWork(work_id);
 }
 
+//XXX this is a hack I think.
 void AnnotatorView::deleteModel(){
 	delete mModel;
 }
