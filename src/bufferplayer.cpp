@@ -25,6 +25,9 @@ unsigned int BufferPlayer::mIdCnt = 0;
 BufferPlayer::BufferPlayer(unsigned int sampleRate, TempoDriver * defaultSync, SLV2World slv2world, SLV2Plugins slv2plugins) :
 	Object(), mMyTempoDriver(sampleRate)
 {
+	//XXX tmp
+	mIndex = 0;
+
 	mOutPort = cueOut;
 	mLoop = false;
 	mId = mIdCnt++;
@@ -94,9 +97,12 @@ unsigned int BufferPlayer::getBeatIndex(){
 void BufferPlayer::setBeatIndex(unsigned int index){
 	if(mBeatBuffer != NULL && index <= mBeatBuffer->length())
 		mBeatIndex = index;
+	if(mBeatBuffer != NULL && mAudioBuffer != NULL) 
+		mIndex = mBeatBuffer->getValue(mBeatIndex + mBeatOffset);
 }
 
 void BufferPlayer::reset(){
+	mIndex = 0.0;
 	setBeatIndex(0);
 }
 
@@ -109,12 +115,40 @@ void BufferPlayer::advanceBeat(int num_beats){
 		mBeatIndex = mLoopPoints.getLoopStartBeat();
 
 	//make sure we don't advance too far past our last beat
-	if(mBeatBuffer != NULL && mBeatIndex > mBeatBuffer->length())
+	if(mBeatBuffer != NULL && mBeatIndex > mBeatBuffer->length()){
 		mBeatIndex = mBeatBuffer->length();
+	}
+
+	if(mBeatBuffer != NULL && mAudioBuffer != NULL)
+		mIndex = mBeatBuffer->getValue(mBeatIndex + mBeatOffset) * mAudioBuffer->getSampleRate();
 }
 
 void BufferPlayer::sync(){
-	mMyTempoDriver.sync();
+	if(mPlayMode == freePlayback){
+		double prevIndex = mBeatIndex + mBeatOffset + mMyTempoDriver.getIndex();
+		double newBeatIndex;
+
+		//make sure we have valid data
+		if(mBeatBuffer == NULL || mAudioBuffer == NULL){
+			return;
+		}
+
+		//increment our index
+		mIndex += mMyTempoDriver.getTempoScale();
+
+		//get the beat index at this point in time based on our mIndex;
+		newBeatIndex = mBeatBuffer->getBeatIndexAtTime(mIndex / mAudioBuffer->getSampleRate(), mBeatIndex + mBeatOffset);
+
+		//update the tempo driver accordingly
+		if ((newBeatIndex - prevIndex) > 1)
+			mMyTempoDriver.setOverflowed();
+		mMyTempoDriver.setIndex(newBeatIndex - floor(newBeatIndex));
+		mMyTempoDriver.setPeriod(mBeatBuffer->getBeatPeriod(newBeatIndex));
+
+		//store the index, ditch the offset
+		mBeatIndex = newBeatIndex - mBeatOffset;
+	} else 
+		mMyTempoDriver.sync();
 }
 
 float BufferPlayer::getSample(unsigned int chan){
@@ -128,7 +162,7 @@ float BufferPlayer::getSample(unsigned int chan){
 	}
 
 	//update our period, syncing to ourself, tricky huh?
-	if (chan == 0){
+	if (chan == 0 && mPlayMode == syncPlayback){
 		if(validBeatPeriod())
 			mMyTempoDriver.setPeriod( getBeatPeriod(mMyTempoDriver.getIndex()));
 		if(mMyTempoDriver.overflow())
@@ -140,14 +174,18 @@ float BufferPlayer::getSample(unsigned int chan){
 	if(mAudioBuffer == NULL || mBeatBuffer == NULL)
 		return 0;
 
-	//the sample index
 	//if we're in free mode then our tempo driver sets the period mul for us..
-	if (mPlayMode == freePlayback || (syncSrc != NULL && syncSrc->getSyncSrc() == &mMyTempoDriver))
-		index = mBeatOffset + beatIndexOffset + mBeatIndex;
-	else
+	if (mPlayMode == freePlayback || (syncSrc != NULL && syncSrc->getSyncSrc() == &mMyTempoDriver)){
+		val = mVolScale * mAudioBuffer->getSampleAtIndex(chan, mIndex);
+	} else {
+		double time;
 		index = (1.0 / mMyTempoDriver.getPeriodMul()) * (mBeatOffset + beatIndexOffset + mBeatIndex);
+		//update mIndex, we might update this ourselves later if we switch to free mode
+		time = mBeatBuffer->getValue(index);
+		val = mVolScale * mAudioBuffer->getSample(chan, time);
+		mIndex = time * mAudioBuffer->getSampleRate();
+	}
 
-	val = mVolScale * mAudioBuffer->getSample(chan, mBeatBuffer->getValue(index));
 	mMaxSample = abs_max(mMaxSample, val);
 	return val;
 }

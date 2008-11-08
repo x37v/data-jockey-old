@@ -73,6 +73,9 @@ namespace DataJockey {
 			//so that we can do vu meters etc
 			float mMaxSample;
 
+			//XXX tmp
+			double mIndex;
+
 			bool mPlaying;
 
 			TempoDriver mMyTempoDriver;
