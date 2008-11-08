@@ -5,6 +5,10 @@ using namespace DataJockey;
 using std::cerr;
 using std::endl;
 
+//just for Q_UNUSED
+#include <QObject>
+
+
 SLV2World AudioIO::cLv2World;
 SLV2Plugins AudioIO::cLv2Plugins;
 bool AudioIO::cLv2Inited = false;
@@ -252,7 +256,8 @@ void AudioIO::processCommand(AudioIOCmdPtr cmd){
 int AudioIO::audioCallback(jack_nframes_t nframes, 
 		std::vector<jack_default_audio_sample_t *> inBufs,
 		std::vector<jack_default_audio_sample_t *> outBufs){
-	float beatIndex;
+	Q_UNUSED(inBufs);
+	double beatIndex;
 	bool beat = false, measure = false;
 
 	handleInputEvents();
