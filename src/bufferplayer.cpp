@@ -124,7 +124,8 @@ void BufferPlayer::advanceBeat(int num_beats){
 }
 
 void BufferPlayer::sync(){
-	if(mPlayMode == freePlayback){
+	if(mPlayMode == freePlayback || 
+			(mMyTempoDriver.getSyncSrc() != NULL && mMyTempoDriver.getSyncSrc()->getSyncSrc() == &mMyTempoDriver)){
 		double prevIndex = mBeatIndex + mBeatOffset + mMyTempoDriver.getIndex();
 		double newBeatIndex;
 
@@ -133,8 +134,9 @@ void BufferPlayer::sync(){
 			return;
 		}
 
-		//increment our index
-		mIndex += mMyTempoDriver.getTempoScale();
+		//increment our index if we're not paused
+		if(mPlaying)
+			mIndex += mMyTempoDriver.getTempoScale();
 
 		//get the beat index at this point in time based on our mIndex;
 		newBeatIndex = mBeatBuffer->getBeatIndexAtTime(mIndex / mAudioBuffer->getSampleRate(), mBeatIndex + mBeatOffset);
@@ -156,13 +158,14 @@ float BufferPlayer::getSample(unsigned int chan){
 	float index;
 	float beatIndexOffset;
 	TempoDriver * syncSrc = mMyTempoDriver.getSyncSrc();
+	bool syncSrcSynchingToMe = (syncSrc != NULL && syncSrc->getSyncSrc() == &mMyTempoDriver);
 
 	if (!mPlaying){
 		return 0.0;
 	}
 
 	//update our period, syncing to ourself, tricky huh?
-	if (chan == 0 && mPlayMode == syncPlayback){
+	if (chan == 0 && mPlayMode == syncPlayback && !syncSrcSynchingToMe){
 		if(validBeatPeriod())
 			mMyTempoDriver.setPeriod( getBeatPeriod(mMyTempoDriver.getIndex()));
 		if(mMyTempoDriver.overflow())
@@ -175,7 +178,7 @@ float BufferPlayer::getSample(unsigned int chan){
 		return 0;
 
 	//if we're in free mode then our tempo driver sets the period mul for us..
-	if (mPlayMode == freePlayback || (syncSrc != NULL && syncSrc->getSyncSrc() == &mMyTempoDriver)){
+	if (mPlayMode == freePlayback || syncSrcSynchingToMe){
 		val = mVolScale * mAudioBuffer->getSampleAtIndex(chan, mIndex);
 	} else {
 		double time;
