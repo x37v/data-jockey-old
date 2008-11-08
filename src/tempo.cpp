@@ -30,8 +30,22 @@ namespace DataJockey {
 
 	//XXX this is not perfect yet, something with updating the 
 	//period messes with the clock slightly..
-	bool TempoDriver::tick(float &sample_val){
+	bool TempoDriver::tick(double &sample_val){
+
 		mOverflow = false;
+
+		if(mNextTick > mSampleCnt){
+			sample_val = mBeatIndex = (double)mSampleCnt / mNextTick;
+			mSampleCnt++;
+		} else {
+			mNextTick = mPeriodMul * mPeriod * mSampleRate + (mNextTick - mSampleCnt);
+			mBeatIndex = mSampleCnt = 0;
+			sample_val = 1.0;
+			mOverflow = true;
+		}
+		return mOverflow;
+
+
 		if(mNextTick > mSampleCnt){
 			sample_val = mBeatIndex;
 			mBeatIndex += (1.0 - mBeatIndex) / (double)(mNextTick - mSampleCnt);
@@ -66,7 +80,7 @@ namespace DataJockey {
 	}
 
 	bool TempoDriver::tick(){
-		float whocares;
+		double whocares;
 		return tick(whocares);
 	}
 

@@ -21,7 +21,7 @@ namespace DataJockey {
 			TempoDriver(unsigned int sample_rate, double period = 0.5);
 			void reset();
 			//returns true if the phase was reset
-			bool tick(float &sample_val);
+			bool tick(double &sample_val);
 			bool tick();
 			void setSampleRate(unsigned int rate);
 			void setPeriod(double period, bool updateTick = true);
@@ -35,6 +35,7 @@ namespace DataJockey {
 			TempoDriver * getSyncSrc(){ return mSyncSrc; }
 
 			bool overflow(){ return mOverflow; }
+			void setOverflowed(bool overflow = true){ mOverflow = overflow;}
 
 			void setIndex(double index);
 			double getIndex(){ return mBeatIndex; }
