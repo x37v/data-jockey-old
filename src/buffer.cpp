@@ -8,22 +8,18 @@ using namespace DataJockey;
 #define READ_FRAME_SIZE 2048
 #define MIN(x,y) ((x) < (y) ? (x) : (y))
 
-#include <iostream>
-using std::cout;
-using std::endl;
-
 unsigned int AudioBuffer::mIdCnt = 0;
 unsigned int BeatBuffer::mIdCnt = 0;
 
 template<typename Type>
-Type linear_interp(Type v0, Type v1, float dist){
+Type linear_interp(Type v0, Type v1, double dist){
 	return v0 + (v1 - v0) * dist;
 }
 
 //adapted from from: http://local.wasp.uwa.edu.au/~pbourke/other/interpolation/
 //mu is the distance between y1 and y2
 template<typename Type>
-Type cubic_interp(Type y0, Type y1, Type y2, Type y3, float mu){
+Type cubic_interp(Type y0, Type y1, Type y2, Type y3, double mu){
    Type a0,a1,a2,a3,mu2;
    mu2 = mu*mu;
    a0 = y3 - y2 - y0 + y1;
@@ -75,11 +71,21 @@ void AudioBuffer::load(std::string sndfile_location)
 	delete [] inbuf;
 }
 
-float AudioBuffer::getSample(unsigned int chan, float time){
-	float index = time * mSampleRate;
+float AudioBuffer::getSample(unsigned int chan, double time){
+	double index = time * mSampleRate;
 	unsigned int prevSampIndex = (unsigned int)index;
 	unsigned int nextSampIndex = prevSampIndex + 1;
 	if(time < 0 || mAudioBuffer.size() == 0 || nextSampIndex >= mAudioBuffer[0].size()){
+		return 0;
+	}
+	return linear_interp<float>(mAudioBuffer[chan][prevSampIndex], 
+			mAudioBuffer[chan][nextSampIndex], index - prevSampIndex);
+}
+
+float AudioBuffer::getSampleAtIndex(unsigned int chan, double index){
+	unsigned int prevSampIndex = (unsigned int)index;
+	unsigned int nextSampIndex = prevSampIndex + 1;
+	if(index < 0 || mAudioBuffer.size() == 0 || nextSampIndex >= mAudioBuffer[0].size()){
 		return 0;
 	}
 	return linear_interp<float>(mAudioBuffer[chan][prevSampIndex], 
@@ -177,17 +183,74 @@ void BeatBuffer::load(std::string beatDataLocation)
 	}
 }
 
-float BeatBuffer::getValue(float beat_index){
+double BeatBuffer::getValue(double beat_index){
 	unsigned int prevBeat = (unsigned int)beat_index;
 	unsigned int nextBeat = prevBeat + 1;
 	//make sure our beat index is in range
 	if(beat_index < 0 || nextBeat >= mBeatBuffer.size())
 		return 0;
-	return linear_interp<float>(mBeatBuffer[prevBeat], mBeatBuffer[nextBeat], beat_index - prevBeat);
+	return linear_interp<double>(mBeatBuffer[prevBeat], mBeatBuffer[nextBeat], beat_index - prevBeat);
 }
 
+double BeatBuffer::getBeatIndexAtTime(double time, double hint_beat_index){
+	int cur_index = 0;
+	
+	//test the boundary cases
+	if(mBeatBuffer.empty())
+		return 0.0;
+	if(time <= mBeatBuffer[0])
+		return 0.0;
+	if(time >= mBeatBuffer.back())
+		return mBeatBuffer.back();
 
-float BeatBuffer::getBeatPeriod(float beat_index){
+	//deal with the hint index, basically, where do we start searching
+	if(hint_beat_index > 0)
+		cur_index = hint_beat_index;
+	if(hint_beat_index > mBeatBuffer.size())
+		cur_index = mBeatBuffer.size() - 2;
+
+	//there are 5 cases:
+	//our time is less than the first item in the list
+	//our time is greater than the last time in the list
+	//our time is greater than the next item in the list
+	//our time is less than the current item in the list
+	//our time is between the current and the next item in the list [this is where we want to get to]
+
+	//see for a position where mBeatBuffer[cur_index] <= time < mBeatBuffer[cur_index + 1]
+	while(true){
+		if (cur_index >= (int)mBeatBuffer.size())
+			return mBeatBuffer.back();
+		else if (cur_index < 0)
+			return 0.0;
+		else if(mBeatBuffer[cur_index] > time)
+			cur_index--;
+		else if(time >= mBeatBuffer[cur_index + 1])
+			cur_index++;
+		else
+			break;
+	}
+	if (cur_index >= (int)mBeatBuffer.size())
+		return mBeatBuffer.back();
+	else if (cur_index < 0)
+		return 0.0;
+	else {
+		//equation for a line!
+		//times are y values, indices are x values
+		//y = mx + b
+		//m = (y1 - y0)  / (x1 - x0)
+		//here x1 - x0 == 1
+		//b = y - mx
+		//x = (y - b) / m
+		double t0 = mBeatBuffer[cur_index];
+		double t1 = mBeatBuffer[cur_index + 1];
+		double m = t1 - t0;
+		double b = t0 - (cur_index * m);
+		return (time - b) / m;
+	}
+
+}
+
+double BeatBuffer::getBeatPeriod(double beat_index){
 	unsigned int index = (unsigned int)floor(beat_index);
 	if (beat_index < 0 || mBeatBuffer.size() < 2){
 		//XXX this should not happen

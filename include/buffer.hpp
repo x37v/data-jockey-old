@@ -29,7 +29,9 @@ namespace DataJockey {
 //			~AudioBuffer(){
 //				std::cout << "destroying audio buffer" << std::endl;
 //			}
-			float getSample(unsigned int chan, float index);
+			float getSample(unsigned int chan, double time);
+			//this version takes a sample index, not a time index
+			float getSampleAtIndex(unsigned int chan, double index);
 			unsigned int getSampleRate(){return mSampleRate;}
 	};
 
@@ -42,8 +44,11 @@ namespace DataJockey {
 			void load(std::string beatDataLocation) throw(std::runtime_error);
 		public:
 			BeatBuffer(std::string beatDataLocation) throw(std::runtime_error);
-			float getValue(float beat_index);
-			float getBeatPeriod(float beat_index);
+			double getValue(double beat_index);
+			double getBeatPeriod(double beat_index);
+			//find a beat index based on a time input, the hint index lets us get
+			//closer to where we need to go faster
+			double getBeatIndexAtTime(double time, double hint_beat_index = 0);
 			unsigned int length(){return mBeatBuffer.size();}
 	};
 
