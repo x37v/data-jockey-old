@@ -6,6 +6,7 @@ RUBYLIBDEST = $$system("ruby -e 'require \"rbconfig\"; puts File.join(Config::CO
 
 #change to release if you want to be optimized
 CONFIG += qt debug
+#CONFIG += qt release
 
 TEMPLATE = app
 TARGET = datajockey
@@ -18,6 +19,10 @@ macx {
 	INCLUDEPATH += /opt/local/include/
 	INCLUDEPATH += /opt/local/lib/ruby/1.8/i686-darwin9/
 }
+
+#fast math should get rid of denormal problems [with SSE enabled processors]
+QMAKE_CFLAGS += -ffast-math
+QMAKE_CXXFLAGS += -ffast-math
 
 target.path = $$PREFIX/bin
 INSTALLS += target
