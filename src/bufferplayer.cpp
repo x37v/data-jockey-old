@@ -98,7 +98,7 @@ void BufferPlayer::setBeatIndex(unsigned int index){
 	if(mBeatBuffer != NULL && index <= mBeatBuffer->length())
 		mBeatIndex = index;
 	if(mBeatBuffer != NULL && mAudioBuffer != NULL) 
-		mSampleIndex = mBeatBuffer->getValue(mBeatIndex + mBeatOffset);
+		mSampleIndex = mBeatBuffer->getValue(mBeatIndex + mBeatOffset) * mAudioBuffer->getSampleRate();
 }
 
 void BufferPlayer::reset(){
