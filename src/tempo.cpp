@@ -34,6 +34,7 @@ namespace DataJockey {
 
 		mOverflow = false;
 
+		//XXX
 		if(mNextTick > mSampleCnt){
 			sample_val = mBeatIndex = (double)mSampleCnt / mNextTick;
 			mSampleCnt++;
