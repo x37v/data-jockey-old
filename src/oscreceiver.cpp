@@ -172,6 +172,7 @@ void OscReceiver::processDJControlMessage(const std::string addr,
 	boost::regex cue_re("^cue(/toggle){0,1}/{0,1}$");
 	boost::regex sync_re("^sync(/toggle){0,1}/{0,1}$");
 	boost::regex seek_re("^seek(/relative){0,1}/{0,1}$");
+	boost::regex reset_re("^reset$");
 	boost::regex beatoffset_re("^beatoffset(/relative){0,1}/{0,1}$");
 	boost::regex tempomul_re("^tempomul/{0,1}$");
 	boost::cmatch matches;
@@ -186,6 +187,8 @@ void OscReceiver::processDJControlMessage(const std::string addr,
 				control->setPlay(boolFromBoolOrInt(*arg_it));
 		} else 
 			control->setPlay(!control->playing());
+	} else if(boost::regex_match(addr.c_str(), matches, reset_re)){
+			control->resetWorkPosition();
 	} else if(boost::regex_match(addr.c_str(), matches, cue_re)){
 		if(strcmp(matches[1].str().c_str(), "") == 0){
 			//set
