@@ -142,11 +142,16 @@ void BufferPlayer::sync(){
 		newBeatIndex = mBeatBuffer->getBeatIndexAtTime(mSampleIndex / mAudioBuffer->getSampleRate(), mBeatIndex + mBeatOffset);
 
 		//update the tempo driver accordingly
-		if ((newBeatIndex - prevIndex) > 1)
-			mMyTempoDriver.setOverflowed();
-		//else
-			//mMyTempoDriver.setOverflowed(false);
-		mMyTempoDriver.setIndex(newBeatIndex - floor(newBeatIndex));
+		if(newBeatIndex > prevIndex){
+			if ((newBeatIndex - prevIndex) >= 1)
+				mMyTempoDriver.setOverflowed();
+			else
+				mMyTempoDriver.setOverflowed(false);
+			mMyTempoDriver.setIndex(newBeatIndex - floor(newBeatIndex) - floor(newBeatIndex - prevIndex));
+		} else {
+			mMyTempoDriver.setOverflowed(false);
+			mMyTempoDriver.setIndex(newBeatIndex - floor(newBeatIndex));
+		}
 		mMyTempoDriver.setPeriod(mBeatBuffer->getBeatPeriod(newBeatIndex));
 
 		//store the index, ditch the offset
@@ -238,7 +243,7 @@ void BufferPlayer::setPlayMode(playMode_t mode){
 	} else {
 		mMyTempoDriver.syncTo(mDefaultSync);
 		//if we're going to sync to a clock that is syncing to us then
-		//we shouldn't change our perido mul
+		//we shouldn't change our period mul
 		if(syncSourceSyncSource != &mMyTempoDriver)
 			mMyTempoDriver.setPeriodMul(1.0);
 	}

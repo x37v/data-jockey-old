@@ -11,7 +11,7 @@ namespace DataJockey {
 			double mPeriod;
 			unsigned int mSampleRate;
 			double mNextTick;
-			double mLastTick;
+			//double mLastTick;
 			unsigned int mSampleCnt;
 			//period mul is used to sync with a buffer player
 			double mPeriodMul;
@@ -52,7 +52,7 @@ namespace DataJockey {
 			double getNextTick(){return mNextTick;}
 			void setNextTick(double next){ mNextTick = next;}
 
-			double getLastTick(){return mLastTick;}
+			//double getLastTick(){return mLastTick;}
 	};
 
 	class TempoDivider {

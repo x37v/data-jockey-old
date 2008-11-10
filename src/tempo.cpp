@@ -23,7 +23,7 @@ namespace DataJockey {
 
 	void TempoDriver::reset(){
 		mSampleCnt = 0;
-		mLastTick = 0;
+		//mLastTick = 0;
 		mBeatIndex = 0;
 		mOverflow = false;
 	}
@@ -33,8 +33,14 @@ namespace DataJockey {
 	bool TempoDriver::tick(double &sample_val){
 
 		mOverflow = false;
-
 		/*
+		if(mSyncSrc != NULL){
+			sync();
+			sample_val = mBeatIndex;
+			return mOverflow;
+		}
+		*/
+
 		//XXX
 		if(mNextTick > mSampleCnt){
 			sample_val = mBeatIndex = (double)mSampleCnt / mNextTick;
@@ -46,7 +52,6 @@ namespace DataJockey {
 			mOverflow = true;
 		}
 		return mOverflow;
-		*/
 
 		if(mNextTick > mSampleCnt){
 			sample_val = mBeatIndex;
@@ -131,7 +136,7 @@ namespace DataJockey {
 			mBeatIndex = mSyncSrc->getIndex();
 			mOverflow = mSyncSrc->overflow();
 			mNextTick = mSyncSrc->getNextTick();
-			mLastTick = mSyncSrc->getLastTick();
+			//mLastTick = mSyncSrc->getLastTick();
 			mSampleCnt = mSyncSrc->getSampleCount();
 		}
 	}
