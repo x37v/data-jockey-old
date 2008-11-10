@@ -136,13 +136,16 @@ void BeatBuffer::load(std::string beatDataLocation)
 		if(it == beatLocs->end())
 			throw std::runtime_error("cannot find beat locations");
 
-		//if it is a sequence use the newest one for now!
+		//if it is a sequence use the last one for now!
 		if(yaml::is<yaml::seq_ptr>(it->second)){
 			yaml::seq_ptr beatLocSeq = yaml::get<yaml::seq_ptr>(it->second);
 
-			//store the first
-			beatLocs = yaml::get<yaml::map_ptr>( beatLocSeq->at(0));
+			//store the last
+			beatLocs = yaml::get<yaml::map_ptr>( beatLocSeq->back());
 
+			/*
+			//this tries to find the one with the most recent mtime..
+			beatLocs = yaml::get<yaml::map_ptr>( beatLocSeq->front());
 			try {
 				//do we have to check the first element?
 				for(yaml::seq::iterator seq_it = beatLocSeq->begin();
@@ -165,6 +168,7 @@ void BeatBuffer::load(std::string beatDataLocation)
 			} catch (...){
 				//do nothing we've still got the first one set
 			}
+			*/
 
 		} else 
 			beatLocs = yaml::get<yaml::map_ptr>(it->second);
