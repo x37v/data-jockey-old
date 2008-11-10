@@ -205,7 +205,7 @@ double BeatBuffer::getBeatIndexAtTime(double time, double hint_beat_index){
 	if(time <= mBeatBuffer[0])
 		return 0.0;
 	if(time >= mBeatBuffer.back())
-		return mBeatBuffer.back();
+		return mBeatBuffer.size();
 
 	//deal with the hint index, basically, where do we start searching
 	if(hint_beat_index > 0)

@@ -149,6 +149,7 @@ void BufferPlayer::sync(){
 
 		//store the index, ditch the offset
 		mBeatIndex = newBeatIndex - mBeatOffset;
+
 	} else 
 		mMyTempoDriver.sync();
 }
