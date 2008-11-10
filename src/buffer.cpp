@@ -191,8 +191,10 @@ double BeatBuffer::getValue(double beat_index){
 	unsigned int prevBeat = (unsigned int)beat_index;
 	unsigned int nextBeat = prevBeat + 1;
 	//make sure our beat index is in range
-	if(beat_index < 0 || nextBeat >= mBeatBuffer.size())
+	if(beat_index < 0 || mBeatBuffer.size() == 0)
 		return 0;
+	else if(nextBeat >= mBeatBuffer.size())
+		return mBeatBuffer.back();
 	return linear_interp<double>(mBeatBuffer[prevBeat], mBeatBuffer[nextBeat], beat_index - prevBeat);
 }
 
