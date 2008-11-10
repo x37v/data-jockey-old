@@ -144,6 +144,8 @@ void BufferPlayer::sync(){
 		//update the tempo driver accordingly
 		if ((newBeatIndex - prevIndex) > 1)
 			mMyTempoDriver.setOverflowed();
+		//else
+			//mMyTempoDriver.setOverflowed(false);
 		mMyTempoDriver.setIndex(newBeatIndex - floor(newBeatIndex));
 		mMyTempoDriver.setPeriod(mBeatBuffer->getBeatPeriod(newBeatIndex));
 
@@ -446,10 +448,7 @@ BufferPlayer::IncPlaybackPosition::IncPlaybackPosition( int increment) :
 }
 
 void BufferPlayer::IncPlaybackPosition::operateOnPlayer(BufferPlayerPtr player){
-	if((mIncrement + (int)player->getBeatIndex()) < 0)
-		player->setBeatIndex(0);
-	else
-		player->setBeatIndex(mIncrement + player->getBeatIndex());
+	player->advanceBeat(mIncrement);
 }
 
 //******************
