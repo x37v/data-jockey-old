@@ -92,6 +92,13 @@ float AudioBuffer::getSampleAtIndex(unsigned int chan, double index){
 			mAudioBuffer[chan][nextSampIndex], index - prevSampIndex);
 }
 
+unsigned int AudioBuffer::length(){
+	if(mAudioBuffer.size() == 0)
+		return 0;
+	else
+		return mAudioBuffer[0].size();
+}
+
 //**************************
 // BeatBuffer
 //**************************

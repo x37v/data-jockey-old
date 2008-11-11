@@ -33,6 +33,7 @@ namespace DataJockey {
 			//this version takes a sample index, not a time index
 			float getSampleAtIndex(unsigned int chan, double index);
 			unsigned int getSampleRate(){return mSampleRate;}
+			unsigned int length();
 	};
 
 
