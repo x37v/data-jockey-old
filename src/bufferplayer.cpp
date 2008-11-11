@@ -138,6 +138,10 @@ void BufferPlayer::sync(){
 		if(mPlaying)
 			mSampleIndex += mMyTempoDriver.getTempoScale();
 
+		//don't see past the end of our audio buffer
+		if(mSampleIndex > mAudioBuffer->length())
+			mSampleIndex = mAudioBuffer->length() + 1;
+
 		//get the beat index at this point in time based on our mSampleIndex;
 		newBeatIndex = mBeatBuffer->getBeatIndexAtTime(mSampleIndex / mAudioBuffer->getSampleRate(), mBeatIndex + mBeatOffset);
 

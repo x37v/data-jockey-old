@@ -33,11 +33,12 @@ namespace DataJockey {
 	bool TempoDriver::tick(double &sample_val){
 
 		mOverflow = false;
+
 		/*
 		if(mSyncSrc != NULL){
 			sync();
-			sample_val = mBeatIndex;
-			return mOverflow;
+			sample_val = mSyncSrc->getIndex();
+			return mSyncSrc->overflow();
 		}
 		*/
 
