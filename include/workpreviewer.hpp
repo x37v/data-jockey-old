@@ -6,6 +6,7 @@
 #include <QString>
 #include <QSqlDatabase>
 #include <QSqlQuery>
+#include "soundfile.hpp"
 
 class MixerPanelModel;
 
@@ -13,11 +14,18 @@ class WorkPreviewerThread : public QThread {
 	Q_OBJECT
 	public:
 		WorkPreviewerThread(QObject * parent);
+		virtual ~WorkPreviewerThread();
 	signals:
 		void playing(bool playing);
 	public slots:
 		void playFile(QString file_location);
 		void stop();
+	protected:
+		void run();
+		void fillBuffer();
+	private:
+		bool mPlay;
+		SoundFile * mSoundFile;
 };
 
 class WorkPreviewer : public QObject {

@@ -6,13 +6,41 @@
 #include <iostream>
 
 WorkPreviewerThread::WorkPreviewerThread(QObject * parent) : QThread(parent){
+	mSoundFile = NULL;
+	mPlay = false;
+}
+
+WorkPreviewerThread::~WorkPreviewerThread(){
+	if(mSoundFile)
+		delete mSoundFile;
 }
 
 void WorkPreviewerThread::playFile(QString file){
-	std::cout << "previewing: " << file.toStdString() << std::endl;
+	try {
+		if(mSoundFile)
+			delete mSoundFile;
+		mSoundFile = new SoundFile(file.toStdString());
+		if(*mSoundFile){
+		} else {
+			delete mSoundFile;
+			mSoundFile = NULL;
+			emit(playing(false));
+		}
+	} catch (...) {
+		mSoundFile = NULL;
+	}
 }
 
 void WorkPreviewerThread::stop(){
+	mPlay = false;
+}
+
+void WorkPreviewerThread::run(){
+}
+
+void WorkPreviewerThread::fillBuffer(){
+	if(mPlay){
+	}
 }
 
 QString WorkPreviewer::cFileQueryString(
