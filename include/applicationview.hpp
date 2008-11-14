@@ -19,6 +19,7 @@ class ApplicationView : public QWidget {
 		MixerPanelView * mixerPanel() const;
 		WorkDBView * workDB() const;
 		TagEditor * tagEditor() const;
+		WorkDetailView * workDetail() const ;
 	private:
 		ApplicationModel * mModel;
 		WorkDetailView * mWorkDetail;

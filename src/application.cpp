@@ -24,6 +24,8 @@ using std::endl;
 
 #include "audiodriver.hpp"
 #include "workloader.hpp"
+#include "workpreviewer.hpp"
+#include "workdetailview.hpp"
 
 #include "applicationmodel.hpp"
 #include "applicationview.hpp"
@@ -31,6 +33,7 @@ using std::endl;
 #include "tageditor.hpp"
 #include "workfilterlist.hpp"
 #include "defaultworkfilters.hpp"
+
 
 #include "oscreceiver.hpp"
 
@@ -64,6 +67,7 @@ int DataJockeyApplication::run(int argc, char *argv[]){
 	ApplicationModel * model = ApplicationModel::instance();
 	ApplicationView * view = new ApplicationView(model);
 	WorkLoader * loader = new WorkLoader(model->db(), model->mixerPanel(), view->mixerPanel());
+	WorkPreviewer * previewer = new WorkPreviewer(model->db(), model->mixerPanel());
 	AudioDriver * audioDriver = new AudioDriver(model->mixerPanel());
 	AudioDriverThread * audioDriverThread = new AudioDriverThread(model);
 
@@ -97,6 +101,23 @@ int DataJockeyApplication::run(int argc, char *argv[]){
 			audioDriver, 
 			SLOT(mixerLoad(unsigned int, DataJockey::AudioBufferPtr, DataJockey::BeatBufferPtr, bool)),
 			Qt::QueuedConnection);
+
+	//previewing
+	QObject::connect(
+			view->workDB(),
+			SIGNAL(workSelected(int)),
+			previewer,
+			SLOT(setWork(int)));
+	QObject::connect(
+			previewer,
+			SIGNAL(previewing(bool)),
+			view->workDetail(),
+			SLOT(setPreviewing(bool)));
+	QObject::connect(
+			view->workDetail(),
+			SIGNAL(previewing(bool)),
+			previewer,
+			SLOT(preview(bool)));
 
 	//start the driver and the driver thread
 	audioDriver->start();

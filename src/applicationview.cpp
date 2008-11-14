@@ -93,6 +93,10 @@ TagEditor * ApplicationView::tagEditor() const {
 	return mTagEditor;
 }
 
+WorkDetailView * ApplicationView::workDetail() const {
+	return mWorkDetail;
+}
+
 void ApplicationView::connectToModel(){
 
 	MixerPanelModel * mixerModel = mModel->mixerPanel();

@@ -6,6 +6,7 @@
 #include <QSqlQuery>
 #include <QSqlRecord>
 #include <QKeyEvent>
+#include <QPushButton>
 
 #include "tagmodel.hpp"
 #include "worktagmodelfilter.hpp"
@@ -24,11 +25,14 @@ WorkDetailView::WorkDetailView(
 	QWidget(parent), 
 	mWorkQuery(db)
 {
+	mDisplayingWork = false;
+
 	mLayout = new QGridLayout(this);
 	mArtist = new QLineEdit(tr("artist"), this);
 	mTitle = new QLineEdit(tr("title"), this);
 	mTagModel = new WorkTagModelFilter(tagModel);
 	mTagView = new TagView(mTagModel, this);
+	mPreviewButton = new QPushButton("preview", this);
 
 	//don't show count in tagview
 	mTagView->setColumnHidden(TagModel::countColumn(),true);
@@ -36,6 +40,9 @@ WorkDetailView::WorkDetailView(
 	//allow dropping into the tag view
 	mTagView->viewport()->setAcceptDrops(true);
 	mTagView->setDropIndicatorShown(true);
+
+	//make the preview button toggle
+	mPreviewButton->setCheckable(true);
 
 	mArtist->setReadOnly(true);
 	mTitle->setReadOnly(true);
@@ -45,7 +52,8 @@ WorkDetailView::WorkDetailView(
 
 	mLayout->addWidget(mTitle, 0, 0);
 	mLayout->addWidget(mArtist, 1, 0);
-	mLayout->addWidget(mTagView, 0, 1, 3, 1);
+	mLayout->addWidget(mPreviewButton, 3, 0);
+	mLayout->addWidget(mTagView, 0, 1, 4, 1);
 	mLayout->setContentsMargins(0,0,0,0);
 
 	mLayout->setColumnStretch(0,0);
@@ -53,6 +61,12 @@ WorkDetailView::WorkDetailView(
 	mLayout->setRowStretch(0,0);
 	mLayout->setRowStretch(1,0);
 	setLayout(mLayout);
+
+	//connect up internal sigs/slots
+	QObject::connect(mPreviewButton,
+			SIGNAL(toggled(bool)),
+			this,
+			SLOT(setPreviewingInternal(bool)));
 }
 
 //if a user hits delete and the index is valid then delete that association
@@ -83,6 +97,8 @@ void WorkDetailView::setWork(int work_id){
 		mArtist->setText(mWorkQuery.value(artistCol).toString());
 		mTagModel->setWork(work_id);
 		mTagView->expandAll();
+		mDisplayingWork = true;
+		setPreviewing(false);
 	} else {
 		clear();
 	}
@@ -92,6 +108,7 @@ void WorkDetailView::clear(){
 	mArtist->setText(tr("artist"));
 	mTitle->setText(tr("title"));
 	mTagModel->clear();
+	mDisplayingWork = false;
 }
 
 void WorkDetailView::expandTags(bool expand){
@@ -101,3 +118,22 @@ void WorkDetailView::expandTags(bool expand){
 		mTagView->collapseAll();
 }
 
+void WorkDetailView::setPreviewing(bool down){
+	if(down){
+		if(mDisplayingWork) {
+			mPreviewButton->setText("end preview");
+			if(!mPreviewButton->isChecked())
+				mPreviewButton->setChecked(true);
+		} else
+			mPreviewButton->setChecked(false);
+	} else {
+		mPreviewButton->setText("preview");
+		if(mPreviewButton->isChecked())
+			mPreviewButton->setChecked(false);
+	}
+}
+
+void WorkDetailView::setPreviewingInternal(bool down){
+	setPreviewing(down);
+	emit(previewing(down));
+}

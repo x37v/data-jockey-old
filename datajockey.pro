@@ -122,6 +122,7 @@ HEADERS +=  include/application.hpp \
 				include/workfilterlistview.hpp \
 				include/workfiltermodel.hpp \
 				include/workloader.hpp \
+				include/workpreviewer.hpp \
 				include/worktablemodel.hpp \
 				include/worktagmodelfilter.hpp 
 
@@ -171,6 +172,7 @@ SOURCES +=  src/application.cpp \
 				src/workfilterlistview.cpp \
 				src/workfiltermodel.cpp \
 				src/workloader.cpp \
+				src/workpreviewer.cpp \
 				src/worktablemodel.cpp \
 				src/worktagmodelfilter.cpp 
 
