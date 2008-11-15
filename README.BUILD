@@ -99,7 +99,7 @@ DEPENDENCIES:
 		yaml_cpp:
 			http://x37v.info/projects/cpp/yaml/files/yamlcpp.0.0.1.tar.gz
 		jack_cpp:
-			http://x37v.info/jack_cpp/code/jackcpp.0.3.tar.gz
+			http://x37v.info/jack_cpp/code/jackcpp.0.3.1.tar.gz
 		use pkgconfig for jack CFLAGS and LDFLAGS
 		had to add /opt/local/include to CFLAGS and /opt/local/lib to LD flags
 
