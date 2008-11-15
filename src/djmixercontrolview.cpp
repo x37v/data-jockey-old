@@ -67,8 +67,11 @@ DJMixerControlView::DJMixerControlView(QWidget *parent)
 	mCueBtn = new QToolButton(this);
 	mSyncBtn = new QToolButton(this);
 	mPlayBtn = new QToolButton(this);
+
 	mSeekFwdBtn = new QToolButton(this);
 	mSeekBkwdBtn = new QToolButton(this);
+	mSeekFwdBtn->setAutoRepeat(true);
+	mSeekBkwdBtn->setAutoRepeat(true);
 
 	mBeatOffset = new QSpinBox(this);
 	mBeatOffset->setToolTip(tr("beat start offset"));
