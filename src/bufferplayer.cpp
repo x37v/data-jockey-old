@@ -88,7 +88,7 @@ BufferPlayer::~BufferPlayer(){
 void BufferPlayer::setBuffers(AudioBufferPtr audio_buf, BeatBufferPtr beat_buf){
 	mAudioBuffer = audio_buf;
 	mBeatBuffer = beat_buf;
-	if(!mBeatBuffer)
+	if(!canSync())
 		mPlayMode = freePlayback;
 }
 
@@ -102,16 +102,32 @@ void BufferPlayer::setBeatIndex(unsigned int index){
 	if(mBeatBuffer != NULL && mAudioBuffer != NULL) 
 		mSampleIndex = mBeatBuffer->getValue(mBeatIndex + mBeatOffset) * mAudioBuffer->getSampleRate();
 	//if we don't have a beat buffer then we just have the index be 'seconds'
-	if(mBeatBuffer == NULL && mAudioBuffer != NULL) 
+	if(!canSync() && mAudioBuffer != NULL) 
 		mSampleIndex = mAudioBuffer->getSampleRate() * index;
 }
 
 void BufferPlayer::reset(){
-	mSampleIndex = 0.0;
 	setBeatIndex(0);
+	if(!canSync()){
+		if(mAudioBuffer) {
+			mSampleIndex = mBeatOffset * mAudioBuffer->getSampleRate();
+		} else
+			mSampleIndex = 0.0;
+	}
 }
 
 void BufferPlayer::advanceBeat(int num_beats){
+	//if we don't have a beat buffer then we just have the index be 'seconds'
+	if(!canSync() && mAudioBuffer != NULL){
+		mSampleIndex += ((int)mAudioBuffer->getSampleRate() * num_beats);
+
+		if(mSampleIndex > mAudioBuffer->length())
+			mSampleIndex = mAudioBuffer->length() + 1;
+		else if(mSampleIndex < 0.0)
+			mSampleIndex = mBeatOffset * mAudioBuffer->getSampleRate();
+		return;
+	}
+
 	if((int)mBeatIndex + num_beats < 0)
 		reset();
 	else
@@ -126,15 +142,11 @@ void BufferPlayer::advanceBeat(int num_beats){
 
 	if(mBeatBuffer != NULL && mAudioBuffer != NULL)
 		mSampleIndex = mBeatBuffer->getValue(mBeatIndex + mBeatOffset) * mAudioBuffer->getSampleRate();
-
-	//if we don't have a beat buffer then we just have the index be 'seconds'
-	if(!mBeatOffset && mAudioBuffer)
-		mSampleIndex += (mAudioBuffer->getSampleRate() * num_beats);
 }
 
 void BufferPlayer::sync(){
 	//if we dont have a beat buffer then we can only play in free mode
-	if(mBeatBuffer == NULL || mPlayMode == freePlayback || 
+	if(!canSync() || mPlayMode == freePlayback || 
 			(mMyTempoDriver.getSyncSrc() != NULL && mMyTempoDriver.getSyncSrc()->getSyncSrc() == &mMyTempoDriver)){
 		double prevIndex = mBeatIndex + mBeatOffset + mMyTempoDriver.getIndex();
 		double newBeatIndex;
@@ -206,7 +218,7 @@ float BufferPlayer::getSample(unsigned int chan){
 
 	//if we're in free mode then our tempo driver sets the period mul for us..
 	//if we don't have a beat buffer than we can only play in free mode
-	if (mBeatBuffer == NULL || mPlayMode == freePlayback || syncSrcSynchingToMe){
+	if (!canSync() || mPlayMode == freePlayback || syncSrcSynchingToMe){
 		val = mVolScale * mAudioBuffer->getSampleAtIndex(chan, mSampleIndex);
 	} else {
 		double time;
