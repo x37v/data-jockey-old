@@ -14,6 +14,7 @@
 #include <slv2/slv2.h>
 
 #define AUDIOIO_MAX_MESSAGES_PER_CALLBACK 1024
+#define AUDIOIO_PREVIEW_BUFFER_MS 200
 #define MEASURE_OUT 4
 
 namespace DataJockey {
@@ -67,6 +68,8 @@ namespace DataJockey {
 			unsigned int mSyncBufferPlayerIndex;
 			float mLastBeatIndex;
 
+			JackCpp::RingBuffer<jack_default_audio_sample_t> mPreviewBuffer;
+
 		public:
 			AudioIO(unsigned int num_buf_players = 4);
 			~AudioIO();
@@ -79,6 +82,9 @@ namespace DataJockey {
 				throw(std::runtime_error);
 			void sendCommand(AudioIOCmdPtr cmd);
 			AudioIOGetStatePtr consume();
+			unsigned int previewFrames();
+			unsigned int previewFramesFree();
+			void queuePreviewFrames(jack_default_audio_sample_t * buffer, jack_nframes_t frames);
 	};
 
 	class AudioIOCmd : public Command {

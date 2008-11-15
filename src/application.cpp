@@ -67,8 +67,8 @@ int DataJockeyApplication::run(int argc, char *argv[]){
 	ApplicationModel * model = ApplicationModel::instance();
 	ApplicationView * view = new ApplicationView(model);
 	WorkLoader * loader = new WorkLoader(model->db(), model->mixerPanel(), view->mixerPanel());
-	WorkPreviewer * previewer = new WorkPreviewer(model->db(), model->mixerPanel());
 	AudioDriver * audioDriver = new AudioDriver(model->mixerPanel());
+	WorkPreviewer * previewer = new WorkPreviewer(model->db(), model->mixerPanel(), audioDriver->audioIO());
 	AudioDriverThread * audioDriverThread = new AudioDriverThread(model);
 
 	audioDriverThread->setAudioDriver(audioDriver);

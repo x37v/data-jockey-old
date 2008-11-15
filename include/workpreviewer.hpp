@@ -7,33 +7,41 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include "soundfile.hpp"
+#include "audioio.hpp"
 
 class MixerPanelModel;
+class QTimer;
 
 class WorkPreviewerThread : public QThread {
 	Q_OBJECT
 	public:
-		WorkPreviewerThread(QObject * parent);
+		WorkPreviewerThread(DataJockey::AudioIO * audioIO, QObject * parent);
 		virtual ~WorkPreviewerThread();
 	signals:
 		void playing(bool playing);
 	public slots:
 		void playFile(QString file_location);
 		void stop();
+	protected slots:
+		void fillBuffer();
 	protected:
 		void run();
-		void fillBuffer();
 	private:
-		bool mPlay;
+		size_t mPreviewFrames;
+		jack_default_audio_sample_t * mPreviewBuffer;
+		DataJockey::AudioIO * mAudioIO;
+		QTimer * mFillTimer;
 		SoundFile * mSoundFile;
 };
 
 class WorkPreviewer : public QObject {
 	Q_OBJECT
 	public:
-		WorkPreviewer(const QSqlDatabase &db, MixerPanelModel * mixerModel);
+		WorkPreviewer(const QSqlDatabase &db, MixerPanelModel * mixerModel, DataJockey::AudioIO * audioIO);
 	signals:
 		void previewing(bool p);
+		void playingFile(QString file_location);
+		void stopping();
 	public slots:
 		void setWork(int work);
 		void preview(bool p);

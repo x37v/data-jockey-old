@@ -23,7 +23,9 @@ AudioIO::AudioIO(unsigned int num_buf_players) :
 	JackCpp::AudioIO("datajockey", 0, 0), 
 	mBeatAndMeasureDriver(getSampleRate()),
 	mMsgBufToAudio(AUDIOIO_MAX_MESSAGES_PER_CALLBACK),
-	mMsgBufFromAudio(AUDIOIO_MAX_MESSAGES_PER_CALLBACK)
+	mMsgBufFromAudio(AUDIOIO_MAX_MESSAGES_PER_CALLBACK),
+	mPreviewBuffer((getSampleRate() * AUDIOIO_PREVIEW_BUFFER_MS) / 500)
+	//SR * 2 * milliseconds / 1000 = SR(samples / sec) * milliseconds / 500 (ms)
 {
 
 	mMasterVolume = 1.0;
@@ -330,6 +332,18 @@ int AudioIO::audioCallback(jack_nframes_t nframes,
 			}
 		}
 	}
+	//reat the preview buffer into cue output
+	if(mPreviewBuffer.getReadSpace() > 2){
+		unsigned int readFrames = (mPreviewBuffer.getReadSpace() / 2);
+		if(readFrames > nframes)
+			readFrames = nframes;
+		for(unsigned int i = 0; i < readFrames; i++){
+			jack_default_audio_sample_t tmp[2];
+			mPreviewBuffer.read(tmp, 2);
+			outBufs[2][i] += mCueVolume * tmp[0];
+			outBufs[3][i] += mCueVolume * tmp[1];
+		}
+	}
 	return 0;
 }
 
@@ -369,6 +383,21 @@ AudioIOGetStatePtr AudioIO::consume(){
 		}
 	}
 	return state;
+}
+
+unsigned int AudioIO::previewFrames(){
+	return mPreviewBuffer.length() / 2;
+}
+
+unsigned int AudioIO::previewFramesFree(){
+	return mPreviewBuffer.getWriteSpace() / 2;
+}
+
+void AudioIO::queuePreviewFrames(jack_default_audio_sample_t * buffer, jack_nframes_t frames){
+	if((mPreviewBuffer.getWriteSpace() / 2) >= frames){
+		//read the data in 
+		mPreviewBuffer.write(buffer, frames * 2);
+	}
 }
 
 //************
