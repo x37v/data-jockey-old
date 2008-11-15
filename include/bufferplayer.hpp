@@ -145,6 +145,10 @@ namespace DataJockey {
 			void play();
 			void pause();
 			bool getPlaying();
+
+			///returns true if the player can currently sync to a tempo clock,
+			//this depends on if it has a beat buffer or not..
+			bool canSync();
 	};
 
 
