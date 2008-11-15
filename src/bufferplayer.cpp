@@ -296,6 +296,13 @@ void BufferPlayer::setBeatOffset(float offset){
 	mBeatOffset = offset;
 }
 
+double BufferPlayer::getAudioLength(){
+	if(mAudioBuffer == NULL)
+		return 0.0;
+	else
+		return mAudioBuffer->length();
+}
+
 bool BufferPlayer::validBeatPeriod(){
 	if(mBeatBuffer == NULL){
 		return false;
@@ -552,6 +559,8 @@ BufferPlayer::GetState::GetState(BufferPlayer::GetStatePtr other){
       mLastBeat = other->getLastBeat();
 		mMaxSample = other->getMaxSample();
 		mPlaying = other->getPlaying();
+		mSampleIndex = other->getSampleIndex();
+		mLength = other->getAudioLength();
    } else {
 		mBeatOffset = 0;
 		mCurBeat = 0;
@@ -559,13 +568,30 @@ BufferPlayer::GetState::GetState(BufferPlayer::GetStatePtr other){
 		mLastBeat = 0;
 		mMaxSample = 0;
 		mPlaying = false;
+		mLength = 0;
+		mSampleIndex = 0;
 	}
 }
 
 void BufferPlayer::GetState::operateOnPlayer(BufferPlayerPtr player){
-	if (player->getBeatBuffer() != NULL && player->getAudioBuffer() != NULL){
-		mBeatOffset = player->getBeatOffset();
-		mTempoMul = player->getTempoMultiplier();
+	if(player->getAudioBuffer() == NULL){
+		mSampleIndex = 0.0;
+		mLength = 0.0;
+		mPlaying = false;
+		return;
+	}
+	mBeatOffset = player->getBeatOffset();
+	mTempoMul = player->getTempoMultiplier();
+	mMaxSample = player->getMaxSample();
+	player->resetMaxSample();
+	mSampleIndex = player->getSampleIndex();
+	mLength = player->getAudioLength();
+	mPlaying = player->getPlaying();
+
+	if(!player->canSync()){
+		mPlayMode = freePlayback;
+	} else {
+		mLastBeat = player->getBeatBuffer()->length();
 		if(player->getPlayMode() == syncPlayback){
 			//mCurBeat = (unsigned int)(player->getBeatIndex() * mTempoMul);
 			mCurBeat = (unsigned int)(player->getBeatIndex());
@@ -574,10 +600,6 @@ void BufferPlayer::GetState::operateOnPlayer(BufferPlayerPtr player){
 			mCurBeat = (unsigned int)(player->getBeatIndex());
 			mPlayMode = freePlayback;
 		}
-		mLastBeat = player->getBeatBuffer()->length();
-		mMaxSample = player->getMaxSample();
-		player->resetMaxSample();
-		mPlaying = player->getPlaying();
 	}
 }
 

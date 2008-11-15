@@ -135,6 +135,9 @@ namespace DataJockey {
 			float getMaxSample(){return mMaxSample;}
 			void resetMaxSample(){mMaxSample = 0.0;}
 
+			double getSampleIndex(){return mSampleIndex;}
+			double getAudioLength();
+
 			//this gets the beat period from the beat buffer
 			bool validBeatPeriod();
 			float getBeatPeriod(float beatIndexOffset);
@@ -284,6 +287,11 @@ namespace DataJockey {
 			float mBeatOffset;
 			unsigned int mCurBeat;
 			unsigned int mLastBeat;
+
+			//time stuff
+			double mSampleIndex;
+			double mLength;
+
 			float mTempoMul;
 			float mMaxSample;
 			playMode_t mPlayMode;
@@ -296,6 +304,8 @@ namespace DataJockey {
 			float getBeatOffset(){return mBeatOffset;}
 			unsigned int getCurBeat(){return mCurBeat;}
 			unsigned int getLastBeat(){return mLastBeat;}
+			double getSampleIndex(){return mSampleIndex;}
+			double getAudioLength(){return mLength;}
 			float getTempoMultiplier(){return mTempoMul;}
 			float getMaxSample(){return mMaxSample;}
 			playMode_t getPlayMode(){return mPlayMode;}
@@ -304,6 +314,8 @@ namespace DataJockey {
 			void setBeatOffset(float val){mBeatOffset = val;}
 			void setCurBeat(unsigned int val){mCurBeat = val;}
 			void setLastBeat(unsigned int val){mLastBeat = val;}
+			void setSampleIndex(double val){mSampleIndex = val;}
+			void setAudioLength(double val){mLength = val;}
 			void setTempoMultiplier(float val){mTempoMul = val;}
 			void setMaxSample(float val){mMaxSample = val;}
 			void setPlayMode(playMode_t mode){mPlayMode = mode;}

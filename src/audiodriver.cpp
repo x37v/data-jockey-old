@@ -54,8 +54,15 @@ void AudioDriver::processAudioEvents(){
 		std::vector<BufferPlayer::GetStatePtr> bufferPlayerStates = 
 			state->getBufferPlayerStates();
 		for(unsigned int i = 0; i < bufferPlayerStates.size(); i++){
-			float progress = (float)bufferPlayerStates[i]->getCurBeat() / 
-				(float)bufferPlayerStates[i]->getLastBeat();
+			float progress;
+			if(bufferPlayerStates[i]->getAudioLength() < 1)
+				progress = 0.0;
+			else {
+				progress = (float)(bufferPlayerStates[i]->getSampleIndex() / 
+						bufferPlayerStates[i]->getAudioLength());
+				if(progress > 1.0)
+					progress = 1.0;
+			}
 			emit(progressChanged(i, progress));
 			//report the mixer's tempo mul if we should
 			if(i < mNumMixers && mReportPlayerTempoMul[i]){
