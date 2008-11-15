@@ -574,16 +574,19 @@ BufferPlayer::GetState::GetState(BufferPlayer::GetStatePtr other){
 }
 
 void BufferPlayer::GetState::operateOnPlayer(BufferPlayerPtr player){
+
+	mBeatOffset = player->getBeatOffset();
+	mTempoMul = player->getTempoMultiplier();
+	mMaxSample = player->getMaxSample();
+	player->resetMaxSample();
+
 	if(player->getAudioBuffer() == NULL){
+		mMaxSample = 0.0;
 		mSampleIndex = 0.0;
 		mLength = 0.0;
 		mPlaying = false;
 		return;
 	}
-	mBeatOffset = player->getBeatOffset();
-	mTempoMul = player->getTempoMultiplier();
-	mMaxSample = player->getMaxSample();
-	player->resetMaxSample();
 	mSampleIndex = player->getSampleIndex();
 	mLength = player->getAudioLength();
 	mPlaying = player->getPlaying();
