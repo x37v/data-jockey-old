@@ -90,6 +90,8 @@ void BufferPlayer::setBuffers(AudioBufferPtr audio_buf, BeatBufferPtr beat_buf){
 	mBeatBuffer = beat_buf;
 	if(!canSync())
 		mPlayMode = freePlayback;
+	else
+		mPlayMode = syncPlayback;
 }
 
 unsigned int BufferPlayer::getBeatIndex(){
@@ -214,11 +216,15 @@ float BufferPlayer::getSample(unsigned int chan){
 	if(mAudioBuffer == NULL)
 		return 0.0;
 
+	//if we cannot sync, then we will always be in free playback mode
+	if(!canSync())
+		mPlayMode = freePlayback;
+
 	beatIndexOffset = mMyTempoDriver.getIndex();
 
 	//if we're in free mode then our tempo driver sets the period mul for us..
 	//if we don't have a beat buffer than we can only play in free mode
-	if (!canSync() || mPlayMode == freePlayback || syncSrcSynchingToMe){
+	if (mPlayMode == freePlayback || syncSrcSynchingToMe){
 		val = mVolScale * mAudioBuffer->getSampleAtIndex(chan, mSampleIndex);
 	} else {
 		double time;
@@ -258,13 +264,10 @@ void BufferPlayer::setOutPort(outputPort_t out){
 	mOutPort = out;
 }
 
+//we don't set the playmode to free if we have !canSync() here because, we
+//might not have loaded the audio yet, so we don't know if we can sync or not
 void BufferPlayer::setPlayMode(playMode_t mode){
 	mPlayMode = mode;
-
-	//if we cannot sync then we'll be in free mode always
-	if(!canSync())
-		mPlayMode = freePlayback;
-
 	//our sync source's sync source
 	TempoDriver * syncSourceSyncSource = mDefaultSync->getSyncSrc();
 	//if we're doing free playback then the tempo mul we use
