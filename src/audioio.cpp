@@ -196,22 +196,46 @@ void AudioIO::processCommand(AudioIOCmdPtr cmd){
 					boost::static_pointer_cast<AudioIOSyncToBufferPlayer,AudioIOCmd>(cmd);
 				bool wasSyncingToClock = mSyncToClock;
 				unsigned int oldSyncBufferPlayerIndex = mSyncBufferPlayerIndex;
+				unsigned int newSyncBufferPlayerIndex = syncBufferPlayer->getBufferPlayerIndex();
 				//if the index is in range then sync to that!
 				if (syncBufferPlayer->getBufferPlayerIndex() < mBufferPlayers.size()){
-					mSyncToClock = false;
-					mSyncBufferPlayerIndex = syncBufferPlayer->getBufferPlayerIndex();
+
+					//only sync if it is possible
+					if(mBufferPlayers[newSyncBufferPlayerIndex]->canSync()){
+						mSyncToClock = false;
+						mSyncBufferPlayerIndex = newSyncBufferPlayerIndex;
+					} else
+						break;
+
 					//if we were in sync with another buffer player then we sync to
 					//that instead of the main clock
 					if(!wasSyncingToClock && mSyncBufferPlayerIndex != oldSyncBufferPlayerIndex){
+
 						if(mBufferPlayers[mSyncBufferPlayerIndex]->validBeatPeriod() &&
 								mBufferPlayers[mSyncBufferPlayerIndex]->getPlayMode() == BufferPlayer::syncPlayback){
+
+							//first let the master tempo driver run free
+							mBeatAndMeasureDriver.tempoDriver.runFree();
+
+							//if the old player we were syncing to is in sync mode, set its period mul
+							if(mBufferPlayers[oldSyncBufferPlayerIndex]->getPlayMode() == BufferPlayer::syncPlayback){
+								mBufferPlayers[oldSyncBufferPlayerIndex]->getTempoDriver()->setPeriodMul(1.0);
+							}
+
+							//then sync to the master tempo driver
+							mBufferPlayers[mSyncBufferPlayerIndex]->getTempoDriver()->syncToPeriod(
+									mBeatAndMeasureDriver.tempoDriver.getPeriod());
+
+							/*
 							mBufferPlayers[mSyncBufferPlayerIndex]->getTempoDriver()->syncToPeriod(
 									mBufferPlayers[oldSyncBufferPlayerIndex]->getTempoDriver()->getPeriod());
 							//reset the tempoMul of the old tempo driver if that player is playing in sync mode.
 							if(mBufferPlayers[oldSyncBufferPlayerIndex]->getPlayMode() == BufferPlayer::syncPlayback){
 								mBufferPlayers[oldSyncBufferPlayerIndex]->getTempoDriver()->setPeriodMul(1.0);
 							}
+							*/
 						}
+
 					} else {
 						if(mBufferPlayers[mSyncBufferPlayerIndex]->validBeatPeriod() &&
 								mBufferPlayers[mSyncBufferPlayerIndex]->getPlayMode() == BufferPlayer::syncPlayback){

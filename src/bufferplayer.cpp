@@ -25,7 +25,7 @@ unsigned int BufferPlayer::mIdCnt = 0;
 BufferPlayer::BufferPlayer(unsigned int sampleRate, TempoDriver * defaultSync, SLV2World slv2world, SLV2Plugins slv2plugins) :
 	Object(), mMyTempoDriver(sampleRate)
 {
-	//XXX tmp
+	//XXX maybe this should be a unsigned int/long and a double offset?
 	mSampleIndex = 0;
 
 	mOutPort = cueOut;
@@ -88,10 +88,12 @@ BufferPlayer::~BufferPlayer(){
 void BufferPlayer::setBuffers(AudioBufferPtr audio_buf, BeatBufferPtr beat_buf){
 	mAudioBuffer = audio_buf;
 	mBeatBuffer = beat_buf;
+	mMyTempoDriver.setPeriodMul(1.0);
 	if(!canSync())
 		mPlayMode = freePlayback;
-	else
+	else {
 		mPlayMode = syncPlayback;
+	}
 }
 
 unsigned int BufferPlayer::getBeatIndex(){
@@ -183,6 +185,7 @@ void BufferPlayer::sync(){
 				mMyTempoDriver.setOverflowed(false);
 				mMyTempoDriver.setIndex(newBeatIndex - floor(newBeatIndex));
 			}
+			//mMyTempoDriver.setPeriod(mBeatBuffer->getBeatPeriod(newBeatIndex) * mMyTempoDriver.getPeriodMul());
 			mMyTempoDriver.setPeriod(mBeatBuffer->getBeatPeriod(newBeatIndex));
 
 			//store the index, ditch the offset
@@ -253,7 +256,6 @@ void BufferPlayer::setLooping(bool loop){
 
 void BufferPlayer::setTempoMultiplier(float mul){
 	mMyTempoDriver.setPeriodMul(1.0 / mul);
-
 }
 
 float BufferPlayer::getTempoMultiplier(){
@@ -273,13 +275,19 @@ void BufferPlayer::setPlayMode(playMode_t mode){
 	//if we're doing free playback then the tempo mul we use
 	//is actually the tempo mul of our clock, so
 	if (mode == freePlayback){
-		//if our sync source isn't syncing to us then run free
-		//otherwise we just turn off syncing but don't update
-		//any state
-		if(syncSourceSyncSource != &mMyTempoDriver)
-			mMyTempoDriver.runFree(true);
-		else
+		if(canSync()){
+			//if we are syncing to another tempo driver and it is not syncing to us
+			//update our period mul
+			if(mMyTempoDriver.getSyncSrc() != NULL && mMyTempoDriver.getSyncSrc()->getSyncSrc() != &mMyTempoDriver){
+				if(validBeatPeriod()){
+					//set our period
+					mMyTempoDriver.setPeriod(getBeatPeriod(mMyTempoDriver.getSyncSrc()->getIndex()));
+					mMyTempoDriver.syncToPeriod(mMyTempoDriver.getSyncSrc()->getPeriod() * 
+							mMyTempoDriver.getSyncSrc()->getPeriodMul());
+				}
+			}
 			mMyTempoDriver.syncTo(NULL);
+		}
 	} else {
 		mMyTempoDriver.syncTo(mDefaultSync);
 		//if we're going to sync to a clock that is syncing to us then
