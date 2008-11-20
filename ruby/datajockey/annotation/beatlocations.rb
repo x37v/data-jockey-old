@@ -27,8 +27,14 @@ module Datajockey
       tempwav = a.path + ".wav"
       begin
         Datajockey_utils::soundFileToWave(audioFile, tempwav)
-        unless system("java", "-jar", @@beatroot_jarfile_loc, "-o", a.path, tempwav)
-          raise "Cannot execute beatroot, is the jar file in a known location?"
+        if ENV["DATAJOCKEY_JAVA_OPTS"]
+          unless system("java", ENV["DATAJOCKEY_JAVA_OPTS"], "-jar", @@beatroot_jarfile_loc, "-o", a.path, tempwav)
+            raise "Cannot execute beatroot, is the jar file in a known location?"
+          end
+        else
+          unless system("java", "-jar", @@beatroot_jarfile_loc, "-o", a.path, tempwav)
+            raise "Cannot execute beatroot, is the jar file in a known location?"
+          end
         end
       rescue => e
         raise e

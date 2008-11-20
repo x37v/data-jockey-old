@@ -209,10 +209,12 @@ if __FILE__ == $0
 
   #make sure they files are unique
   in_files.uniq!
+  #sort them
+  in_files.sort!
 
   unless force
     puts "files:"
-    puts "\t" + in_files.sort.join("\n\t")
+    puts "\t" + in_files.join("\n\t")
     puts "\nImporting the files listed above, continue? (yes/no)"
     responce = STDIN.readline.chomp.gsub(/\s*/,"")
     if not(responce == "y" || responce == "yes")
