@@ -29,10 +29,10 @@ INSTALLS += target
 
 QT += sql
 unix:!macx {
-	LIBS += -ljackcpp -lsndfile -lslv2 -lmad -lvorbisfile -lruby1.8 -loscpack -lboost_regex -lyamlcpp -lsyck $$system("pkg-config --libs jack") 
+	LIBS += -ljackcpp -lsndfile -lslv2 -lmad -lvorbisfile -lruby1.8 -loscpack -lboost_regex -lyamlcpp -lsyck $$system("pkg-config --libs jack") -lboost_program_options
 }
 macx {
-	LIBS += -ljackcpp -lyamlcpp -lsyck -lsndfile -lslv2 -lmad -lvorbisfile -lruby.1.8 -loscpack -lboost_regex-mt $$system("pkg-config --libs jack") 
+	LIBS += -ljackcpp -lyamlcpp -lsyck -lsndfile -lslv2 -lmad -lvorbisfile -lruby.1.8 -loscpack -lboost_regex-mt $$system("pkg-config --libs jack") -lboost_program_options
 }
 
 unix:!macx { QMAKE_LFLAGS += -rdynamic }

@@ -1,5 +1,8 @@
 #include "application.hpp"
 
+#include <boost/program_options.hpp>
+namespace po = boost::program_options;
+
 #include <iostream>
 using std::cout;
 using std::endl;
@@ -46,7 +49,51 @@ int DataJockeyApplication::run(int argc, char *argv[]){
 	app.setStyle(new QCleanlooksStyle);
 
 	datajockey::Configuration * config = datajockey::Configuration::instance();
-	config->loadFile("config.yaml");
+
+	//parse command line arguments
+	try {
+		// Declare the supported options.
+		po::options_description desc("Data Jockey options");
+		po::variables_map vm;        
+		po::positional_options_description p;
+
+		desc.add_options()
+			("help,h", "Produce this help message.")
+			("config,c", po::value<std::string>(), "Specify a configuration file to use.")
+			;
+
+		po::store(po::command_line_parser(argc, argv).options(desc).positional(p).run(), vm);
+		po::notify(vm);    
+
+		if (vm.count("help")) {
+			cout << desc << endl;
+			return 0;
+		}
+
+		//load the config file if specified
+		//otherwise we need to search for it!
+		if (vm.count("config"))
+			config->loadFile(vm["config"].as<std::string>());
+		else {
+			try {
+				config->loadDefault();
+			} catch(std::exception& e) {
+				std::string str("Error loading config file:");
+				str.append("\n");
+				str.append(e.what());
+				str.append("\n");
+				str.append("You can specify a config file location with the -c switch");
+				qFatal(str.c_str());
+				return app.exec();
+			}
+		}
+
+	} catch(std::exception& e) {
+		std::string str("Error in command line arguments: ");
+		str.append(e.what());
+		qFatal(str.c_str());
+		return app.exec();
+	}
 
 	try {
 		ApplicationModel::setNumberOfMixers(NUM_MIXERS);
