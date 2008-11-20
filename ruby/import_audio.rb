@@ -119,13 +119,13 @@ if __FILE__ == $0
   def recursively_add_files(dir)
     files = []
     entries = Dir.entries(dir)
-    entries.delete("."); entries.delete("..")
+    #delete any entries prefixed by .
+    entries.delete_if{|e| e =~ /^\./}
     entries = entries.collect {|f| File.join(dir, f)}
     entries.each do |f|
       if File.directory?(f)
         files = files + recursively_add_files(f)
-        #ditch log files
-      elsif f !~ /\.log$/
+      else
         files << f
       end
     end
@@ -206,6 +206,18 @@ if __FILE__ == $0
       end
     end
   end
+
+  #ditch log files, m3u, jpg, gif, cue, txt, nfo
+  in_files.delete_if {|f| 
+    f =~ /\.log$/ or
+    f =~ /\.m3u$/ or 
+    f =~ /\.jpg$/ or 
+    f =~ /\.jpeg$/ or 
+    f =~ /\.gif$/ or 
+    f =~ /\.cue$/ or
+    f =~ /\.txt$/ or
+    f =~ /\.nfo$/
+  }
 
   #make sure they files are unique
   in_files.uniq!
