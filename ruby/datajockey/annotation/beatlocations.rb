@@ -30,8 +30,12 @@ module Datajockey
         unless system("java", "-jar", @@beatroot_jarfile_loc, "-o", a.path, tempwav)
           raise "Cannot execute beatroot, is the jar file in a known location?"
         end
+      rescue => e
+        raise e
       ensure
-        FileUtils.rm(tempwav)
+        if File.exists?(tempwav)
+          FileUtils.rm(tempwav)
+        end
       end
       return a.readlines.collect{|l| l.to_f}
     end

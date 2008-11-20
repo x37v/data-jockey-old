@@ -112,25 +112,120 @@ end
 
 if __FILE__ == $0
 
-if File.exists?("config.yaml")
-  Datajockey::setConfFile("config.yaml")
-elsif File.exists?("../config.yaml")
-  Datajockey::setConfFile("../config.yaml")
-elsif File.exists?(File.expand_path("~/config.yaml"))
-  Datajockey::setConfFile(File.expand_path("~/config.yaml"))
-else
-  puts "Cannot find config file, aborting!"
-  exit
-end
+  require 'optparse'
+
+  def recursively_add_files(dir)
+    files = []
+    entries = Dir.entries(dir)
+    entries.delete("."); entries.delete("..")
+    entries = entries.collect {|f| File.join(dir, f)}
+    entries.each do |f|
+      if File.directory?(f)
+        files = files + recursively_add_files(f)
+        #ditch log files
+      elsif f !~ /\.log$/
+        files << f
+      end
+    end
+    return files
+  end
+
+  config_file = nil
+  recursive = false
+  force = false
+
+  opts = OptionParser.new do |opts|
+    opts.on("-h", "--help", "Display this help") do
+      puts opts
+      exit
+    end
+    opts.on("-f", "--force", "don't ask the user for any info, just import the files") do
+      force = true
+    end
+    opts.on("-r", "--recursive", "recursively add contents of directories to items to import") do
+      recursive = true
+    end
+    opts.on("-c <file>", "--config <file>", "Set config file") do |c|
+      if File.exists?(c)
+        config_file = c
+      else
+        raise c.to_s + " is not a valid file"
+      end
+    end
+  end
+
+  begin
+    opts.parse!(ARGV)
+  rescue => e
+    puts "error parsing options: " + e.to_s
+    exit
+  end
+
+  if config_file != nil
+    Datajockey::setConfFile(File.expand_path(config_file))
+  elsif File.exists?("config.yaml")
+    Datajockey::setConfFile("config.yaml")
+  elsif File.exists?("../config.yaml")
+    Datajockey::setConfFile("../config.yaml")
+  elsif File.exists?(File.expand_path("~/config.yaml"))
+    Datajockey::setConfFile(File.expand_path("~/config.yaml"))
+  else
+    puts "Cannot find config file, aborting!"
+    exit
+  end
 
   badFiles = []
-  ARGV.each do |f|
+  in_files = Array.new
+
+  if ARGV.size < 1
+    puts "You must provide at least one input file"
+    exit
+  end
+
+  #if there is the recursive switch then add the directory contents
+  if recursive
+    ARGV.each do |f|
+      if File.directory?(f)
+        in_files = in_files + recursively_add_files(f)
+      elsif File.exists?(f)
+        in_files << f
+      else
+        puts "#{f} is not a valid file. Aborting"
+        exit
+      end
+    end
+  else
+    ARGV.each do |f|
+      if File.exists?(f) and not File.directory?(f)
+        in_files << f
+      else
+        puts "#{f} is not a normal, valid file. Aborting"
+        exit
+      end
+    end
+  end
+
+  #make sure they files are unique
+  in_files.uniq!
+
+  unless force
+    puts "files:"
+    puts "\t" + in_files.sort.join("\n\t")
+    puts "\nImporting the files listed above, continue? (yes/no)"
+    responce = STDIN.readline.chomp.gsub(/\s*/,"")
+    if not(responce == "y" || responce == "yes")
+      puts "Aborting"
+      exit
+    end
+  end
+
+  in_files.each do |f|
     begin
       puts "attempting import of #{f}"
       Datajockey::importAudioFile(f)
       puts "success"
     rescue
-      puts $!
+      puts "could not import #{f}: #{$!}"
       badFiles << f
     end
   end
