@@ -72,20 +72,19 @@ int DataJockeyApplication::run(int argc, char *argv[]){
 
 		//load the config file if specified
 		//otherwise we need to search for it!
-		if (vm.count("config"))
-			config->loadFile(vm["config"].as<std::string>());
-		else {
-			try {
+		try {
+			if (vm.count("config"))
+				config->loadFile(vm["config"].as<std::string>());
+			else 
 				config->loadDefault();
-			} catch(std::exception& e) {
-				std::string str("Error loading config file:");
-				str.append("\n");
-				str.append(e.what());
-				str.append("\n");
-				str.append("You can specify a config file location with the -c switch");
-				qFatal(str.c_str());
-				return app.exec();
-			}
+		} catch(std::exception& e) {
+			std::string str("Error loading config file:");
+			str.append("\n");
+			str.append(e.what());
+			str.append("\n");
+			str.append("You can specify a config file location with the -c switch");
+			qFatal(str.c_str());
+			return app.exec();
 		}
 
 	} catch(std::exception& e) {
