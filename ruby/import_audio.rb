@@ -106,6 +106,8 @@ module Datajockey
       location = File.join(File.expand_path(Datajockey::config["annotation"]["files"]), work.id.to_s + ".yaml")
       annotation_file.update_attribute(:location, location)
       File.open(location, "w") { |f| f.print annotation.to_yaml }
+    else
+      puts "#{audioFile} already exists in the database, skipping"
     end
   end
 end
