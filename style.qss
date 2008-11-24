@@ -41,7 +41,7 @@ SeekFwdButton,
 SeekBkwdButton, 
 LoadButton, 
 ResetButton,
-CueButton 
+CueButton,
 SyncButton,
 PlayButton,
 MuteButton
