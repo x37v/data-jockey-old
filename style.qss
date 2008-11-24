@@ -59,14 +59,10 @@ SeekFwdButton::pressed,
 SeekBkwdButton::pressed, 
 LoadButton::pressed, 
 ResetButton::pressed,
-CueButton::pressed,
-CueButton::checked,
-SyncButton::pressed,
-SyncButton::checked,
-PlayButton::pressed,
-PlayButton::checked,
-MuteButton::pressed,
-MuteButton::checked
+CueButton::pressed, CueButton::checked,
+SyncButton::pressed, SyncButton::checked,
+PlayButton::pressed, PlayButton::checked,
+MuteButton::pressed, MuteButton::checked
 {
 	border-width: 0px;
 	border-style: none;
@@ -74,69 +70,29 @@ MuteButton::checked
 	padding: 0px;
 }
 
-SeekFwdButton {
-	image: url(:icons/seekfwd.png);
-}
+SeekFwdButton { image: url(:icons/seekfwd.png); }
+SeekFwdButton::pressed { image: url(:icons/seekfwd_off.png); }
 
-SeekFwdButton::pressed {
-	image: url(:icons/seekfwd_off.png);
-}
+SeekBkwdButton { image: url(:icons/seekbkd.png); }
+SeekBkwdButton::pressed { image: url(:icons/seekbkd_off.png); }
 
-SeekBkwdButton {
-	image: url(:icons/seekbkd.png);
-}
+LoadButton { image: url(:icons/load.png); } 
+LoadButton::pressed { image: url(:icons/load_off.png); }
 
-SeekBkwdButton::pressed {
-	image: url(:icons/seekbkd_off.png);
-}
+ResetButton { image: url(:icons/reset.png); } 
+ResetButton::pressed { image: url(:icons/reset_off.png); }
 
-LoadButton {
-	image: url(:icons/load.png);
-}
+CueButton { image: url(:icons/cue_off.png); }
+CueButton::checked { image: url(:icons/cue.png); }
 
-LoadButton::pressed {
-	image: url(:icons/load_off.png);
-}
+SyncButton { image: url(:icons/sync_off.png); }
+SyncButton::checked { image: url(:icons/sync.png); }
 
-ResetButton {
-	image: url(:icons/reset.png);
-}
+PlayButton { image: url(:icons/play.png); }
+PlayButton::checked { image: url(:icons/pause.png); }
 
-ResetButton::pressed {
-	image: url(:icons/reset_off.png);
-}
-
-CueButton {
-	image: url(:icons/cue_off.png);
-}
-
-CueButton::checked {
-	image: url(:icons/cue.png);
-}
-
-SyncButton {
-	image: url(:icons/sync_off.png);
-}
-
-SyncButton::checked {
-	image: url(:icons/sync.png);
-}
-
-PlayButton {
-	image: url(:icons/play.png);
-}
-
-PlayButton::checked {
-	image: url(:icons/pause.png);
-}
-
-MuteButton {
-	image: url(:icons/mute.png);
-}
-
-MuteButton::checked {
-	image: url(:icons/mute_off.png);
-}
+MuteButton { image: url(:icons/mute.png); } 
+MuteButton::checked { image: url(:icons/mute_off.png); }
 
 /*
 QPushButton:hover {
@@ -259,8 +215,13 @@ QProgressBar {
 	height: 15px;
 }
 
-QProgressBar::chunk {
-	background-color: grey;
+QProgressBar::chunk, QProgressBar::indeterminate {
+	/*
+	background-color: #99f151;
+	background-color: #aa1717;
+	*/
+	background-color: #dc1e1e;
+	color: black;
 }
 
 QScrollBar {
