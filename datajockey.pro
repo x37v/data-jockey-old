@@ -23,6 +23,7 @@ macx {
 #fast math should get rid of denormal problems [with SSE enabled processors]
 QMAKE_CFLAGS += -ffast-math
 QMAKE_CXXFLAGS += -ffast-math
+RESOURCES = datajockey.qrc
 
 target.path = $$PREFIX/bin
 INSTALLS += target

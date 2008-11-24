@@ -4,9 +4,10 @@
 #include <QWidget>
 #include <QHBoxLayout>
 #include <QSpinBox>
+#include <QPushButton>
 
 class QVBoxLayout;
-class QToolButton;
+class QPushButton;
 class QProgressBar;
 class QDoubleSpinBox;
 
@@ -22,6 +23,68 @@ class PowerOfTwoSpinBox : public QSpinBox {
 	protected slots:
 		void setValue(int val);
 };
+
+class SeekFwdButton : public QPushButton {
+	Q_OBJECT
+	public:
+		SeekFwdButton(QWidget * parent) : QPushButton(parent){
+			setAutoRepeat(true);
+			setToolTip(tr("seek forward"));
+		}
+};
+
+class SeekBkwdButton : public QPushButton {
+	Q_OBJECT
+	public:
+		SeekBkwdButton(QWidget * parent) : QPushButton(parent){
+			setAutoRepeat(true);
+			setToolTip(tr("seek backward"));
+		}
+};
+
+class LoadButton : public QPushButton {
+	Q_OBJECT
+	public:
+		LoadButton(QWidget * parent) : QPushButton(parent){
+			setToolTip(tr("load selected file"));
+		}
+};
+
+class ResetButton : public QPushButton {
+	Q_OBJECT
+	public:
+		ResetButton(QWidget * parent) : QPushButton(parent){
+			setToolTip(tr("reset playback position"));
+		}
+};
+
+class CueButton : public QPushButton {
+	Q_OBJECT
+	public:
+		CueButton(QWidget * parent) : QPushButton(parent){
+			setToolTip(tr("cue (toggle)"));
+			setCheckable(true);
+		}
+};
+
+class SyncButton : public QPushButton {
+	Q_OBJECT
+	public:
+		SyncButton(QWidget * parent) : QPushButton(parent){
+			setToolTip(tr("sync/free playback (toggle)"));
+			setCheckable(true);
+		}
+};
+
+class PlayButton : public QPushButton {
+	Q_OBJECT
+	public:
+		PlayButton(QWidget * parent) : QPushButton(parent){
+			setToolTip(tr("play/pause (toggle)"));
+			setCheckable(true);
+		}
+};
+
 
 class DJMixerControlView : public QWidget {
 	Q_OBJECT
@@ -58,13 +121,13 @@ class DJMixerControlView : public QWidget {
 		void tempoMulFreeChanged(double mul);
 		void tempoMulSyncedChanged(int mul);
 	private:
-		QToolButton * mLoadBtn;
-		QToolButton * mResetBtn;
-		QToolButton * mCueBtn;
-		QToolButton * mSyncBtn;
-		QToolButton * mPlayBtn;
-		QToolButton * mSeekFwdBtn;
-		QToolButton * mSeekBkwdBtn;
+		LoadButton * mLoadBtn;
+		ResetButton * mResetBtn;
+		QPushButton * mCueBtn;
+		QPushButton * mSyncBtn;
+		QPushButton * mPlayBtn;
+		SeekFwdButton * mSeekFwdBtn;
+		SeekBkwdButton * mSeekBkwdBtn;
 		QProgressBar * mProgressBar;
 		QSpinBox * mBeatOffset;
 		QDoubleSpinBox * mTempoMulFree;

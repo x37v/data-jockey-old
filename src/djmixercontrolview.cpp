@@ -1,6 +1,6 @@
 #include "djmixercontrolview.hpp"
 #include <QVBoxLayout>
-#include <QToolButton>
+#include <QPushButton>
 #include <QProgressBar>
 #include <QSpinBox>
 #include <QDoubleSpinBox>
@@ -62,16 +62,14 @@ DJMixerControlView::DJMixerControlView(QWidget *parent)
 	mProgressBar->setAlignment(Qt::AlignHCenter);
 	mProgressBar->setValue(0);
 
-	mLoadBtn = new QToolButton(this);
-	mResetBtn = new QToolButton(this);
-	mCueBtn = new QToolButton(this);
-	mSyncBtn = new QToolButton(this);
-	mPlayBtn = new QToolButton(this);
+	mLoadBtn = new LoadButton(this);
+	mResetBtn = new ResetButton(this);
+	mCueBtn = new CueButton(this);
+	mSyncBtn = new SyncButton(this);
+	mPlayBtn = new PlayButton(this);
 
-	mSeekFwdBtn = new QToolButton(this);
-	mSeekBkwdBtn = new QToolButton(this);
-	mSeekFwdBtn->setAutoRepeat(true);
-	mSeekBkwdBtn->setAutoRepeat(true);
+	mSeekFwdBtn = new SeekFwdButton(this);
+	mSeekBkwdBtn = new SeekBkwdButton(this);
 
 	mBeatOffset = new QSpinBox(this);
 	mBeatOffset->setToolTip(tr("beat start offset"));
@@ -88,25 +86,9 @@ DJMixerControlView::DJMixerControlView(QWidget *parent)
 	mTempoMulSynced->setRange(-2,2);
 	mTempoMulSynced->setValue(0.0);
 
-	mLoadBtn->setToolTip(tr("load selected file"));
-	mResetBtn->setToolTip(tr("reset playback position"));
-	mLoadBtn->setArrowType(Qt::UpArrow);
-	mResetBtn->setArrowType(Qt::DownArrow);
-
-	mCueBtn->setToolTip(tr("cue (toggle)"));
-	mSyncBtn->setToolTip(tr("sync/free playback (toggle)"));
-	mPlayBtn->setToolTip(tr("play/pause (toggle)"));
-	mCueBtn->setCheckable(true);
-	mSyncBtn->setCheckable(true);
-	mPlayBtn->setCheckable(true);
-
 	//we initially start in sync
 	mSyncBtn->setChecked(true);
 
-	mSeekFwdBtn->setArrowType(Qt::RightArrow);
-	mSeekBkwdBtn->setArrowType(Qt::LeftArrow);
-	mSeekFwdBtn->setToolTip(tr("seek forward"));
-	mSeekBkwdBtn->setToolTip(tr("seek backward"));
 
 	QHBoxLayout * loadResetLayout = new QHBoxLayout;
 	loadResetLayout->setContentsMargins(0,0,0,0);
@@ -118,9 +100,9 @@ DJMixerControlView::DJMixerControlView(QWidget *parent)
 	playLayout->setContentsMargins(0,0,0,0);
 	playLayout->setSpacing(0);
 	playLayout->addStretch();
-	playLayout->addWidget(mCueBtn);
-	playLayout->addWidget(mSyncBtn);
-	playLayout->addWidget(mPlayBtn);
+	playLayout->addWidget(mCueBtn, 0, Qt::AlignHCenter);
+	playLayout->addWidget(mSyncBtn, 0, Qt::AlignHCenter);
+	playLayout->addWidget(mPlayBtn, 0, Qt::AlignHCenter);
 	playLayout->addStretch();
 	
 	//addLayout sets parent, no need to explicitly set it here

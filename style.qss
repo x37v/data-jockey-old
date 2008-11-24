@@ -1,0 +1,371 @@
+QWidget {
+	background-color: #131313;
+	color: white;
+	selection-color: black;
+	selection-background-color: white;
+	font-family: "Mashq";
+}
+
+/* We provide a min-width and min-height for push buttons
+so that they look elegant regardless of the width of the text. */
+
+/*
+QPushButton {
+	background-color: grey;
+	border-width: 1px;
+	border-color: grey;
+	border-style: solid;
+	border-radius: 5px;
+	padding: 0px;
+	min-width: 9ex;
+	min-height: 2.5ex;
+}
+*/
+
+QPushButton {
+	border-width: 0px;
+	border-style: none;
+	margin: 0 0 0 0;
+	padding: 0px;
+}
+
+QPushButton::pressed {
+	border-width: 1px;
+	border-color: gray;
+	border-style: solid;
+	margin: 0 0 0 0;
+	padding: 0px;
+}
+
+SeekFwdButton, 
+SeekBkwdButton, 
+LoadButton, 
+ResetButton,
+CueButton 
+SyncButton,
+PlayButton,
+MuteButton
+{
+	border-width: 0px;
+	border-style: none;
+	margin: 0 0 0 0;
+	padding: 0px;
+	max-width: 24px;
+	max-height: 24px;
+	background: white;
+}
+
+SeekFwdButton::pressed, 
+SeekBkwdButton::pressed, 
+LoadButton::pressed, 
+ResetButton::pressed,
+CueButton::pressed,
+CueButton::checked,
+SyncButton::pressed,
+SyncButton::checked,
+PlayButton::pressed,
+PlayButton::checked,
+MuteButton::pressed,
+MuteButton::checked
+{
+	border-width: 0px;
+	border-style: none;
+	margin: 0 0 0 0;
+	padding: 0px;
+}
+
+SeekFwdButton {
+	image: url(:icons/seekfwd.png);
+}
+
+SeekFwdButton::pressed {
+	image: url(:icons/seekfwd_off.png);
+}
+
+SeekBkwdButton {
+	image: url(:icons/seekbkd.png);
+}
+
+SeekBkwdButton::pressed {
+	image: url(:icons/seekbkd_off.png);
+}
+
+LoadButton {
+	image: url(:icons/load.png);
+}
+
+LoadButton::pressed {
+	image: url(:icons/load_off.png);
+}
+
+ResetButton {
+	image: url(:icons/reset.png);
+}
+
+ResetButton::pressed {
+	image: url(:icons/reset_off.png);
+}
+
+CueButton {
+	image: url(:icons/cue_off.png);
+}
+
+CueButton::checked {
+	image: url(:icons/cue.png);
+}
+
+SyncButton {
+	image: url(:icons/sync_off.png);
+}
+
+SyncButton::checked {
+	image: url(:icons/sync.png);
+}
+
+PlayButton {
+	image: url(:icons/play.png);
+}
+
+PlayButton::checked {
+	image: url(:icons/pause.png);
+}
+
+MuteButton {
+	image: url(:icons/mute.png);
+}
+
+MuteButton::checked {
+	image: url(:icons/mute_off.png);
+}
+
+/*
+QPushButton:hover {
+	background-color: white;
+	color: black;
+}
+*/
+
+/* Increase the padding, so the text is shifted when the button is
+pressed. */
+/*
+QPushButton:pressed {
+	padding-left: 5px;
+	padding-top: 5px;
+	background-color: black;
+	color: white;
+}
+*/
+
+QLabel, QAbstractButton {
+	font: bold;
+}
+
+/* Bold text on status bar looks awful. */
+QStatusBar QLabel {
+	font: normal;
+}
+
+QStatusBar::item {
+	border-width: 1;
+	border-color: white;
+	border-style: solid;
+	border-radius: 2;
+}
+
+QComboBox, QLineEdit, QSpinBox, QTextEdit, QListView {
+	background-color: black;
+	color: white;
+	selection-color: black;
+	selection-background-color: white;
+}
+
+QTextEdit, QLineEdit {
+	font-family: "Bitstream Vera Sans Mono";
+	font-size: 12px;
+}
+
+QTableView::item { 
+	border: 1px;
+	padding: 0;
+	margin: 0;
+}
+
+QTableView::item::selected { 
+	background: white;
+	color: black;
+}
+
+QListView::item:hover, QTreeView::item::hover, QTableView::item::hover {
+	background-color: grey;
+	color: white;
+}
+
+QTreeView::item::selected {
+	background: white;
+	color: black;
+}
+
+
+/* We reserve 1 pixel space in padding. When we get the focus,
+we kill the padding and enlarge the border. This makes the items
+glow. */
+QLineEdit, QFrame {
+	border-width: 1px;
+	padding: 1px;
+	border-style: solid;
+	border-color: darkgrey;
+	border-radius: 2px;
+}
+
+/* As mentioned above, eliminate the padding and increase the border. */
+QLineEdit:focus, QFrame:focus {
+	border-width: 3px;
+	padding: 0px;
+}
+
+/* A QLabel is a QFrame ... */
+QLabel {
+	border: none;
+	padding: 0;
+	background: none;
+	font-family: "DejaVu Sans";
+	font-style: bold;
+}
+
+/* A QToolTip is a QLabel ... */
+QToolTip {
+	border: 1px solid grey;
+	color: black;
+	border-radius: 3px;
+	margin: 0 0 0 0;
+	padding: 0px;
+}
+
+/* Nice to have the background color change when hovered. */
+QRadioButton:hover, QCheckBox:hover {
+	background-color: white;
+	color: black;
+}
+
+/* Force the dialog's buttons to follow the Windows guidelines. */
+QDialogButtonBox {
+	button-layout: 0;
+}
+
+QProgressBar {
+	border: 1px solid white;
+	border-radius: 5px;
+	text-align: center;
+	height: 15px;
+}
+
+QProgressBar::chunk {
+	background-color: grey;
+}
+
+QScrollBar {
+	border: 1px solid white;
+	background: grey;
+}
+
+QScrollBar:horizontal {
+	height: 15px;
+	margin: 0px 20px 0 20px;
+}
+
+QScrollBar:vertical {
+	width: 15px;
+	margin: 20px 0px 20 0px;
+}
+
+QScrollBar::handle:horizontal {
+	background: white;
+	min-width: 20px;
+}
+
+QScrollBar::handle:vertical {
+	background: white;
+	min-height: 20px;
+}
+
+QScrollBar::add-line:horizontal {
+	border: 1px solid grey;
+	background: darkgrey;
+	width: 20px;
+	subcontrol-position: right;
+	subcontrol-origin: margin;
+}
+
+QScrollBar::add-line:vertical {
+	border: 1px solid grey;
+	background: darkgrey;
+	height: 20px;
+	subcontrol-position: bottom;
+	subcontrol-origin: margin;
+}
+
+QScrollBar::sub-line:horizontal {
+	border: 1px solid grey;
+	background: darkgrey;
+	width: 20px;
+	subcontrol-position: left;
+	subcontrol-origin: margin;
+}
+
+QScrollBar::sub-line:vertical {
+	border: 1px solid grey;
+	background: darkgrey;
+	height: 20px;
+	subcontrol-position: top;
+	subcontrol-origin: margin;
+}
+
+
+QSlider::groove:vertical {
+	background: black;
+	width: 10px;
+}
+
+QSlider::groove:horizontal {
+	background: black;
+	height: 10px;
+}
+
+QSlider::handle {
+	background: black;
+	border-width: 1px;
+	border-color: white;
+	border-style: solid;
+}
+
+QSlider::handle:vertical {
+	height: 10px;
+	margin: 0 -2px; 
+}
+
+QSlider::handle:horizontal {
+	width: 10px;
+	margin: -2px 0;
+}
+
+QSlider::add-page {
+	background: darkgrey;
+}
+
+QSlider::sub-page {
+	background: white;
+} 
+
+QSpinBox, QDoubleSpinBox {
+	margin: 1px;
+	border-width: 1px;
+	border-color: white;
+	border-style: solid;
+	border-radius: 5px;
+}
+
+QSpinBox::up-arrow, QSpinBox::down-arrow, QDoubleSpinBox::up-arrow, QDoubleSpinBox::down-arrow {
+	color: black;
+	background: gray;
+}
+

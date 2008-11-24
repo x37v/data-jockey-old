@@ -42,11 +42,18 @@ using std::endl;
 
 #include "config.hpp"
 
+#include <QFile>
+
 //for now we'll just have a gui app
 int DataJockeyApplication::run(int argc, char *argv[]){
 
 	QApplication app(argc, argv);
 	app.setStyle(new QCleanlooksStyle);
+
+	QFile file(":/style.qss");
+	file.open(QFile::ReadOnly);
+	QString styleSheet = QLatin1String(file.readAll());
+	app.setStyleSheet(styleSheet);
 
 	datajockey::Configuration * config = datajockey::Configuration::instance();
 

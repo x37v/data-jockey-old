@@ -7,16 +7,14 @@ MixerChannelView::MixerChannelView(QWidget * parent)
 	mRecursing = false;
 	mEQView = new EQView(parent); 
 	mVolumeSlider = new QSlider(Qt::Vertical, parent);
-	mMuteBtn = new QToolButton(parent);
+	mMuteBtn = new MuteButton(parent);
+
 	mVolumeSlider->setToolTip("volume");
 
 	mVolumeSlider->setRange(0,200);
 	mVolumeSlider->setTickPosition(QSlider::TicksLeft);
 	mVolumeSlider->setValue(100);
 
-	//XXX set muteIcon
-	mMuteBtn->setToolTip("mute (toggle)");
-	mMuteBtn->setCheckable(true);
 
 	//connect our widget's signals to our slots (or signals)
 	QObject::connect(
@@ -37,7 +35,7 @@ QSlider * MixerChannelView::volumeSlider(){
 	return mVolumeSlider;
 }
 
-QToolButton * MixerChannelView::muteButton(){
+MuteButton * MixerChannelView::muteButton(){
 	return mMuteBtn;
 }
 

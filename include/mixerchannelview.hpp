@@ -3,8 +3,17 @@
 
 #include <QVBoxLayout>
 #include <QSlider>
-#include <QToolButton>
+#include <QPushButton>
 class EQView;
+
+class MuteButton : public QPushButton {
+	Q_OBJECT
+	public:
+		MuteButton(QWidget * parent) : QPushButton(parent){
+			setToolTip("mute (toggle)");
+			setCheckable(true);
+		}
+};
 
 class MixerChannelView : public QObject {
 	Q_OBJECT
@@ -12,7 +21,7 @@ class MixerChannelView : public QObject {
 		MixerChannelView(QWidget *parent = NULL);
 		EQView * eq();
 		QSlider * volumeSlider();
-		QToolButton * muteButton();
+		MuteButton * muteButton();
 		float volume() const;
 		bool muted() const;
 	signals:
@@ -25,7 +34,7 @@ class MixerChannelView : public QObject {
 	private:
 		EQView * mEQView;
 		QSlider * mVolumeSlider;
-		QToolButton * mMuteBtn;
+		MuteButton * mMuteBtn;
 		//to prevent infinite loops
 		bool mRecursing;
 };
