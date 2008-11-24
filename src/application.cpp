@@ -48,12 +48,9 @@ using std::endl;
 int DataJockeyApplication::run(int argc, char *argv[]){
 
 	QApplication app(argc, argv);
+	//make the warning messages graphical
+	QErrorMessage::qtHandler();
 	app.setStyle(new QCleanlooksStyle);
-
-	QFile file(":/style.qss");
-	file.open(QFile::ReadOnly);
-	QString styleSheet = QLatin1String(file.readAll());
-	app.setStyleSheet(styleSheet);
 
 	datajockey::Configuration * config = datajockey::Configuration::instance();
 
@@ -66,6 +63,7 @@ int DataJockeyApplication::run(int argc, char *argv[]){
 
 		desc.add_options()
 			("help,h", "Produce this help message.")
+			("style-sheet,s", po::value<std::string>(), "Specify a style sheet file to use.")
 			("config,c", po::value<std::string>(), "Specify a configuration file to use.")
 			;
 
@@ -92,6 +90,27 @@ int DataJockeyApplication::run(int argc, char *argv[]){
 			str.append("You can specify a config file location with the -c switch");
 			qFatal(str.c_str());
 			return app.exec();
+		}
+
+		//set the style sheet
+		bool styled = false;
+		if(vm.count("style-sheet")){
+			QFile file(QString(vm["style-sheet"].as<std::string>().c_str()));
+			if(file.open(QFile::ReadOnly)){
+				QString styleSheet = QLatin1String(file.readAll());
+				app.setStyleSheet(styleSheet);
+				styled = true;
+			} else {
+				qWarning("Cannot open style sheet: %s\n"
+						"Application will use default style.", vm["style-sheet"].as<std::string>().c_str());
+			}
+		} 
+		if(!styled){
+			QFile file(":/style.qss");
+			if(file.open(QFile::ReadOnly)){
+				QString styleSheet = QLatin1String(file.readAll());
+				app.setStyleSheet(styleSheet);
+			}
 		}
 
 	} catch(std::exception& e) {
@@ -186,8 +205,6 @@ int DataJockeyApplication::run(int argc, char *argv[]){
 			audioDriverThread,
 			SLOT(stop()));
 
-	//make the warning messages graphical
-	QErrorMessage::qtHandler();
 	RubyInterpreterThread * rubyThread = new RubyInterpreterThread;
 	rubyThread->start();
 
