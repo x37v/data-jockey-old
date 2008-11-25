@@ -22,7 +22,7 @@ QPushButton {
 }
 */
 
-QPushButton {
+.QPushButton {
 	/*
 	background-color: #aa1717;
 	*/
@@ -32,7 +32,7 @@ QPushButton {
 		stop: 0 black, stop: 1 white);
 	color: white;
 	margin: 0 0 0 0;
-	padding: 0px;
+	padding: 2px 2px;
 }
 
 QPushButton::pressed {
@@ -168,22 +168,21 @@ QTreeView::item::selected {
 	color: black;
 }
 
-
-QLineEdit, QFrame {
+QLineEdit, QFrame
+{
 	border-width: 1px;
 	border-style: solid;
 	border-color: darkgrey;
 	border-radius: 3px;
 }
 
-/*
-QFrame {
+QSplitter > QFrame, QTabWidget > QFrame, ApplicationView > QFrame {
 	border-width: 0;
 	padding: 0;
 	border-radius: 0;
 	border-color: 0;
+	padding: 1px;
 }
-	*/
 
 QLineEdit:focus, QFrame:focus, QSpinBox::focus, QDoubleSpinBox::focus {
 	/* border-color: #aa1717; */
