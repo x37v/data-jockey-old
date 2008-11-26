@@ -3,6 +3,7 @@
 /* Includes the header in the wrapper code */
 #include "../include/applicationmodel.hpp"
 #include "../include/crossfademodel.hpp"
+#include "../include/config.hpp"
 #include "../include/djmixerchannelmodel.hpp"
 #include "../include/djmixercontrolmodel.hpp"
 #include "../include/eqmodel.hpp"
@@ -28,3 +29,4 @@
 %include "interpreterioproxy.i"
 /*%include "remoteworkfiltermodel.i" */
 %include "scriptcallbackfilter.i"
+%include "config.i"

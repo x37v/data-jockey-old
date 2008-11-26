@@ -153,12 +153,8 @@ Thread.start {
   }
 }
 
-if File.exists?("config.yaml")
-  Datajockey::setConfFile("config.yaml")
-elsif File.exists?("../config.yaml")
-  Datajockey::setConfFile("../config.yaml")
-elsif File.exists?(File.expand_path("~/config.yaml"))
-  Datajockey::setConfFile(File.expand_path("~/config.yaml"))
+if File.exists?(Datajockey::Configuration::getFile)
+  Datajockey::setConfFile(Datajockey::Configuration::getFile)
 else
   STDERR.puts "\n\n*******************************************"
   STDERR.puts "cannot find datajockey config.yaml file"

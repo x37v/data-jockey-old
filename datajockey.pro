@@ -58,8 +58,16 @@ swigutilstarget.depends = utils-swig/*.i
 buildswig.target = swig
 buildswig.depends = $$swigtarget.target $$swigutilstarget.target
 
+ruby_annotation_files.target = ruby_annotation_files
+ruby_annotation_files.files = ruby/datajockey/annotation/*.rb
+ruby_annotation_files.path = $$RUBYLIBDEST/annotation/
+
+ruby_db_files.target = ruby_db_files
+ruby_db_files.files = ruby/datajockey/database/*.rb
+ruby_db_files.path = $$RUBYLIBDEST/database/
+
 ruby_files.target = ruby_files
-ruby_files.files = ruby/datajockey/
+ruby_files.files = ruby/datajockey/*.rb
 ruby_files.path = $$RUBYLIBDEST
 #install_ruby_files.commands = rsync -r --cvs-exclude ruby/datajockey/ $$RUBYLIBDEST
 
@@ -80,6 +88,8 @@ QMAKE_EXTRA_TARGETS += install_swig
 POST_TARGETDEPS += $$buildswig.target
 
 INSTALLS += importer
+INSTALLS += ruby_db_files
+INSTALLS += ruby_annotation_files
 INSTALLS += ruby_files
 
 # Input

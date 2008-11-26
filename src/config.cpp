@@ -51,6 +51,7 @@ void Configuration::loadDefault() throw(std::runtime_error) {
 			if((stat(it->c_str(), &statbuf) == 0) && S_ISREG(statbuf.st_mode)){
 				loadFile(*it);
 				std::cerr << "Loaded configuration file: " << *it << std::endl;
+            mFile = *it;
 				return;
 			} 
 		} catch (...){
@@ -72,12 +73,20 @@ void Configuration::loadFile(std::string path) throw(std::runtime_error) {
 		yaml::Parser p;
 		mRoot = p.parseFile(path);
 		mValid = true;
+      mFile = path;
 	} catch (...){
 		mValid = false;
 		std::string str("error reading config file: ");
 		str.append(path);
 		throw std::runtime_error(str);
 	}
+}
+
+std::string Configuration::getFile(){
+   if(!instance()->mValid)
+      return std::string();
+   else
+      return instance()->mFile;
 }
 
 /*

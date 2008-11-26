@@ -15,6 +15,8 @@ namespace datajockey {
 			void loadFile(std::string path) throw(std::runtime_error);
 			//std::string tostr();
 			bool valid();
+         //returns the path to the config file has been loaded
+         static std::string getFile();
 
 			//get database data
 			std::string databaseAdapter() throw(std::runtime_error);
@@ -23,6 +25,7 @@ namespace datajockey {
 			std::string databasePassword();
 		private:
 			bool databaseGet(std::string entry, std::string &result) throw(std::runtime_error);
+         std::string mFile;
 
 		protected:
 			Configuration();
