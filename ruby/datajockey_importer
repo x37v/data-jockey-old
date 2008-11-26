@@ -113,6 +113,11 @@ module Datajockey
 end
 
 if __FILE__ == $0
+  config_paths = [
+	"./config.yaml",
+  File.expand_path("~/.datajockey/config.yaml"),
+	"/usr/local/share/datajockey/config.yaml",
+	"/usr/share/datajockey/config.yaml"]
 
   require 'optparse'
 
@@ -165,15 +170,20 @@ if __FILE__ == $0
 
   if config_file != nil
     Datajockey::setConfFile(File.expand_path(config_file))
-  elsif File.exists?("config.yaml")
-    Datajockey::setConfFile("config.yaml")
-  elsif File.exists?("../config.yaml")
-    Datajockey::setConfFile("../config.yaml")
-  elsif File.exists?(File.expand_path("~/config.yaml"))
-    Datajockey::setConfFile(File.expand_path("~/config.yaml"))
   else
-    puts "Cannot find config file, aborting!"
-    exit
+    found = false
+    config_paths.each do |p|
+      if File.exists?(p)
+        Datajockey::setConfFile(p)
+        puts "Using config file #{p}"
+        found = true
+        break
+      end
+    end
+    if not found
+      puts "Cannot find config file, aborting!"
+      exit
+    end
   end
 
   badFiles = []
