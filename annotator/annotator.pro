@@ -5,6 +5,8 @@ PREFIX = /usr/local/
 CONFIG += qt debug
 QT += sql
 
+RESOURCES = ../datajockey.qrc
+
 TEMPLATE = app
 TARGET = datajockey_annotator
 DEPENDPATH += ../

@@ -6,8 +6,13 @@ QWidget {
 	font-family: "Mashq";
 }
 
-/* We provide a min-width and min-height for push buttons
-so that they look elegant regardless of the width of the text. */
+/*
+haven't figured out how to make the WorkFilterList look good yet..
+WorkFilterListView QTableView {
+	color: black;
+	background: white;
+}
+*/
 
 /*
 QPushButton {

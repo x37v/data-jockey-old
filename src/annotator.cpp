@@ -8,6 +8,7 @@
 #include <QVBoxLayout>
 
 #include <QMainWindow>
+#include <QFile>
 
 #include <boost/program_options.hpp>
 #include <iostream>
@@ -123,6 +124,7 @@ int main(int argc, char *argv[]){
 	bool runGui = true;
 	int rating = UNDEFINED_RATING;
 	std::vector<std::string> inputTags;
+	std::string styleFile;
 
 	//parse command line arguments
 	try {
@@ -144,6 +146,7 @@ int main(int argc, char *argv[]){
 			 "\nIf the tag class is not found then the first tag with the name given will be applied."
 			 "\nIf the tag does not exist the program will attempt to create it, the class must be provided in this case."
 			 )
+			("style-sheet,s", po::value<std::string>(), "Specify a style sheet file to use.")
 			;
 		p.add("input-file", -1);
 
@@ -173,6 +176,8 @@ int main(int argc, char *argv[]){
 			}
 		}
 
+		if (vm.count("style-sheet"))
+			styleFile = vm["style-sheet"].as<std::string>();
 		if (vm.count("non-graphical"))
 			runGui = false;
 		if (vm.count("rating")) 
@@ -261,6 +266,27 @@ int main(int argc, char *argv[]){
 		QMainWindow * mainWindow = new QMainWindow();
 		AnnotatorView * view = new AnnotatorView(model, mainWindow);
 		app.setStyle(new QCleanlooksStyle);
+
+		bool styled = false;
+		if(styleFile != std::string()){
+			QFile file(styleFile.c_str());
+			if(file.open(QFile::ReadOnly)){
+				QString styleSheet = QLatin1String(file.readAll());
+				app.setStyleSheet(styleSheet);
+				styled = true;
+			} else {
+				qWarning("Cannot open style sheet: %s\n"
+						"Application will use default style.", styleFile.c_str());
+			}
+		}
+		if(!styled){
+			QFile file(":/style.qss");
+			if(file.open(QFile::ReadOnly)){
+				QString styleSheet = QLatin1String(file.readAll());
+				app.setStyleSheet(styleSheet);
+			}
+		}
+
 		view->selectWork(selectedWorkId);
 		//XXX I think this is a hack.. 
 		//There should be some nicely set up dependency graph
