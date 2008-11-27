@@ -78,6 +78,10 @@ install_swig.target = install_swig
 install_swig.depends = $$swigutilstarget.target $$swigtarget.target
 install_swig.commands = cd utils-swig/ && make install && cd ../swig/ && make install
 
+beatroot.target = beatroot
+beatroot.files = lib/beatroot-0.5.3.jar
+beatroot.path = $$PREFIX/share/datajockey/
+
 importer.target = importer
 importer.depends = install_swig
 importer.files = ruby/datajockey_importer
@@ -91,6 +95,7 @@ QMAKE_EXTRA_TARGETS += install_swig
 POST_TARGETDEPS += $$buildswig.target
 
 INSTALLS += importer
+INSTALLS += beatroot
 INSTALLS += ruby_db_files
 INSTALLS += ruby_annotation_files
 INSTALLS += ruby_files

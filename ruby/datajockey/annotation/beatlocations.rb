@@ -7,18 +7,21 @@ module Datajockey
     @@beatroot_jarfile_loc = nil
     def Annotation::getBeatLocations(audioFile)
       unless @@beatroot_jarfile_loc
+        beat_root_search = [
+          "lib/beatroot-0.5.3.jar",
+          "/usr/local/share/datajockey/beatroot-0.5.3.jar",
+          "/usr/local/share/datajockey/beatroot.jar",
+          "/usr/share/datajockey/beatroot-0.5.3.jar",
+          "/usr/share/datajockey/beatroot.jar",
+        ]
         #find beatroot jar file!
-        if File.exists?("lib/beatroot-0.5.3.jar")
-          @@beatroot_jarfile_loc = "lib/beatroot-0.5.3.jar"
-        elsif File.exists?("../lib/beatroot-0.5.3.jar")
-          @@beatroot_jarfile_loc = "../lib/beatroot-0.5.3.jar"
-        elsif File.exists?("../../lib/beatroot-0.5.3.jar")
-          @@beatroot_jarfile_loc = "../../lib/beatroot-0.5.3.jar"
-        elsif File.exists?("/usr/local/share/datajockey/beatroot.jar")
-          @@beatroot_jarfile_loc = "/usr/local/share/datajockey/beatroot.jar"
-        elsif File.exists?("/usr/share/datajockey/beatroot.jar")
-          @@beatroot_jarfile_loc = "/usr/share/datajockey/beatroot.jar"
-        else
+        beat_root_search.each do |p|
+          if File.exists?(p)
+            @@beatroot_jarfile_loc = p
+            break
+          end
+        end
+        if not @@beatroot_jarfile_loc
           raise "cannot find beatroot jarfile which #{self.name}::getBeatLocations depends on"
         end
       end

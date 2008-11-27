@@ -12,7 +12,10 @@ require 'datajockey/annotation/create_annotation'
 require 'fileutils'
 
 module Datajockey
-  def Datajockey::importAudioFile(audioFile, title = nil, artist_name = nil, album_name = nil, album_track = nil)
+  def Datajockey::importAudioFile(audioFile, 
+                                  compute_beats = true, 
+                                  compute_descriptors = true, 
+                                  title = nil, artist_name = nil, album_name = nil, album_track = nil)
     unless File.exists?(audioFile)
       raise "#{audioFile} does not exist, aborting import"
     end
@@ -42,7 +45,7 @@ module Datajockey
 
     #make sure we haven't already imported this
     if !AudioFile.find_by_location(audioFile)
-      annotation =  Datajockey::Annotation::createAnnotation(audioFile)
+      annotation =  Datajockey::Annotation::createAnnotation(audioFile, compute_beats, compute_descriptors)
       title = annotation["title"] unless title
       artist_name = annotation["artist"] unless artist_name
       album_name = annotation["album"]["name"] unless album_name
@@ -135,7 +138,7 @@ if __FILE__ == $0
       if File.directory?(f)
         files = files + recursively_add_files(f)
       else
-        files << f
+        files << File.expand_path(f)
       end
     end
     return files
@@ -144,16 +147,24 @@ if __FILE__ == $0
   config_file = nil
   recursive = false
   force = false
+  descriptors = true
+  beats = true
 
   opts = OptionParser.new do |opts|
     opts.on("-h", "--help", "Display this help") do
       puts opts
       exit
     end
-    opts.on("-f", "--force", "don't ask the user for any info, just import the files") do
+    opts.on("-f", "--force", "Don't ask the user for any info, just import the files") do
       force = true
     end
-    opts.on("-r", "--recursive", "recursively add contents of directories to items to import") do
+    opts.on("-b", "--no-beats", "Don't compute beat locations [or tempo descriptor]") do
+      beats = false
+    end
+    opts.on("-d", "--no-descriptors", "Don't compute spectral descriptors") do
+      descriptors = false
+    end
+    opts.on("-r", "--recursive", "Recursively add contents of directories to items to import") do
       recursive = true
     end
     opts.on("-c <file>", "--config <file>", "Set config file") do |c|
@@ -204,7 +215,7 @@ if __FILE__ == $0
       if File.directory?(f)
         in_files = in_files + recursively_add_files(f)
       elsif File.exists?(f)
-        in_files << f
+        in_files << File.expand_path(f)
       else
         puts "#{f} is not a valid file. Aborting"
         exit
@@ -213,7 +224,7 @@ if __FILE__ == $0
   else
     ARGV.each do |f|
       if File.exists?(f) and not File.directory?(f)
-        in_files << f
+        in_files << File.expand_path(f)
       else
         puts "#{f} is not a normal, valid file. Aborting"
         exit
@@ -252,7 +263,7 @@ if __FILE__ == $0
   in_files.each do |f|
     begin
       puts "attempting import of #{f}"
-      Datajockey::importAudioFile(f)
+      Datajockey::importAudioFile(f, beats, descriptors)
       puts "success"
     rescue
       puts "could not import #{f}: #{$!}"
