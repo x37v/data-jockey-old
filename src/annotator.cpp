@@ -112,7 +112,7 @@ namespace po = boost::program_options;
 using std::cout;
 using std::endl;
 
-#define UNDEFINED_RATING -100
+#define UNDEFINED_RATING -100.0f
 
 int main(int argc, char *argv[]){
 
@@ -122,7 +122,7 @@ int main(int argc, char *argv[]){
 	std::string inputFile;
 	int selectedWorkId = -1;
 	bool runGui = true;
-	int rating = UNDEFINED_RATING;
+	float rating = UNDEFINED_RATING;
 	std::vector<std::string> inputTags;
 	std::string styleFile;
 
@@ -138,7 +138,7 @@ int main(int argc, char *argv[]){
 			("non-graphical,a", "Apply tags and/or rating then exit, don't show any GUI.")
 			("config,c", po::value<std::string>(), "Specify a configuration file to use.")
 			("input-file,f", po::value<std::string>(), "An input sound file to annotate.")
-			("rating,r", po::value<int>(), "Apply a rating.")
+			("rating,r", po::value<float>(), "Apply a rating.")
 			("tag,t", po::value<std::vector<std::string> >(), 
 			 "Apply the tag to this file."
 			 "\nThe format is tag_name[,tag_class]"
@@ -181,7 +181,7 @@ int main(int argc, char *argv[]){
 		if (vm.count("non-graphical"))
 			runGui = false;
 		if (vm.count("rating")) 
-			rating = vm["rating"].as<int>();
+			rating = vm["rating"].as<float>();
 		if (vm.count("tag")) 
 			inputTags = vm["tag"].as<std::vector<std::string> >();
 
@@ -256,8 +256,13 @@ int main(int argc, char *argv[]){
 					}
 				}
 			}
-			//XXX deal with a rating
 			if(rating != UNDEFINED_RATING){
+				model->workTableModel()->rateWork(selectedWorkId, rating);
+				if(runGui){
+					//XXX maybe we can just indicate that this column is updated
+					//instead of updating the whole query?
+					model->workTableModel()->query().exec();
+				}
 			}
 		}
 	}

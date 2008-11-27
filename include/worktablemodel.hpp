@@ -28,6 +28,8 @@ class WorkTableModel : public QSqlQueryModel {
 
 		//returns a work id, or -1 on failure
 		int findWorkByPath(std::string path);
+		//returns true on success
+		bool rateWork(int work_id, float rating);
 	private:
 		static void init(const QSqlDatabase & db);
 		static bool cInited;

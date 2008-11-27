@@ -130,3 +130,54 @@ int WorkTableModel::findWorkByPath(std::string path){
 	return -1;
 }
 
+bool WorkTableModel::rateWork(int work_id, float rating){
+	/*
+		"select * from descriptors "
+		"left join descriptor_types on descriptor_types.id = descriptors.descriptor_type_id "
+		"left join audio_works on audio_works.id = descriptors.audio_work_id "
+		"where descriptor_types.name = 'rating' and audio_works.id = ;
+		*/
+	//make sure the work id is valid
+	QString workString;
+	workString.sprintf("select id from audio_works where id = %d", work_id);
+	QSqlQuery workQuery(workString, *mDB);
+	workQuery.exec();
+	if(!workQuery.first()) {
+		return false;
+	}
+
+	//make sure that there is a 'rating' descriptor type
+	QString ratingTypeString("select id from descriptor_types where name = 'rating'");
+	QSqlQuery ratingTypeQuery(ratingTypeString, *mDB);
+	ratingTypeQuery.exec();
+
+	if(ratingTypeQuery.first()){
+		QString ratingString;
+		ratingString.sprintf("select descriptors.id from descriptors "
+				"left join descriptor_types on descriptor_types.id = descriptors.descriptor_type_id "
+				"left join audio_works on audio_works.id = descriptors.audio_work_id "
+				"where descriptor_types.name = 'rating' and audio_works.id = %d", work_id);
+		//execute the query
+		QSqlQuery ratingQuery(ratingString, *mDB);
+		ratingQuery.exec();
+
+		//if there is already a rating then just update it
+		if(ratingQuery.next()){
+			QString updateStatement;
+			updateStatement.sprintf("update descriptors set float_value = %f"
+					" where descriptor_type_id = %d "
+					" and audio_work_id = %d", rating, ratingTypeQuery.value(0).toInt(), work_id);
+			ratingQuery.exec(updateStatement);
+			return true;
+		} else {
+			QString insertStatement;
+			insertStatement.sprintf("insert into descriptors "
+					"(descriptor_type_id, audio_work_id, float_value) values(%d, %d, %f)", 
+					ratingTypeQuery.value(0).toInt(), work_id, rating);
+			ratingQuery.exec(insertStatement);
+			return true;
+		} 
+	} else
+		return false;
+}
+
