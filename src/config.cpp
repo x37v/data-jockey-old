@@ -2,6 +2,7 @@
 #include "config.hpp"
 #include <sys/stat.h>
 #include <stdlib.h>
+
 #include <iostream>
 
 using namespace datajockey;
@@ -50,7 +51,6 @@ void Configuration::loadDefault() throw(std::runtime_error) {
 		try {
 			if((stat(it->c_str(), &statbuf) == 0) && S_ISREG(statbuf.st_mode)){
 				loadFile(*it);
-				std::cerr << "Loaded configuration file: " << *it << std::endl;
             mFile = *it;
 				return;
 			} 
