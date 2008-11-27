@@ -29,11 +29,14 @@ target.path = $$PREFIX/bin
 INSTALLS += target
 
 QT += sql
+
+	LIBS += -ljackcpp -lsndfile -lslv2 -lmad -lvorbisfile -loscpack -lyamlcpp -lsyck $$system("pkg-config --libs jack") -lboost_program_options -lxtract
+
 unix:!macx {
-	LIBS += -ljackcpp -lsndfile -lslv2 -lmad -lvorbisfile -lruby1.8 -loscpack -lboost_regex -lyamlcpp -lsyck $$system("pkg-config --libs jack") -lboost_program_options
+	LIBS += -lruby1.8 -lboost_regex
 }
 macx {
-	LIBS += -ljackcpp -lyamlcpp -lsyck -lsndfile -lslv2 -lmad -lvorbisfile -lruby.1.8 -loscpack -lboost_regex-mt $$system("pkg-config --libs jack") -lboost_program_options
+	LIBS += -lruby.1.8 -lboost_regex-mt 
 }
 
 unix:!macx { QMAKE_LFLAGS += -rdynamic }

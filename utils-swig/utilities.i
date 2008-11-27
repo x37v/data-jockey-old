@@ -8,4 +8,5 @@
 
 namespace DataJockey {
 void soundFileToWave(std::string inFileName, std::string outFileName) throw (std::runtime_error);
+std::string computeDescriptors(std::string inFileName, unsigned int windowSize = 1024);
 }
