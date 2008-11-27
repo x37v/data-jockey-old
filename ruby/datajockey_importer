@@ -158,7 +158,7 @@ if __FILE__ == $0
     opts.on("-f", "--force", "Don't ask the user for any info, just import the files") do
       force = true
     end
-    opts.on("-b", "--no-beats", "Don't compute beat locations [or tempo descriptor]") do
+    opts.on("-b", "--no-beats", "Don't compute beat locations [or tempo descriptors]") do
       beats = false
     end
     opts.on("-d", "--no-descriptors", "Don't compute spectral descriptors") do
