@@ -9,6 +9,7 @@ require 'datajockey/annotation/beatlocations'
 require 'rubygems'
 require 'rtaglib'
 require 'yaml'
+require 'datajockey_utils'
 
 class TagFile::File
   def has_attribute(name)
@@ -54,36 +55,64 @@ end
 
 module Datajockey
   module Annotation
-    def Annotation::createAnnotation(audioFile)
+    def Annotation::createAnnotation(audioFile, computeBeats = true, computeDescriptors = true)
       annotation = Hash.new
-      smoothing = 1
-      if(Datajockey::config["annotation"]["beat locations"]["smoothing"])
-        smoothing = Datajockey::config["annotation"]["beat locations"]["smoothing"]
+      if computeBeats or computeDescriptors
+        annotation["descriptors"] = Hash.new
       end
+      if computeBeats
+        smoothing = 1
+        if(Datajockey::config["annotation"]["beat locations"]["smoothing"])
+          smoothing = Datajockey::config["annotation"]["beat locations"]["smoothing"]
+        end
 
-      annotation["beat locations"] = Array.new
+        annotation["beat locations"] = Array.new
 
-      cur = Hash.new
-      cur["time points"] = beats = getBeatLocations(audioFile)
-      cur["mtime"] = cur["ctime"] = Time.now
-      cur["source"] = "Datajockey::Annotation::getBeatLocations(#{audioFile})"
-      annotation["beat locations"] << cur
+        cur = Hash.new
+        cur["time points"] = beats = getBeatLocations(audioFile)
+        cur["mtime"] = cur["ctime"] = Time.now
+        cur["source"] = "Datajockey::Annotation::getBeatLocations(#{audioFile})"
+        annotation["beat locations"] << cur
 
-      cur = Hash.new
-      cur["time points"] = beats = smoothNumArray(beats, smoothing)
-      cur["mtime"] = cur["ctime"] = Time.now
-      cur["source"] = 
+        cur = Hash.new
+        cur["time points"] = beats = smoothNumArray(beats, smoothing)
+        cur["mtime"] = cur["ctime"] = Time.now
+        cur["source"] = 
       "Datajockey::Annotation::smoothNumArray(Datajockey::Annotation::getBeatLocations(#{audioFile}), #{smoothing})"
       annotation["beat locations"] << cur
 
-      if beats.length > 4
-        annotation["descriptors"] = Hash.new
-        distances = Array.new
-        (1..beats.length - 1).each do |i|
-          distances << (beats[i].to_f - beats[i - 1].to_f)
+        if beats.length > 4
+          distances = Array.new
+          (1..beats.length - 1).each do |i|
+            distances << (beats[i].to_f - beats[i - 1].to_f)
+          end
+          descriptor = Hash.new
+          descriptor["median"] = 60.0 / distances.median
+          descriptor["average"] = 60.0 / distances.mean
+          annotation["descriptors"]["tempo"] = descriptor
         end
-        annotation["descriptors"]["tempo median"] = 60.0 / distances.median
-        annotation["descriptors"]["tempo average"] = 60.0 / distances.mean
+      end
+
+      if computeDescriptors
+        #get annotation data, we get 3 lines
+        #name\twindowSize\thopsize
+        #value0\tvalue1\tvalue2..
+        #average\tmedian
+        descriptor_string = Datajockey_utils::computeDescriptors(audioFile).split("\n");
+        (descriptor_string.size / 3).times do |i|
+          name, windowSize, hopSize = descriptor_string[i * 3].split("\t")
+          values = descriptor_string[i * 3 + 1].split("\t").map{|f| f.to_f}
+          average, median = descriptor_string[i * 3 + 2].split("\t").map{|f| f.to_f}
+
+          descriptor = Hash.new
+          descriptor["median"] = median
+          descriptor["average"] = average
+          descriptor["chunks"] = Hash.new
+          descriptor["chunks"]["hop size"] = hopSize.to_i
+          descriptor["chunks"]["window size"] = windowSize.to_i
+          descriptor["chunks"]["values"] = values
+          annotation["descriptors"][name] = descriptor
+        end
       end
 
       #get id3tag data from file if it exists

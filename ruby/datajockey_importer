@@ -75,11 +75,15 @@ module Datajockey
       end
 
       if annotation["descriptors"]
-        annotation["descriptors"].each do |name, value|
-          dt = DescriptorType.find_or_create_by_name(name)
-          d = Descriptor.find(:first, :conditions => {:audio_work_id => work.id, :descriptor_type_id => dt.id})
-          d = Descriptor.new(:audio_work_id => work.id, :descriptor_type_id => dt.id) unless d
-          d.update_attribute(:float_value, value)
+        annotation["descriptors"].each do |name, h|
+          ["average", "median"].each do |t|
+            if h[t]
+              dt = DescriptorType.find_or_create_by_name("#{name} #{t}")
+              d = Descriptor.find(:first, :conditions => {:audio_work_id => work.id, :descriptor_type_id => dt.id})
+              d = Descriptor.new(:audio_work_id => work.id, :descriptor_type_id => dt.id) unless d
+              d.update_attribute(:float_value, h[t])
+            end
+          end
         end
       end
 
