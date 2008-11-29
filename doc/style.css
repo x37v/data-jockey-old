@@ -1,0 +1,12 @@
+body {
+  background: black;
+  color: white;
+}
+.osc-type {
+  color: red;
+}
+.osc-explain {
+  color: blue;
+  font-style: italic;
+  /*visibility:hidden;*/
+}
