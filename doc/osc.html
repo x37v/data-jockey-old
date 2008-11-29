@@ -6,264 +6,264 @@
 
 	<body>
 		<div id="the_body">
-		<h1>Data Jockey: Open Sound Control</h1>
-		<div>
-			The following describes Data Jockey's 
-			<a href="http://archive.cnmat.berkeley.edu/OpenSoundControl/">Open
-				Sound Control</a> (OSC) implementation.  OSC allows users to
-			control Data Jockey externally, using hardware interfaces or other
-			software.
-		</div>
-		<div>
-			<h2>Layout:</h2>
+			<h1>Data Jockey: Open Sound Control</h1>
 			<div>
-				Below is the layout of the OSC messages that Data Jockey
-				recognizes.  See the next section for examples of full OSC
-				messages.  Note: all off the boolean arguments can be substituted
-				with an integer value of 0 or 1.
+				The following describes Data Jockey's 
+				<a href="http://archive.cnmat.berkeley.edu/OpenSoundControl/">Open
+					Sound Control</a> (OSC) implementation.  OSC allows users to
+				control Data Jockey externally, using hardware interfaces or other
+				software.
 			</div>
 			<div>
-				<ul>
-					<li>/datajockey
+				<h2>Layout:</h2>
+				<div>
+					Below is the layout of the OSC messages that Data Jockey
+					recognizes.  See the next section for examples of full OSC
+					messages.  Note: all off the boolean arguments can be substituted
+					with an integer value of 0 or 1.
+				</div>
+				<div>
 					<ul>
-						<li>/mixer/index 
-						<span class="osc-type">(int 0..number of mixers - 1)</span>
-						<span class="osc-explain">the index of the mixer to address, 0 is the first, 1 is the second</span>
+						<li>/datajockey
+						<ul>
+							<li>/mixer/index 
+							<span class="osc-type">(int 0..number of mixers - 1)</span>
+							<span class="osc-explain">the index of the mixer to address, 0 is the first, 1 is the second</span>
+							</li>
+							<ul>
+								<li>/volume 
+								<ul>
+									<li>value 
+									<span class="osc-type">(float 0..2)</span>
+									<span class="osc-explain">set the volume to value</span>
+									</li>
+									<li>/volume/relative value 
+									<span class="osc-type">(float)</span>
+									<span class="osc-explain">increment/decrement the volume by value</span>
+									</li>
+								</ul>
+								</li>
+								<li>/mute 
+								<ul>
+									<li>value 
+									<span class="osc-type">(boolean)</span>
+									<span class="osc-explain">true == mute, false == unmute</span>
+									</li>
+									<li>/mute/toggle
+									<span class="osc-explain">toggle the mute state</span>
+									</li>
+								</ul>
+								</li>
+								<li>/eq/{high|mid|low}
+								<span class="osc-explain">address the eq section</span>
+								<ul>
+									<li>value 
+									<span class="osc-type">(float -1..1)</span>
+									<span class="osc-explain">set the eq value</span>
+									</li>
+									<li>/relative value 
+									<span class="osc-type">(float)</span>
+									<span class="osc-explain">increment/decrement the eq value</span>
+									</li>
+								</ul>
+								</li>
+								<li>
+								play
+								<ul>
+									<li>value 
+									<span class="osc-type">(boolean)</span>
+									<span class="osc-explain">true == play, false == pause</span>
+									</li>
+									<li>/toggle
+									<span class="osc-explain">toggle the play/pause state</span>
+									</li>
+								</ul>
+								</li>
+								<li>
+								cue
+								<ul>
+									<li>value 
+									<span class="osc-type">(boolean)</span>
+									<span class="osc-explain">true == cue, false == play on the main outs</span>
+									</li>
+									<li>/toggle
+									<span class="osc-explain">toggle the cue state</span>
+									</li>
+								</ul>
+								</li>
+								<li>
+								sync
+								<ul>
+									<li>value 
+									<span class="osc-type">(boolean)</span>
+									<span class="osc-explain">true == sync to master clock, false == run free</span>
+									</li>
+									<li>/toggle
+									<span class="osc-explain">toggle the sync state</span>
+									</li>
+								</ul>
+								</li>
+								<li>
+								seek
+								<ul>
+									<li>value 
+									<span class="osc-type">(int)</span>
+									<span class="osc-explain">seek to a specific beat (or second if there is no beat data)</span>
+									</li>
+									<li>/relative value 
+									<span class="osc-type">(int)</span>
+									<span class="osc-explain">seek forward or backward the given number of beats (or seconds)</span>
+									</li>
+								</ul>
+								</li>
+								<li>
+								reset
+								<span class="osc-explain">reset the playback position to the first beat selected (see the beat offset)</span>
+								</li>
+								<li>
+								beatoffset
+								<span class="osc-explain">the beat number which will the song will jump to on reset</span>
+								<ul>
+									<li>value 
+									<span class="osc-type">(int)</span>
+									<span class="osc-explain">set the beat offset</span>
+									</li>
+									<li>/relative value 
+									<span class="osc-type">(int)</span>
+									<span class="osc-explain">increment/decrement the beat offset</span>
+									</li>
+								</ul>
+								</li>
+								<li>
+								tempomul
+								<ul>
+									<li>value 
+									<span class="osc-type">(float)</span>
+									<span class="osc-explain">set the tempo multiplier.
+										When a mixer is in sync mode, this makes the song run x times the tempo of the master tempo.
+										When a mixer is in free mode, this makes sets the playback speed.
+									</span>
+									</li>
+									<!--
+									<li>/relative value 
+									<span class="osc-type">(float)</span>
+									<span class="osc-explain">increment/decrement the tempo multiplier</span>
+									</li>
+									-->
+								</ul>
+								</li>
+								<li>
+								load id 
+								<span class="osc-type">(int 1..)</span>
+								<span class="osc-explain">load the work that has the id "id" in the database</span>
+								</li>
+							</ul>
+							<li>/crossfade</li>
+							<ul>
+								<li>value 
+								<span class="osc-type">(float 0..1)</span>
+								<span class="osc-explain">set the crossfade value, 0 is full left, 1 is full right</span>
+								</li>
+								<li>/relative value 
+								<span class="osc-type">(float)</span>
+								<span class="osc-explain">increment/decrement the crossfade value</span>
+								</li>
+								<li>/mixers index_left index_right 
+								<span class="osc-type">(int int)</span>
+								<span class="osc-explain">set the mixers to crossfade between</span>
+								</li>
+								<li>/enable 
+								<span class="osc-type">(boolean)</span>
+								<span class="osc-explain">enable/disable the crossfader</span>
+								</li>
+							</ul>
+							<li>/master</li>
+							<ul>
+								<li>/volume
+								<ul>
+									<li>value 
+									<span class="osc-type">(float 0..2)</span>
+									<span class="osc-explain">set the master volume</span>
+									</li>
+									<li>/volume/relative value 
+									<span class="osc-type">(float)</span>
+									<span class="osc-explain">increment/decrement the master volume</span>
+									</li>
+								</ul>
+								</li>
+								<li>/tempo 
+								<ul>
+									<li>value 
+									<span class="osc-type">(float)</span>
+									<span class="osc-explain">set the master tempo in beats per minute</span>
+									</li>
+									<li>/tempo/relative value 
+									<span class="osc-type">(float)</span>
+									<span class="osc-explain">increment/decrement the master tempo</span>
+									</li>
+								</ul>
+								</li>
+								<li>/syncsource 
+								<span class="osc-type">(int 0..number of mixers)</span>
+								<span class="osc-explain">set the master tempo sync source, 0 == run free, 1 == the first mixer,..</span>
+								</li>
+							</ul>
+						</ul>
 						</li>
-						<ul>
-							<li>/volume 
-							<ul>
-								<li>value 
-								<span class="osc-type">(float 0..2)</span>
-								<span class="osc-explain">set the volume to value</span>
-								</li>
-								<li>/volume/relative value 
-								<span class="osc-type">(float)</span>
-								<span class="osc-explain">increment/decrement the volume by value</span>
-								</li>
-							</ul>
-							</li>
-							<li>/mute 
-							<ul>
-								<li>value 
-								<span class="osc-type">(boolean)</span>
-								<span class="osc-explain">true == mute, false == unmute</span>
-								</li>
-								<li>/mute/toggle
-								<span class="osc-explain">toggle the mute state</span>
-								</li>
-							</ul>
-							</li>
-							<li>/eq/{high|mid|low}
-							<span class="osc-explain">address the eq section</span>
-							<ul>
-								<li>value 
-								<span class="osc-type">(float -1..1)</span>
-								<span class="osc-explain">set the eq value</span>
-								</li>
-								<li>/relative value 
-								<span class="osc-type">(float)</span>
-								<span class="osc-explain">increment/decrement the eq value</span>
-								</li>
-							</ul>
-							</li>
-							<li>
-							play
-							<ul>
-								<li>value 
-								<span class="osc-type">(boolean)</span>
-								<span class="osc-explain">true == play, false == pause</span>
-								</li>
-								<li>/toggle
-								<span class="osc-explain">toggle the play/pause state</span>
-								</li>
-							</ul>
-							</li>
-							<li>
-							cue
-							<ul>
-								<li>value 
-								<span class="osc-type">(boolean)</span>
-								<span class="osc-explain">true == cue, false == play on the main outs</span>
-								</li>
-								<li>/toggle
-								<span class="osc-explain">toggle the cue state</span>
-								</li>
-							</ul>
-							</li>
-							<li>
-							sync
-							<ul>
-								<li>value 
-								<span class="osc-type">(boolean)</span>
-								<span class="osc-explain">true == sync to master clock, false == run free</span>
-								</li>
-								<li>/toggle
-								<span class="osc-explain">toggle the sync state</span>
-								</li>
-							</ul>
-							</li>
-							<li>
-							seek
-							<ul>
-								<li>value 
-								<span class="osc-type">(int)</span>
-								<span class="osc-explain">seek to a specific beat (or second if there is no beat data)</span>
-								</li>
-								<li>/relative value 
-								<span class="osc-type">(int)</span>
-								<span class="osc-explain">seek forward or backward the given number of beats (or seconds)</span>
-								</li>
-							</ul>
-							</li>
-							<li>
-							reset
-							<span class="osc-explain">reset the playback position to the first beat selected (see the beat offset)</span>
-							</li>
-							<li>
-							beatoffset
-							<span class="osc-explain">the beat number which will the song will jump to on reset</span>
-							<ul>
-								<li>value 
-								<span class="osc-type">(int)</span>
-								<span class="osc-explain">set the beat offset</span>
-								</li>
-								<li>/relative value 
-								<span class="osc-type">(int)</span>
-								<span class="osc-explain">increment/decrement the beat offset</span>
-								</li>
-							</ul>
-							</li>
-							<li>
-							tempomul
-							<ul>
-								<li>value 
-								<span class="osc-type">(float)</span>
-								<span class="osc-explain">set the tempo multiplier.
-									When a mixer is in sync mode, this makes the song run x times the tempo of the master tempo.
-									When a mixer is in free mode, this makes sets the playback speed.
-								</span>
-								</li>
-								<!--
-								<li>/relative value 
-								<span class="osc-type">(float)</span>
-								<span class="osc-explain">increment/decrement the tempo multiplier</span>
-								</li>
-								-->
-							</ul>
-							</li>
-							<li>
-							load id 
-							<span class="osc-type">(int 1..)</span>
-							<span class="osc-explain">load the work that has the id "id" in the database</span>
-							</li>
-						</ul>
-						<li>/crossfade</li>
-						<ul>
-							<li>value 
-							<span class="osc-type">(float 0..1)</span>
-							<span class="osc-explain">set the crossfade value, 0 is full left, 1 is full right</span>
-							</li>
-							<li>/relative value 
-							<span class="osc-type">(float)</span>
-							<span class="osc-explain">increment/decrement the crossfade value</span>
-							</li>
-							<li>/mixers index_left index_right 
-							<span class="osc-type">(int int)</span>
-							<span class="osc-explain">set the mixers to crossfade between</span>
-							</li>
-							<li>/enable 
-							<span class="osc-type">(boolean)</span>
-							<span class="osc-explain">enable/disable the crossfader</span>
-							</li>
-						</ul>
-						<li>/master</li>
-						<ul>
-							<li>/volume
-							<ul>
-								<li>value 
-								<span class="osc-type">(float 0..2)</span>
-								<span class="osc-explain">set the master volume</span>
-								</li>
-								<li>/volume/relative value 
-								<span class="osc-type">(float)</span>
-								<span class="osc-explain">increment/decrement the master volume</span>
-								</li>
-							</ul>
-							</li>
-							<li>/tempo 
-							<ul>
-								<li>value 
-								<span class="osc-type">(float)</span>
-								<span class="osc-explain">set the master tempo in beats per minute</span>
-								</li>
-								<li>/tempo/relative value 
-								<span class="osc-type">(float)</span>
-								<span class="osc-explain">increment/decrement the master tempo</span>
-								</li>
-							</ul>
-							</li>
-							<li>/syncsource 
-							<span class="osc-type">(int 0..number of mixers)</span>
-							<span class="osc-explain">set the master tempo sync source, 0 == run free, 1 == the first mixer,..</span>
-							</li>
-						</ul>
 					</ul>
-					</li>
-				</ul>
-			</div>
-		</div> <!-- end of layout -->
-		<div>
-			<h2>Examples:</h2>
+				</div>
+			</div> <!-- end of layout -->
 			<div>
-				Below are some examples of full OSC messages that a user might send
-				to Data Jockey.
-			</div>
-			<div>
-				<ul>
-					<li>/datajockey/mixer/0/volume 1.0
-					<div class="osc-explain">
-						Sets the volume of mixer 0 [the first mixer] to the value of 1.0.
-					</div>
-					</li>
-					<li>/datajockey/mixer/2/volume/relative -0.1
-					<div class="osc-explain">
-						Decrements the value of mixer 2 [the 3rd mixer] by -0.1.
-					</div>
-					</li>
-					<li>/datajockey/mixer/0/eq/high -1
-					<div class="osc-explain">
-						Cuts all the highs out of the audio from mixer 0.
-					</div>
-					</li>
-					<li>/datajockey/mixer/1/eq/low 1
-					<div class="osc-explain">
-						Fully boosts the low eq of the audio from mixer 1.
-					</div>
-					</li>
-					<li>/datajockey/mixer/1/mute/toggle
-					<div class="osc-explain">
-						Toggles the mute state of mixer 1.
-					</div>
-					<li>/datajockey/mixer/1/mute 1
-					<div class="osc-explain">
-						Mutes mixer 1.
-					</div>
-					</li>
-					<li>/datajockey/crossfade/enable false
-					<div class="osc-explain">
-						Disables the crossfader.
-					</div>
-					</li>
-					<li>/datajockey/master/tempo 140.0
-					<div class="osc-explain">
-						Sets the master tempo to 140 beats per minute.
-					</div>
-					</li>
-				</ul>
+				<h2>Examples:</h2>
+				<div>
+					Below are some examples of full OSC messages that a user might send
+					to Data Jockey.
+				</div>
+				<div>
+					<ul>
+						<li>/datajockey/mixer/0/volume 1.0
+						<div class="osc-explain">
+							Sets the volume of mixer 0 [the first mixer] to the value of 1.0.
+						</div>
+						</li>
+						<li>/datajockey/mixer/2/volume/relative -0.1
+						<div class="osc-explain">
+							Decrements the value of mixer 2 [the 3rd mixer] by -0.1.
+						</div>
+						</li>
+						<li>/datajockey/mixer/0/eq/high -1
+						<div class="osc-explain">
+							Cuts all the highs out of the audio from mixer 0.
+						</div>
+						</li>
+						<li>/datajockey/mixer/1/eq/low 1
+						<div class="osc-explain">
+							Fully boosts the low eq of the audio from mixer 1.
+						</div>
+						</li>
+						<li>/datajockey/mixer/1/mute/toggle
+						<div class="osc-explain">
+							Toggles the mute state of mixer 1.
+						</div>
+						<li>/datajockey/mixer/1/mute 1
+						<div class="osc-explain">
+							Mutes mixer 1.
+						</div>
+						</li>
+						<li>/datajockey/crossfade/enable false
+						<div class="osc-explain">
+							Disables the crossfader.
+						</div>
+						</li>
+						<li>/datajockey/master/tempo 140.0
+						<div class="osc-explain">
+							Sets the master tempo to 140 beats per minute.
+						</div>
+						</li>
+					</ul>
+				</div>
 			</div>
 		</div>
-</div>
 	</body>
 </html>
 
