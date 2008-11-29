@@ -1,0 +1,57 @@
+<html>
+	<head>
+		<title>Data Jockey: Audio Output</title>
+		<LINK href="style.css" rel="stylesheet" type="text/css">
+	</head>
+
+	<body>
+		<div id="the_body">
+			<h1>Data Jockey: Audio Output</h1>
+			<div>
+				<p>
+				Data Jockey uses <a href="http://jackaudio.org/">Jack</a> for its
+				audio output.  Jack allows Data Jockey's users to easily route
+				their audio output in a variety of ways.
+				</p>
+				<p>
+				There are currently 3 "audio outputs" for Data Jockey.  Two stereo
+				outputs "output" and "cue" and one mono output "measure".
+				</p>
+			</div>
+			<div>
+				<h2>Cue vs. the Main Output</h2>
+				<p> 
+				Data Jockey's 2 stereo outputs both output the audio playback from
+				Data Jockey.  The main outputs "output0" and "output1" are intended
+				to be used as the primary listening output.  The "cue" outputs
+				"cue0" and "cue1" are intended to be used to preview audio before
+				it is output on the main outputs and presented to the audience.
+				</p>
+				<p>
+				Each mixer has a 'cue' button which determines the output
+				destination, "cue" or "output".
+				</p>
+				<p>
+				<img src="pics/cue.png" alt="cue button in cuing state">  Here is
+				the cue button in its "cueing" state.  The mixer associated with
+				this cue button will be sending its audio to the "cue" outputs.
+				</p>
+				<p>
+				<img src="pics/cue_off.png" alt="cue button in not cueing state">
+				Here is the cue button in its "inactive", "not cueing" state.  The
+				mixer associated with this button will be sending its audio to the
+				main outputs.
+				</p>
+			</div>
+			<div>
+				<h2>Measure Output</h2>
+				<p>
+				The "measure" output is an audio rate ramp which counts from 0 to 1
+				over 4 beats.  This allows users to synchronize external, jack
+				enabled, applications, in tempo, with Data Jockey.  Eventually Data
+				Jockey will provide other avenues for external synchronization.
+				</p>
+			</div>
+		</div>
+	</body>
+</html>
