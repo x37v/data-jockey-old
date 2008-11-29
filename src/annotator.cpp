@@ -9,6 +9,7 @@
 
 #include <QMainWindow>
 #include <QFile>
+#include <QFileInfo>
 
 #include <boost/program_options.hpp>
 #include <iostream>
@@ -210,7 +211,8 @@ int main(int argc, char *argv[]){
 	}
 
 	if(!inputFile.empty()){
-		selectedWorkId = model->workTableModel()->findWorkByPath(inputFile);
+		QFileInfo fi(inputFile.c_str());
+		selectedWorkId = model->workTableModel()->findWorkByPath(fi.absoluteFilePath().toStdString());
 		if(selectedWorkId < 0){
 			std::string str("Selected work:\n");
 			str.append(inputFile);
