@@ -15,6 +15,57 @@
 			In order to build the annotator, please consult the README.BUILD file
 			in the main directory of the source code download.
 			</p>
+			<h2>Usage</h2>
+			<p>
+			The annotator allows users to associate audio files [that have
+			already been imported into the database] with tags.  It also allows
+			users to apply a 'rating' to a work.  
+			</p>
+			<p>
+			This 'rating' is an arbitrary numerical score of a song, which can be
+			used however the user desires.  The author rates songs on a scale of
+			one to five, where one means he doesn't like the song, two means it is
+			'okay', three means the song is 'good', four means it is 'pretty darn
+			good' and five means it is among his favorite songs.  The range is totally
+			up to the user, it can include decimal places and could even be negative.
+			</p>
+			<h3>Graphical</h3>
+			<p>
+			By default the annotator will pop up a graphical display which shows
+			the song database and tags and allows users to associate works with
+			tags as well as create new tags.
+			</p>
+			<h3>Command Line</h3>
+			<p>
+			There is a 'non-graphical' mode <span class="cli">--non-graphical</span>
+			which allows users to apply tags and ratings without launching the
+			graphical user interface.  Among other things, this would be useful for
+			applying ratings and tags while listening to music in some other audio
+			application.
+			</p>
+			<p>
+			Here is an example which would rate the following song with a rating of 3.
+			</p>
+			<div class="cli">
+			datajockey_annotator --non-graphical -r 3 music/eats_tapes/sticky_buttons-knightress.flac
+			</div>
+
+			<p>
+			The following command would apply the tag 'hard' which has type 'heaviness' to the song.
+			</p>
+			<div class="cli">
+				datajockey_annotator --non-graphical -t "hard","heaviness" /mp3/aphex_twin/classics/02-flaphead.flac
+			</div>
+			<p>
+			The author uses <a href="http://moc.daper.net/">music on the console</a>
+			to listen to music and has set up key bindings to rate songs while listening.
+<pre>ExecCommand1    = "datajockey_annotator %f"
+ExecCommand5    = "datajockey_annotator -a -r 1 %f"
+ExecCommand6    = "datajockey_annotator -a -r 2 %f"
+ExecCommand7    = "datajockey_annotator -a -r 3 %f"
+ExecCommand8    = "datajockey_annotator -a -r 4 %f"
+ExecCommand9    = "datajockey_annotator -a -r 5 %f"</pre>
+			</p>
 		</div>
 	</body>
 </html>
