@@ -1,12 +1,56 @@
 body {
-  background: black;
-  color: white;
+	background: black;
+	color: white;
+   font-family: 'times new roman', serif; 
+   font-size: 11pt;
+   overflow: auto;
+   overflow-x: auto;
+   overflow-y: scroll;
+   color: white;
 }
+
+h1,h2,h3,hr
+{
+   font-family: 'verdana', 'arial', sans-serif;
+   font-weight: normal;
+}
+
+#the_body {
+	background: #131313;
+	color: white;
+   margin-top: 10px;
+   margin-bottom: 10px;
+   max-width: 800px;
+   margin-left: auto;
+   margin-right: auto;
+   padding-top: 0.5em;
+   padding: 0.5em;
+   /*
+   min-height: 600px;
+   */
+
+   border: thin;
+   border-style: solid;
+   border-color: gray;
+}
+
+
+
+a:link, a:visited, a:active {
+	color:white; 
+	background-color: black;
+}
+
+a:hover {
+	color:black; 
+	background-color: white;
+}
+
 .osc-type {
-  color: red;
+	color: #99f151;
 }
+
 .osc-explain {
-  color: blue;
-  font-style: italic;
-  /*visibility:hidden;*/
+	color: #aa1717;
+	font-style: italic;
 }
