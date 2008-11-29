@@ -38,7 +38,7 @@ h1,h2,h3,hr
 
 a:link, a:visited, a:active {
 	color:white; 
-	background-color: black;
+	/*background-color: black;*/
 }
 
 a:hover {
