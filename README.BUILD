@@ -112,7 +112,9 @@ BUILD:
 	xcode project (mac):
 		qmake -spec macx-xcode datajockey.pro
 		do xcode stuff...
-	(don't install yet as that hasn't been fully set up)
+
+INSTALL:
+	sudo make install
 
 CREATE A DATABASE (as root) 
 	OSX:
@@ -146,17 +148,30 @@ CREATE A DATABASE (as root)
 CONFIG FILE:
 	edit config.yaml to reflect your DB settings above
 
+	if you'd like to run data jockey from a location other than the source code
+	directory copy this config file to one of the following locations:
+
+	~/.datajockey/config.yaml
+	/usr/local/share/datajockey/config.yaml
+	/usr/share/datajockey/config.yaml
+
 CREATE THE DB STRUCTURE:
 	pushd ruby && rake db:migrate && popd
 
 IMPORT DATA!:
 	Presently this requires that you have properly tagged files (preferably flac)
 	Also, the path to these files should not change after you import them.
-	./ruby/import_audio.rb FILES
+	./ruby/datajockey_import FILES
 
 RUN THE APP!
 	might want to start jack separately, though you shouldn't have to
-	 for testing i use: jackd -d alsa -p 1024 -n 3 -r 44100 ]
+	for testing i use: jackd -d alsa -p 1024 -n 3 -r 44100 ]
 
 	./datajockey
+
+OPTIONAL: datajockey_annotator
+	to build the annotator [after all of the dependncies above have been built
+	and installed] simply go into the annotator directory, run qmake and then make.
+	cd annotator/ && qmake && make
+	to install then just run "sudo make install"
 
