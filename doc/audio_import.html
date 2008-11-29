@@ -1,0 +1,84 @@
+<html>
+	<head>
+		<title>Data Jockey: Audio Import</title>
+		<LINK href="style.css" rel="stylesheet" type="text/css">
+	</head>
+
+	<body>
+		<div id="the_body">
+			<h1>Data Jockey: Audio Import</h1>
+			<p>
+			Currently, the only way to play audio files with Data Jockey, is to
+			first import them into the database.  To import audio files into the
+			database we use the command line application 'datajockey_importer,'
+			which is included in the Data Jockey download.
+			</p>
+			<p>
+			<h2>Audio File Meta Data:</h2>
+			'datajockey_importer' reads the meta-data embedded in audio files and
+			uses that to built up the database (using song title, artist name,
+			album name, and genre tags).  Make sure that your files are tagged
+			correctly before the are imported.
+			</p>
+			<p>
+			<h2>Beat Locations and Tempo Descriptors:</h2>
+			'datajockey_importer,' by default, attempts to calculate the beat
+			location information for each song it imports.  Data Jockey uses this
+			information to synchronize a song with a master tempo clock.  This
+			calculation takes some time and, if desired, can be disabled through
+			the use of the command line argument '--no-beats'.
+			</p>
+			<p>
+			<strong>NOTE</strong>: at the moment there is no easy way to compute
+			the beat location and tempo information after the song has been
+			imported into the database.  This will change eventually, but for now,
+			if you are going to want to have Data Jockey synchronize your songs,
+			make sure to have it compute the beat location information on import
+			[the default].
+			</p>
+			<p>
+			<h2>Spectral Descriptors:</h2>
+			'datajockey_importer,' by default, also calculates some spectral
+			descriptors for each song.  These calculations take some time and, if
+			desired, can be disabled through the use of the command line argument
+			'--no-descriptors'.
+			</p>
+			<p>
+			<h2>Example:</h2>
+			<p>
+			The following command will attempt to import all of the audio files
+			located in '~/music'.  The -r switch, 'recursive,' indicates
+			that 'datajockey_importer' should search all of the directories below
+			'~/music' for audio files.  The importer will then display all
+			of the files it will attempt to import, ask the user if they wish to
+			proceed, and if so, begin the importation process.
+			</p>
+			<div class="cli">datajockey_importer -r ~/music</div>
+			<p>An example output follows:</p>
+			<div class="cli-result">
+<pre>files:
+        /home/alex/music/dual-corporate_lies_and_deceit.mp3
+        /home/alex/music/eats_tapes/sticky_buttons-knightress.flac
+        /home/alex/music/solenoid-julys_war_butterflies.flac
+        /home/alex/music/spk-slogun.flac
+Importing the files listed above, continue? (yes/no)</pre>
+			</div>
+			<p>If the user wishes to continue they type yes[enter]:</p>
+			<div class="cli">yes</div>
+			<p>Then the importation begins, an example output follows:</p>
+			<div class="cli-result">
+				attempting import of /home/alex/music/dual-corporate_lies_and_deceit.mp3
+				<br>success
+				<br>attempting import of /home/alex/music/eats_tapes/sticky_buttons-knightress.flac
+				<br>success
+				<br>attempting import of /home/alex/music/solenoid-julys_war_butterflies.flac
+				<br>success
+				<br>attempting import of /home/alex/music/spk-slogun.flac
+				<br>success
+			</div>
+			See <span class="cli">datajockey_importer -h</span> for more information
+			about the command line arguments.
+			</p>
+		</div>
+	</body>
+</html>
