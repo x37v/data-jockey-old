@@ -94,6 +94,8 @@ DEPENDENCIES:
 		 	http://plugin.org.uk/lv2/swh-lv2-1.0.15.tar.gz
 		 	http://plugin.org.uk/
 			requires fftw3 [installed via ports above]
+		libxtract:
+		 	http://sourceforge.net/projects/libxtract
 
 	*dependencies from me:
 		yaml_cpp:
