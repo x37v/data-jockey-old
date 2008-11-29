@@ -12,10 +12,16 @@
 			can be run without having to run the full Data Jockey application.
 			</p>
 			<p>
+			Eventually this application will be more full featured, allowing users
+			to visualize and edit beat location data, apply arbitrary descriptors,
+			etc.  But the author finds it useful even in its present, less than
+			fully-featured, state.
+			</p>
+			<p>
 			In order to build the annotator, please consult the README.BUILD file
 			in the main directory of the source code download.
 			</p>
-			<h2>Usage</h2>
+			<h2>Usage:</h2>
 			<p>
 			The annotator allows users to associate audio files [that have
 			already been imported into the database] with tags.  It also allows
@@ -33,16 +39,31 @@
 			<p>
 			By default the annotator will pop up a graphical display which shows
 			the song database and tags and allows users to associate works with
-			tags as well as create new tags.
+			tags as well as create new tags.  New tag associations can be made by
+			dragging tags from the main 'tag view' into the 'tag view' for a
+			specific, selected song.  
+			</p>
+			<p>
+			The screen shot, linked below, shows the
+			main 'tag view' on the right and the details of the work 'Why Kill
+			Time (When You Can Kill Yourself)' by 'Cabaret Voltaire' on the left.
+			</p>
+			<p>
+			<a href="pics/annotator.png">Click here to view a screen shot of the annotator</a>
 			</p>
 			<h3>Command Line</h3>
 			<p>
 			There is a 'non-graphical' mode <span class="cli">--non-graphical</span>
 			which allows users to apply tags and ratings without launching the
-			graphical user interface.  Among other things, this would be useful for
+			graphical user interface.  Among other things, this is useful for
 			applying ratings and tags while listening to music in some other audio
 			application.
 			</p>
+			<p>
+			See <span class="cli">datajockey_annotator -h</span> for information
+			about the command line arguments.
+			</p>
+			<h2>Examples:</h2>
 			<p>
 			Here is an example which would rate the following song with a rating of 3.
 			</p>
@@ -57,8 +78,9 @@
 				datajockey_annotator --non-graphical -t "hard","heaviness" /mp3/aphex_twin/classics/02-flaphead.flac
 			</div>
 			<p>
-			The author uses <a href="http://moc.daper.net/">music on the console</a>
-			to listen to music and has set up key bindings to rate songs while listening.
+			The author uses <a href="http://moc.daper.net/">music on the
+				console</a> to listen to music and has set up key bindings to rate
+			songs while listening.  Below are the settings he uses in the '~/.moc/config' file:
 <pre>ExecCommand1    = "datajockey_annotator %f"
 ExecCommand5    = "datajockey_annotator -a -r 1 %f"
 ExecCommand6    = "datajockey_annotator -a -r 2 %f"
