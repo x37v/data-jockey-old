@@ -33,6 +33,7 @@ WorkDetailView::WorkDetailView(
 	mTagModel = new WorkTagModelFilter(tagModel);
 	mTagView = new TagView(mTagModel, this);
 	mPreviewButton = new QPushButton("preview", this);
+	mPreviewButton->setToolTip(tr("preview selected work on the cue output (toggle)"));
 
 	//don't show count in tagview
 	mTagView->setColumnHidden(TagModel::countColumn(),true);

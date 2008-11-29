@@ -15,6 +15,14 @@ h1,h2,h3,hr
    font-weight: normal;
 }
 
+ol, ul {
+	padding-top: 3px;
+}
+
+li {
+	margin-top: 3px;
+}
+
 #the_body {
 	background: #131313;
 	color: white;

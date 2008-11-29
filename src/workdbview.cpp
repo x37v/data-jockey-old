@@ -31,6 +31,8 @@ WorkDBView::WorkDBView(QAbstractItemModel * model,
 	//create the buttons
 	mApplyFilterButton = new QPushButton("apply filter", this);
 	mRemoveFilterButton = new QPushButton("remove filter", this);
+	mApplyFilterButton->setToolTip(tr("apply the filter selected in filter list"));
+	mRemoveFilterButton->setToolTip(tr("disable any filtering"));
 
 	//add items to the buttonLayout
 	buttonLayout->addWidget(mApplyFilterButton, 0);

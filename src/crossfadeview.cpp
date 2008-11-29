@@ -16,9 +16,11 @@ CrossFadeView::CrossFadeView(unsigned int numMixers, QWidget *parent) :
 	//set up Slider params
 	mSlider->setTickPosition(QSlider::TicksBelow);
 	mSlider->setRange(0,100);
+	mSlider->setToolTip(tr("crossfade slider"));
 	
 	//set up the Combo Box
 	mSelection->addItem("disabled", 0);
+	mSelection->setToolTip(tr("crossfade mixer selection"));
 	for(unsigned int i = 0; i < numMixers; i++){
 		std::stringstream leftNum; 
 		leftNum << i;

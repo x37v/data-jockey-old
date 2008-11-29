@@ -31,6 +31,61 @@
 					</li>
 				</ul>
 				</li>
+				<li>
+				<strong>DJ:</strong>
+				Once we have imported some songs into the database we can use the
+				main Data Jockey application.
+				<ol>
+					<li>
+					Launch the application: <div class="cli">datajockey</div>
+					<i>
+						Sometimes you may have to launch jack externally before
+						launching Data Jockey.  
+					</i>
+					</li>
+					<li>
+					Make sure you have the main outputs "output0" and "output1"
+					connected to the outputs of your physical audio output device.
+					(you can use jack_connect or qjackctl to do this).
+					</li>
+					<li>
+					Select a work in the audio work database view ("work list" on the right).
+					</li>
+					<li>
+					<img src="pics/load.png"> 
+					Load the selected work into the first mixer by clicking the
+					'load' button (displayed here) above that mixer channel. <i>(loading takes a few seconds)</i>
+					</li>
+					<li>
+					<img src="pics/cue.png"> Click the cue button to make the audio go to the main outputs.
+					</li>
+					<li>
+					<img src="pics/cue_off.png"> The cue button should now look like this.
+					</li>
+					<li>
+					Select and load another work into the second mixer as you did above.
+					</li>
+					<li>
+					Once you have selected the main outs for this mixer, by toggling the cue button as above,
+					you should hear 2 songs that are playing in synch with each other.
+					</li>
+					<li>
+					You can adjust the relative volumes of these songs by adjusting
+					the slider in the appropriate mixer channel.
+					</li>
+					<li>
+					You can adjust the global tempo by clicking the arrows on the
+					tempo 'spin box' at the top right of the mixer panel.
+					</li>
+					<li>
+					Explore!  
+					<i>
+						Most of the items in the mixer have tool-tips
+						associated with them, so if you hover the mouse pointer over an
+						item it should give you a short description of what it is.
+					</i>
+					</li>
+				</ol>
 				</li>
 			</ol>
 		</div>
