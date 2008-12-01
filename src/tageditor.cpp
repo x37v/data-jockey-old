@@ -18,6 +18,9 @@ TagEditor::TagEditor(TagModel * model, QWidget * parent) :
 	mAddTagBtn = new QPushButton(tr("create tag"), this);
 	mTagClassSelect = new QComboBox(this);
 	mTagNameInput = new QLineEdit(this);
+	mTagClassSelect->setToolTip(tr("select or create tag class"));
+	mTagNameInput->setToolTip(tr("input new tag name"));
+	mAddTagBtn->setToolTip(tr("create new tag with the selected class and name"));
 
 	//allow for dragging from the tagview
 	mTagView->setSelectionMode(QAbstractItemView::ExtendedSelection);
