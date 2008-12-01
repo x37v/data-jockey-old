@@ -194,6 +194,7 @@ int DataJockeyApplication::run(int argc, char *argv[]){
 	//start the driver and the driver thread
 	audioDriver->start();
 	audioDriverThread->start();
+	audioDriverThread->setPriority(QThread::TimeCriticalPriority);
 
 	//XXX just for now, connect to the physical outputs
 	audioDriver->audioIO()->connectToPhysical(0,0);

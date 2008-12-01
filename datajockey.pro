@@ -30,14 +30,19 @@ INSTALLS += target
 
 QT += sql
 
-	LIBS += -ljackcpp -lsndfile -lslv2 -lmad -lvorbisfile -loscpack -lyamlcpp -lsyck $$system("pkg-config --libs jack") -lboost_program_options -lxtract
+#for some reason linking order matters here, ruby won't require 'rubygems' otherwise
+#i haven't figured out the culprit yet, but this works so i'm doing it this way! 
+
+LIBS += -ljackcpp -lsndfile -lslv2 -lmad -lvorbisfile -loscpack 
 
 unix:!macx {
-	LIBS += -lruby1.8 -lboost_regex
+	LIBS += -lruby1.8 -lboost_regex 
 }
 macx {
 	LIBS += -lruby.1.8 -lboost_regex-mt 
 }
+
+LIBS += -lyamlcpp -lsyck $$system("pkg-config --libs jack") -lboost_program_options
 
 unix:!macx { QMAKE_LFLAGS += -rdynamic }
 macx { 
@@ -139,7 +144,6 @@ HEADERS +=  include/application.hpp \
 				include/tempo.hpp \
 				include/treeitem.h \
 				include/treemodel.h \
-				include/utilities.hpp \
 				include/workdbview.hpp \
 				include/workdetailview.hpp \
 				include/workfilterlist.hpp \
@@ -189,7 +193,6 @@ SOURCES +=  src/application.cpp \
 				src/tempo.cpp \
 				src/treeitem.cpp \
 				src/treemodel.cpp \
-				src/utilities.cpp \
 				src/workdbview.cpp \
 				src/workdetailview.cpp \
 				src/workfilterlist.cpp \
