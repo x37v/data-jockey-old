@@ -1,0 +1,78 @@
+<html>
+	<head>
+		<title>Data Jockey: Tags</title>
+		<LINK href="style.css" rel="stylesheet" type="text/css">
+	</head>
+
+	<body>
+		<a href="index.html">&larr; documentation main page</a>
+		<div id="the_body">
+			<h1>Data Jockey: Tags</h1>
+			<p>
+			Data Jockey allows users to associate songs in their database with
+			arbitrary textual 'tags'.  Tags have a 'type', for instance 'genre,'
+			or 'lyrical theme' and a value, like 'acid house,' or 'dancing.'
+			</p>
+			<p>
+			'genre' tags are automatically extracted from audio files [if they
+			have embedded 'genre' information] when users import their files into
+			the database using <a href="audio_import.html">datajockey_importer</a>.
+			</p>
+			<p>
+			Users can <a href="#filtering">filter</a> the view of the library
+			through the user of tags.  Users can tag works in a variety of
+			different ways, based on qualities of the works or simply based on
+			some attribute that users which to associate with their works.  These
+			tags and filter based on tags allow Data Jockey users to create their
+			own, though somewhat basic, multi-layered organizational schemes.  
+			</p>
+			<a name="tagging">
+			<h2>Tagging:</h2>
+			<p>
+			Users can create new tags and tag types in the 'tags' tab of the main
+			application, or using <a href="annotator.html">datajockey_annotator</a>.
+			The image below shows an example of a user creating a new 'language'
+			tag with the value 'german.'
+			</p>
+			<p>
+			<img src="pics/createtag.png">
+			</p>
+			<p>
+			Users can then associate these tags with a particular work by
+			selecting the work in the 'work list' and dragging/dropping the
+			desired tag from the main 'tag list' into the 'tag list' associated
+			with that particular work.  The image below shows a work that has just
+			been tagged with the 'german' 'language' tag.
+			</p>
+			<p>
+			<img src="pics/tagged.png">
+			</p>
+			<a name="filtering">
+			<h2>Filtering:</h2>
+			<p>
+			Once works have been associated with 'tags,' users can filter their
+			'work list' to only display works with a specific tag.  This can be
+			achieved by:
+			<ol>
+				<li>
+				Selecting the "Tag Selection Filter" in the "filters" view
+				of the main application.
+				</li>
+				<li>
+				Selecting one or more tags in the "tags" view of the main
+				application.  
+				<i>
+					More than one tag can be selected through the use of 'shift' +
+					mouse click or 'ctl'+ mouse click.  'shift' + click selects a
+					range.  'ctl' + click toggles the clicked item in/out of the
+					selection.
+				</i>
+				</li>
+				<li>
+				Pressing "apply filter" on the "work list" view.
+				</li>
+			</ol>
+			</p>
+		</div>
+	</body>
+</html>
