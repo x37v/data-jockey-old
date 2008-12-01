@@ -41,13 +41,9 @@ module Datajockey
       raise "#{audioFile} does not exist, aborting import"
     end
 
-    unless ActiveRecord::Base.connected?
-      if Datajockey::config["database"]
-        ActiveRecord::Base.establish_connection(Datajockey::config["database"])
-      else
-        raise "No database entry in config file, cannot establish database connection."
-      end
-    end
+    #connect to the database
+    Datajockey::connect
+
     unless Datajockey::config["annotation"]["files"]
       raise 'Datajockey::config["annotation"]["files"] is not set'
     end
@@ -141,12 +137,6 @@ module Datajockey
 end
 
 if __FILE__ == $0
-  config_paths = [
-	"./config.yaml",
-  File.expand_path("~/.datajockey/config.yaml"),
-	"/usr/local/share/datajockey/config.yaml",
-	"/usr/share/datajockey/config.yaml"]
-
   require 'optparse'
 
   def recursively_add_files(dir)
@@ -207,19 +197,7 @@ if __FILE__ == $0
   if config_file != nil
     Datajockey::setConfFile(File.expand_path(config_file))
   else
-    found = false
-    config_paths.each do |p|
-      if File.exists?(p)
-        Datajockey::setConfFile(p)
-        puts "Using config file #{p}"
-        found = true
-        break
-      end
-    end
-    if not found
-      puts "Cannot find config file, aborting!"
-      exit
-    end
+    Datajockey::setDefaultConfFile
   end
 
   badFiles = []

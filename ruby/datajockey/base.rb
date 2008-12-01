@@ -48,12 +48,33 @@ module Datajockey
   @@conf_file = nil
   @@conf = nil
   def Datajockey::setConfFile(file)
+    @@conf = nil
     @@conf_file = file
+  end
+  #find the config file, search the default locations
+  def Datajockey::setDefaultConfFile
+    @@conf = nil
+    @@conf_file = nil
+      config_paths = [
+        "./config.yaml",
+        File.expand_path("~/.datajockey/config.yaml"),
+        "/usr/local/share/datajockey/config.yaml",
+        "/usr/share/datajockey/config.yaml"
+      ]
+      config_paths.each do |p|
+        if File.exists?(p)
+          @@conf_file = p
+          break
+        end
+      end
+      if not @@conf_file
+        raise "default config file cannot be found"
+      end
   end
   def Datajockey::config
     unless @@conf
       unless @@conf_file
-        raise "config file has not been set"
+        Datajockey::setDefaultConfFile
       end
       @@conf = YAML::load(File.open(@@conf_file))
     end

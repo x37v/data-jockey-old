@@ -92,10 +92,14 @@ importer.depends = install_swig
 importer.files = ruby/datajockey_importer
 importer.path = $$PREFIX/bin
 
+post_docs.target = post_docs
+post_docs.commands = rsync -vPr --cvs-exclude doc/ x37v.info:x37v.info/datajockey/doc/
+
 QMAKE_EXTRA_TARGETS += swigtarget 
 QMAKE_EXTRA_TARGETS += swigutilstarget 
 QMAKE_EXTRA_TARGETS += buildswig 
 QMAKE_EXTRA_TARGETS += install_swig 
+QMAKE_EXTRA_TARGETS += post_docs 
 
 POST_TARGETDEPS += $$buildswig.target
 
