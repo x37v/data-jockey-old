@@ -5,6 +5,10 @@
 #
 
 =begin
+
+  Copyright (c) 2008 Alex Norman.  All rights reserved.
+	http://www.x37v.info/datajockey
+
 	This file is part of Data Jockey.
 	
 	Data Jockey is free software: you can redistribute it and/or modify it
