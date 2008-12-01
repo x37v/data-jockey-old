@@ -94,9 +94,9 @@ importer.path = $$PREFIX/bin
 
 really_clean.target = really_clean
 really_clean.depends = clean
-really_clean.commands = rm -fr datajockey moc/ objects/ && \
+really_clean.commands = rm -f datajockey && \
 	cd swig/ && make clean && rm -f datajockey_wrap.cxx && cd .. && \
-	cd utils-swig/ && make clean && rm -r utilities_wrap.cxx && cd .. && \
+	cd utils-swig/ && make clean && rm -f utilities_wrap.cxx && cd .. && \
 	cd annotator/ && make clean && rm -f datajockey_annotator
 
 post_docs.target = post_docs
