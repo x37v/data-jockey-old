@@ -1,0 +1,24 @@
+This is Data Jockey, it was written by Alex Norman (http://x37v.info)
+If you have questions, comments, bug fixes, donations, etc. please contact:
+alex at x37v.info
+
+Web page:
+	http://www.x37v.info/datajockey
+
+Building / Installation:
+	Please see README.BUILD
+
+Documentation:
+	There is html documentation in the 'doc' folder.
+	firefox doc/index.html
+
+License:
+	see COPYING
+
+Notes:
+	datajockey_importer uses a java application (beatroot) to extract the beat
+	location information, this app sometimes runs out of memory.
+	To pass opts to java in the import phase, define them in this environment
+	variable: DATAJOCKEY_JAVA_OPTS
+	example (to increase the max heap size): export DATAJOCKEY_JAVA_OPTS="-Xmx1024m"
+

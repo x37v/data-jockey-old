@@ -1,0 +1,22 @@
+Try "Rubber Band" library for Stretching [pitch independent from time]
+http://www.breakfastquay.com/rubberband/why.html
+
+hierarchical tagging (eg):
+	location
+		country
+			china
+			jamaica
+	technology
+		computer
+			laptop
+		cell phone
+		calculator
+
+editable descriptor values
+
+Some sort of Jack Sync in/out?
+
+MIDI sync out/in?
+
+MIDI controller input support?
+
