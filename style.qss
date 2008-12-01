@@ -158,18 +158,13 @@ QTableView::item {
 	margin: 0;
 }
 
-QTableView::item::selected { 
-	background: white;
-	color: black;
-}
-
 QListView::item:hover, QTreeView::item::hover, QTableView::item::hover {
 	background-color: grey;
 	color: white;
 }
 
-QTreeView::item::selected {
-	background: white;
+QListView::item:selected, QTreeView::item::selected, QTableView::item::selected {
+	background-color: white;
 	color: black;
 }
 
@@ -179,6 +174,7 @@ QLineEdit, QFrame
 	border-style: solid;
 	border-color: darkgrey;
 	border-radius: 3px;
+	color: white;
 }
 
 QSplitter > QFrame, QTabWidget > QFrame, ApplicationView > QFrame {
