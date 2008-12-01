@@ -92,6 +92,13 @@ importer.depends = install_swig
 importer.files = ruby/datajockey_importer
 importer.path = $$PREFIX/bin
 
+really_clean.target = really_clean
+really_clean.depends = clean
+really_clean.commands = rm -fr datajockey moc/ objects/ && \
+	cd swig/ && make clean && rm -f datajockey_wrap.cxx && cd .. && \
+	cd utils-swig/ && make clean && rm -r utilities_wrap.cxx && cd .. && \
+	cd annotator/ && make clean && rm -f datajockey_annotator
+
 post_docs.target = post_docs
 post_docs.commands = rsync -vPr --cvs-exclude doc/ x37v.info:x37v.info/datajockey/doc/
 
@@ -99,6 +106,7 @@ QMAKE_EXTRA_TARGETS += swigtarget
 QMAKE_EXTRA_TARGETS += swigutilstarget 
 QMAKE_EXTRA_TARGETS += buildswig 
 QMAKE_EXTRA_TARGETS += install_swig 
+QMAKE_EXTRA_TARGETS += really_clean
 QMAKE_EXTRA_TARGETS += post_docs 
 
 POST_TARGETDEPS += $$buildswig.target
