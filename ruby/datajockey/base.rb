@@ -56,8 +56,8 @@ module Datajockey
     @@conf = nil
     @@conf_file = nil
       config_paths = [
-        "./config.yaml",
         File.expand_path("~/.datajockey/config.yaml"),
+        "./config.yaml",
         "/usr/local/share/datajockey/config.yaml",
         "/usr/share/datajockey/config.yaml"
       ]
