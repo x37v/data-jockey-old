@@ -4,7 +4,7 @@ database:
   adapter: mysql
 #the name of your db (most likely just 'datajockey')
   database: datajockey
-  username: alex
+  username: datajockey_user
 #this can be blank if you didn't give the user a password: 'identified by'
   password:
 #this is standard, you probably won't have to mess with it for now
