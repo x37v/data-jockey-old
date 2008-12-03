@@ -8,6 +8,8 @@ RUBYLIBDEST = $$system("ruby -e 'require \"rbconfig\"; puts File.join(Config::CO
 CONFIG += qt debug
 #CONFIG += qt release
 
+VERSION = 0.1
+
 TEMPLATE = app
 TARGET = datajockey
 DEPENDPATH += .
@@ -214,4 +216,43 @@ SOURCES +=  src/application.cpp \
 				src/workpreviewer.cpp \
 				src/worktablemodel.cpp \
 				src/worktagmodelfilter.cpp 
+
+#main app
+DISTFILES += style.qss
+DISTFILES += config.yaml
+DISTFILES += COPYING
+DISTFILES += BUGS
+DISTFILES += README
+DISTFILES += README.BUILD
+DISTFILES += TODO
+DISTFILES += $$system("find icons/ -name '*.png')
+DISTFILES += lib/beatroot-0.5.3-src.jar
+DISTFILES += lib/beatroot-0.5.3.jar
+#XXX for some reason these weren't being included into the dist output...
+DISTFILES += src/djmixerchannelmodel.cpp
+DISTFILES += src/mixerchannelmodel.cpp
+
+#ruby
+DISTFILES += $$system("find ruby -name '*.rb'")
+DISTFILES += ruby/datajockey_importer
+DISTFILES += ruby/console
+
+#swig
+DISTFILES += $$system("find swig/ utils-swig/ -name '*.i'")
+DISTFILES += $$system("find swig/ utils-swig/ -name '*.cpp'")
+DISTFILES += $$system("find swig/ utils-swig/ -name '*.hpp'")
+DISTFILES += swig/extconf.rb
+DISTFILES += utils-swig/extconf.rb
+DISTFILES += src/utilities.cpp
+DISTFILES += include/utilities.hpp
+
+#annotator
+DISTFILES += annotator/annotator.pro
+DISTFILES += src/annotator.cpp
+DISTFILES += include/annotator.hpp
+
+#docs
+DISTFILES += $$system("find doc/ -name '*.html'")
+DISTFILES += $$system("find doc/ -name '*.css'")
+DISTFILES += $$system("find doc/ -name '*.png'")
 
