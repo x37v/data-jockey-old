@@ -12,7 +12,12 @@ VERSION = 0.1
 
 TEMPLATE = app
 TARGET = datajockey
+target.path = $$PREFIX/bin
+
 DEPENDPATH += .
+RESOURCES = datajockey.qrc
+UPLOAD_BASE = x37v.info:x37v.info/datajockey/
+
 INCLUDEPATH += include/
 INCLUDEPATH += /usr/local/include/
 INCLUDEPATH += /usr/lib/ruby/1.8/i486-linux/
@@ -25,10 +30,6 @@ macx {
 #fast math should get rid of denormal problems [with SSE enabled processors]
 QMAKE_CFLAGS += -ffast-math
 QMAKE_CXXFLAGS += -ffast-math
-RESOURCES = datajockey.qrc
-
-target.path = $$PREFIX/bin
-INSTALLS += target
 
 QT += sql
 
@@ -94,25 +95,28 @@ importer.depends = install_swig
 importer.files = ruby/datajockey_importer
 importer.path = $$PREFIX/bin
 
-really_clean.target = really_clean
-really_clean.depends = clean
-really_clean.commands = rm -f datajockey && \
-	cd swig/ && make clean && rm -f datajockey_wrap.cxx && cd .. && \
-	cd utils-swig/ && make clean && rm -f utilities_wrap.cxx && cd .. && \
-	cd annotator/ && make clean && rm -f datajockey_annotator
+upload_docs.target = upload_docs
+upload_docs.commands = rsync -vPr --cvs-exclude doc/ $$sprintf(%1/doc/, $$UPLOAD_BASE)
 
-post_docs.target = post_docs
-post_docs.commands = rsync -vPr --cvs-exclude doc/ x37v.info:x37v.info/datajockey/doc/
+upload_dist.target = upload_dist
+upload_dist.depends = dist
+upload_dist.commands = rsync -v $$sprintf(datajockey%1.tar.gz, $$VERSION) $$sprintf(%1/files/, $$UPLOAD_BASE)
+
+upload.target = upload
+upload.depends = upload_docs upload_dist
 
 QMAKE_EXTRA_TARGETS += swigtarget 
 QMAKE_EXTRA_TARGETS += swigutilstarget 
 QMAKE_EXTRA_TARGETS += buildswig 
 QMAKE_EXTRA_TARGETS += install_swig 
-QMAKE_EXTRA_TARGETS += really_clean
-QMAKE_EXTRA_TARGETS += post_docs 
+
+QMAKE_EXTRA_TARGETS += upload_docs 
+QMAKE_EXTRA_TARGETS += upload_dist 
+QMAKE_EXTRA_TARGETS += upload 
 
 POST_TARGETDEPS += $$buildswig.target
 
+INSTALLS += target
 INSTALLS += importer
 INSTALLS += beatroot
 INSTALLS += ruby_db_files

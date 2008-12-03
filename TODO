@@ -1,7 +1,9 @@
-Try "Rubber Band" library for Stretching [pitch independent from time]
-http://www.breakfastquay.com/rubberband/why.html
+More, Better, Docs
 
-hierarchical tagging (eg):
+Try "Rubber Band" library for Stretching [pitch independent from time]
+	http://www.breakfastquay.com/rubberband/why.html
+
+Hierarchical tagging (eg):
 	location
 		country
 			china
@@ -12,7 +14,9 @@ hierarchical tagging (eg):
 		cell phone
 		calculator
 
-editable descriptor values
+User editable descriptor values
+	Should there be an indicator in the descriptor type weather it should be editable or not?
+	IE, rating should be editable, Spectral Centroid should not.
 
 Some sort of Jack Sync in/out?
 
@@ -20,3 +24,15 @@ MIDI sync out/in?
 
 MIDI controller input support?
 
+Filters:
+	user editable attributes
+	stackable [ie both tempo and tag selection]
+	updated automatically [based on a timer or hook]
+
+Hooks:
+	pre-load work
+	post-load work
+	amount of time:
+		left in work, progressed in work
+	percentage of work completed
+	audible mixers/works changed
