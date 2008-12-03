@@ -19,6 +19,8 @@
 	with Data Jockey.  If not, see <http://www.gnu.org/licenses/>.
 =end
 
-class ArtistRole < ActiveRecord::Base
-  validates_uniqueness_of :name
+module Datajockey
+  class ArtistRole < ActiveRecord::Base
+    validates_uniqueness_of :name
+  end
 end

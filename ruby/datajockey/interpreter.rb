@@ -189,7 +189,9 @@ begin
 rescue
   puts $!
 end
-#include Datajockey
+
+#include the Datajockey module so we don't have to prefix everything with Datajockey
+include Datajockey
 
 #set the binding
 IRB.set_binding(Datajockey::ApplicationModel.instance)

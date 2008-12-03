@@ -19,6 +19,8 @@
 	with Data Jockey.  If not, see <http://www.gnu.org/licenses/>.
 =end
 
-class AnnotationFile < ActiveRecord::Base
-  belongs_to :audio_work
+module Datajockey
+  class AnnotationFile < ActiveRecord::Base
+    belongs_to :audio_work
+  end
 end

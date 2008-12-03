@@ -19,7 +19,9 @@
 	with Data Jockey.  If not, see <http://www.gnu.org/licenses/>.
 =end
 
-class AudioWorkTag < ActiveRecord::Base
-  belongs_to :audio_work
-  belongs_to :tag
+module Datajockey
+  class AudioWorkTag < ActiveRecord::Base
+    belongs_to :audio_work
+    belongs_to :tag
+  end
 end

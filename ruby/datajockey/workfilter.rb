@@ -19,12 +19,16 @@
 	with Data Jockey.  If not, see <http://www.gnu.org/licenses/>.
 =end
 
-#redefining the work filter init method
-#we create a proc that calls our 'works' method
-#and pass this proc to the original initialize method
 module Datajockey
+  #This class provides a way to filter audio works based on some attribute of
+  #those works.
   class WorkFilter
+    #redefining the work filter init method.
+    #we create a proc that calls our 'works' method
+    #and pass this proc to the original initialize method.
     alias :old_init :initialize
+    #Takes a 'filter name,' which identifies it in the GUI, and a 'description'
+    #of the filter, which gives users a description of what the filter does.
     def initialize(name, description = "Description of WorkFilter")
       this_obj = self
       @proc = Proc.new { 
@@ -37,7 +41,8 @@ module Datajockey
       }
       old_init(name, description, @proc)
     end
-    #overload this function in order to get your filters to work
+    #Overload this method in order to get your filters to work.  Return an
+    #array of work ids.
     def works
       return []
     end

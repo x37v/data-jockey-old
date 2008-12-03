@@ -71,6 +71,7 @@ int DataJockeyApplication::run(int argc, char *argv[]){
 	//make the warning messages graphical
 	QErrorMessage::qtHandler();
 	app.setStyle(new QCleanlooksStyle);
+	unsigned int oscPort = DEFAULT_OSC_PORT;
 
 	datajockey::Configuration * config = datajockey::Configuration::instance();
 
@@ -83,8 +84,9 @@ int DataJockeyApplication::run(int argc, char *argv[]){
 
 		desc.add_options()
 			("help,h", "Produce this help message.")
-			("style-sheet,s", po::value<std::string>(), "Specify a style sheet file to use.")
 			("config,c", po::value<std::string>(), "Specify a configuration file to use.")
+			("osc-port,p", po::value<unsigned int>(), "Specify a port number to use for Open Sound Control input messages.")
+			("style-sheet,s", po::value<std::string>(), "Specify a style sheet file to use for the GUI.")
 			;
 
 		po::store(po::command_line_parser(argc, argv).options(desc).positional(p).run(), vm);
@@ -111,6 +113,11 @@ int DataJockeyApplication::run(int argc, char *argv[]){
 			qFatal(str.c_str());
 			return app.exec();
 		}
+		//if we haven't set the osc-port in the command line, set it via the config file
+		if(vm.count("osc-port")) 
+			oscPort = vm["osc-port"].as<unsigned int>();
+		else
+			oscPort = config->oscPort();
 
 		//set the style sheet
 		bool styled = false;
@@ -229,8 +236,11 @@ int DataJockeyApplication::run(int argc, char *argv[]){
 	RubyInterpreterThread * rubyThread = new RubyInterpreterThread;
 	rubyThread->start();
 
-	OscThread * oscThread = new OscThread(model->oscReceiver(), 10001);
+	cout << "oscPort: " << oscPort << endl;
+
+	OscThread * oscThread = new OscThread(model->oscReceiver(), oscPort);
 	oscThread->start();
+
 
 	view->show();
 	return app.exec();

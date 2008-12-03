@@ -10,6 +10,8 @@ database:
 #this is standard, you probably won't have to mess with it for now
   host: 127.0.0.1
   port: 3306
+#this is the default, change it if you want
+osc_port: 10001
 annotation:
 #where you want the datajockey produced annotation files to go
   files: ~/.datajockey/annotation/

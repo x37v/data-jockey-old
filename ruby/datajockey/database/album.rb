@@ -19,10 +19,12 @@
 	with Data Jockey.  If not, see <http://www.gnu.org/licenses/>.
 =end
 
-class Album < ActiveRecord::Base
-  has_many :album_audio_works, :dependent => :destroy
-  has_many :audio_works, :through => :album_audio_works
+module Datajockey
+  class Album < ActiveRecord::Base
+    has_many :album_audio_works, :dependent => :destroy
+    has_many :audio_works, :through => :album_audio_works
 
-  has_many :album_artists, :dependent => :destroy
-  has_many :artists, :through => :album_artists
+    has_many :album_artists, :dependent => :destroy
+    has_many :artists, :through => :album_artists
+  end
 end

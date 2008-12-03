@@ -21,9 +21,11 @@
 
 module Datajockey
   class DJMixerChannelModel
+    #set the volume of this mixer channel
     def volume=(val)
       setVolume(val)
     end
+    #set the muted state of this mixer channel
     def mute(val = true)
       setMuted(val)
     end

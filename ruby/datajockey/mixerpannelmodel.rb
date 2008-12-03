@@ -20,7 +20,9 @@
 =end
 
 module Datajockey
+  #a class which contains several mixers and a master
   class MixerPanelModel
+    #gives an array of mixers which have works audible on the main outs
     def audibleMixers
       mixers = []
       self.numMixers.times { |i|
@@ -30,6 +32,7 @@ module Datajockey
       }
       return mixers
     end
+    #gives an array of ids of works which are audible on the main outs
     def audibleWorks
       self.audibleMixers.collect { |i| self.mixer(i).work }
     end

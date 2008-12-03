@@ -43,15 +43,22 @@ require 'active_record'
   require m
 end
 
-#datajockey config stuff
 module Datajockey
+  #datajockey config stuff
   @@conf_file = nil
   @@conf = nil
+
+  #tell Datajockey to use a specific config file
   def Datajockey::setConfFile(file)
     @@conf = nil
     @@conf_file = file
   end
-  #find the config file, search the default locations
+
+  #find the config file, search the default locations:
+  #~/.datajockey/config.yaml
+  #./config.yaml
+  #/usr/local/share/datajockey/config.yaml
+  #/usr/share/datajockey/config.yaml
   def Datajockey::setDefaultConfFile
     @@conf = nil
     @@conf_file = nil
@@ -71,6 +78,7 @@ module Datajockey
         raise "default config file cannot be found"
       end
   end
+  #get the config data [yaml data]
   def Datajockey::config
     unless @@conf
       unless @@conf_file
@@ -80,6 +88,7 @@ module Datajockey
     end
     return @@conf
   end
+  #connect to the database [information gathered from the config file]
   def Datajockey::connect
     unless ActiveRecord::Base.connected?
       if Datajockey::config["database"]

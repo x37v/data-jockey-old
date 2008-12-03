@@ -176,6 +176,19 @@ std::string Configuration::databasePassword() {
 	return std::string("");
 }
 
+unsigned int Configuration::oscPort(){
+	unsigned int port = DEFAULT_OSC_PORT;
+	try {
+		yaml::map_ptr topmap = yaml::get<yaml::map_ptr>(mRoot);
+		yaml::map::iterator it = topmap->find(std::string("osc_port"));
+		if(it != topmap->end())
+			port = (unsigned int)yaml::get<int>(it->second);
+	} catch (...){
+		return DEFAULT_OSC_PORT;
+	}
+	return port;
+}
+
 std::string Configuration::databaseUserName() {
 	//we don't need to have a username entry
 	try {

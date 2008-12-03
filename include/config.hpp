@@ -22,6 +22,8 @@
 #ifndef DATAJOCKEY_CONFIGURATION_HPP
 #define DATAJOCKEY_CONFIGURATION_HPP
 
+#define DEFAULT_OSC_PORT 10001
+
 #include <yamlcpp/yaml.hpp>
 #include <stdexcept>
 
@@ -43,6 +45,7 @@ namespace datajockey {
 			std::string databaseName() throw(std::runtime_error);
 			std::string databaseUserName();
 			std::string databasePassword();
+			unsigned int oscPort();
 		private:
 			bool databaseGet(std::string entry, std::string &result) throw(std::runtime_error);
          std::string mFile;

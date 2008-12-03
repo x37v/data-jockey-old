@@ -19,6 +19,8 @@
 	with Data Jockey.  If not, see <http://www.gnu.org/licenses/>.
 =end
 
-class DescriptorType < ActiveRecord::Base
-  has_many :descriptors, :dependent => :destroy
+module Datajockey
+  class DescriptorType < ActiveRecord::Base
+    has_many :descriptors, :dependent => :destroy
+  end
 end

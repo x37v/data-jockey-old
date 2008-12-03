@@ -19,7 +19,9 @@
 	with Data Jockey.  If not, see <http://www.gnu.org/licenses/>.
 =end
 
-class AlbumArtist < ActiveRecord::Base
-  belongs_to :album
-  belongs_to :artist
+module Datajockey 
+  class AlbumArtist < ActiveRecord::Base
+    belongs_to :album
+    belongs_to :artist
+  end
 end

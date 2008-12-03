@@ -19,6 +19,8 @@
 	with Data Jockey.  If not, see <http://www.gnu.org/licenses/>.
 =end
 
-class TagClass < ActiveRecord::Base
-  has_many :tags, :dependent => :destroy
+module Datajockey
+  class TagClass < ActiveRecord::Base
+    has_many :tags, :dependent => :destroy
+  end
 end

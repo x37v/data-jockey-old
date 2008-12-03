@@ -19,7 +19,9 @@
 	with Data Jockey.  If not, see <http://www.gnu.org/licenses/>.
 =end
 
-class Descriptor < ActiveRecord::Base
-  belongs_to :descriptor_type
-  belongs_to :audio_work
+module Datajockey
+  class Descriptor < ActiveRecord::Base
+    belongs_to :descriptor_type
+    belongs_to :audio_work
+  end
 end

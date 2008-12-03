@@ -19,7 +19,9 @@
 	with Data Jockey.  If not, see <http://www.gnu.org/licenses/>.
 =end
 
-class AlbumAudioWork < ActiveRecord::Base
-  belongs_to :album
-  belongs_to :audio_work
+module Datajockey
+  class AlbumAudioWork < ActiveRecord::Base
+    belongs_to :album
+    belongs_to :audio_work
+  end
 end
