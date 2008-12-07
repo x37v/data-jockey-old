@@ -5,7 +5,10 @@ DEPENDENCIES:
 		I've also provided the URLS in case you cannot use a package manager.
 
 	apt (in one line):
-		apt-get install libjack0.100.0-dev libsyck0-dev libsndfile1-dev libvorbis-dev libmad0-dev libboost-regex-dev libboost-dev libqt4-dev libqt4-sql-mysql swig ruby1.8-dev rubygems sun-java6-bin libtag1-dev mysql-server librdf0-dev libboost-program-options-dev
+		apt-get install libjack0.100.0-dev libsyck0-dev libsndfile1-dev libvorbis-dev libmad0-dev libboost-regex-dev libboost-dev libqt4-dev libqt4-sql-mysql swig ruby1.8-dev rubygems sun-java6-bin libtag1-dev mysql-server librdf0-dev libboost-program-options-dev ruby1.8-dev rake
+
+the name of libqt4-sql-mysql was different for 'mint'
+rubytaglib requires libtagc
 
 	macports (in one command):
 		port install libsndfile +flac &&
