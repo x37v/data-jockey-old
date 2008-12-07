@@ -240,6 +240,8 @@ DISTFILES += src/mixerchannelmodel.cpp
 DISTFILES += $$system("find ruby -name '*.rb'")
 DISTFILES += ruby/datajockey_importer
 DISTFILES += ruby/console
+DISTFILES += ruby/Rakefile
+DISTFILES += ruby/tasks/databases.rake
 
 #swig
 DISTFILES += $$system("find swig/ utils-swig/ -name '*.i'")
