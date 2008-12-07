@@ -42,26 +42,24 @@ unsigned int BufferPlayer::mIdCnt = 0;
 // BufferPlayer
 //**************************
 
-BufferPlayer::BufferPlayer(unsigned int sampleRate, TempoDriver * defaultSync, SLV2World slv2world, SLV2Plugins slv2plugins) :
-	Object(), mMyTempoDriver(sampleRate)
+BufferPlayer::BufferPlayer(unsigned int sampleRate, SLV2World slv2world, SLV2Plugins slv2plugins) :
+	Object()
 {
 	//XXX maybe this should be a unsigned int/long and a double offset?
 	mSampleIndex = 0;
+	mSampleIncrement = 1.0;
+	mLastSampleIndex = 0.0;
 
 	mOutPort = cueOut;
 	mLoop = false;
 	mId = mIdCnt++;
 	mBeatIndex = 0;
 	mVolScale = 1;
-	//mTempoMul = 1;
+	mTempoMul = 1.0;
 	mBeatOffset = 0.0;
 	mMaxSample = 0.0;
 	mPlayMode = syncPlayback;
 	mPlaybackSampleRate = sampleRate;
-	//this is the default clock to sync to
-	mDefaultSync = defaultSync;
-	//initially we sync
-	mMyTempoDriver.syncTo(defaultSync);
 	mBeatBuffer = NULL;
 
 	mPlaying = true;
@@ -108,12 +106,13 @@ BufferPlayer::~BufferPlayer(){
 void BufferPlayer::setBuffers(AudioBufferPtr audio_buf, BeatBufferPtr beat_buf){
 	mAudioBuffer = audio_buf;
 	mBeatBuffer = beat_buf;
-	mMyTempoDriver.setPeriodMul(1.0);
+	mSampleIncrement = mTempoMul = 1.0;
+	mSampleIndex = 0.0;
+	mBeatIndex = 0;
 	if(!canSync())
 		mPlayMode = freePlayback;
-	else {
+	else 
 		mPlayMode = syncPlayback;
-	}
 }
 
 unsigned int BufferPlayer::getBeatIndex(){
@@ -156,8 +155,10 @@ void BufferPlayer::advanceBeat(int num_beats){
 		reset();
 	else
 		mBeatIndex += num_beats;
+	/*
 	if(looping() && mBeatIndex >= mLoopPoints.getLoopEndBeat())
 		mBeatIndex = mLoopPoints.getLoopStartBeat();
+		*/
 
 	//make sure we don't advance too far past our last beat
 	if(mBeatBuffer != NULL && mBeatIndex > mBeatBuffer->length()){
@@ -168,60 +169,38 @@ void BufferPlayer::advanceBeat(int num_beats){
 		mSampleIndex = mBeatBuffer->getValue(mBeatIndex + mBeatOffset) * mAudioBuffer->getSampleRate();
 }
 
-void BufferPlayer::sync(){
-	//if we dont have a beat buffer then we can only play in free mode
-	if(!canSync() || mPlayMode == freePlayback || 
-			(mMyTempoDriver.getSyncSrc() != NULL && mMyTempoDriver.getSyncSrc()->getSyncSrc() == &mMyTempoDriver)){
-		double prevIndex = mBeatIndex + mBeatOffset + mMyTempoDriver.getIndex();
-		double newBeatIndex;
+void BufferPlayer::sync(TempoDriver * syncSrc){
+		//double prevIndex = mBeatIndex + mBeatOffset + mMyTempoDriver.getIndex();
 
-		//make sure we have valid data
-		if(mAudioBuffer == NULL){
+		//make sure we have valid data and we're playing
+		if(mAudioBuffer == NULL || !mPlaying)
 			return;
-		}
 
 		//increment our index if we're not paused
-		if(mPlaying)
-			mSampleIndex += mMyTempoDriver.getTempoScale();
+		mSampleIndex += mSampleIncrement;
+		if(syncSrc && mPlayMode == syncPlayback && syncSrc->overflow()){
+			advanceBeat();
+		}
 
 		//don't see past the end of our audio buffer
 		if(mSampleIndex > mAudioBuffer->length())
 			mSampleIndex = mAudioBuffer->length() + 1;
 
-		if(mBeatBuffer != NULL){
+		if(mBeatBuffer != NULL && mPlayMode == freePlayback){
 			//get the beat index at this point in time based on our mSampleIndex;
-			newBeatIndex = 
+			double newBeatIndex = 
 				mBeatBuffer->getBeatIndexAtTime(mSampleIndex / mAudioBuffer->getSampleRate(), 
 						mBeatIndex + mBeatOffset);
-
-			//update the tempo driver accordingly
-			if(newBeatIndex > prevIndex){
-				if ((newBeatIndex - prevIndex) >= 1)
-					mMyTempoDriver.setOverflowed();
-				else
-					mMyTempoDriver.setOverflowed(false);
-				mMyTempoDriver.setIndex(newBeatIndex - floor(newBeatIndex) - floor(newBeatIndex - prevIndex));
-			} else {
-				mMyTempoDriver.setOverflowed(false);
-				mMyTempoDriver.setIndex(newBeatIndex - floor(newBeatIndex));
-			}
-			//mMyTempoDriver.setPeriod(mBeatBuffer->getBeatPeriod(newBeatIndex) * mMyTempoDriver.getPeriodMul());
-			mMyTempoDriver.setPeriod(mBeatBuffer->getBeatPeriod(newBeatIndex));
-
 			//store the index, ditch the offset
 			mBeatIndex = newBeatIndex - mBeatOffset;
 		}
 
-	} else 
-		mMyTempoDriver.sync();
 }
 
-float BufferPlayer::getSample(unsigned int chan){
+float BufferPlayer::getSample(unsigned int chan, TempoDriver * syncSrc){
 	float val;
 	float index;
-	float beatIndexOffset;
-	TempoDriver * syncSrc = mMyTempoDriver.getSyncSrc();
-	bool syncSrcSynchingToMe = (syncSrc != NULL && syncSrc->getSyncSrc() == &mMyTempoDriver);
+	bool syncSrcSynchingToMe = false;//(syncSrc != NULL && syncSrc->getSyncSrc() == &mMyTempoDriver);
 
 	if (!mPlaying){
 		return 0.0;
@@ -229,10 +208,12 @@ float BufferPlayer::getSample(unsigned int chan){
 
 	//update our period, syncing to ourself, tricky huh?
 	if (chan == 0 && mPlayMode == syncPlayback && !syncSrcSynchingToMe){
+		/*
 		if(validBeatPeriod())
 			mMyTempoDriver.setPeriod( getBeatPeriod(mMyTempoDriver.getIndex()));
 		if(mMyTempoDriver.overflow())
 			advanceBeat();
+			*/
 	}
 
 	//if we don't have audio
@@ -243,20 +224,27 @@ float BufferPlayer::getSample(unsigned int chan){
 	if(!canSync())
 		mPlayMode = freePlayback;
 
-	beatIndexOffset = mMyTempoDriver.getIndex();
-
 	//if we're in free mode then our tempo driver sets the period mul for us..
 	//if we don't have a beat buffer than we can only play in free mode
-	if (mPlayMode == freePlayback || syncSrcSynchingToMe){
-		val = mVolScale * mAudioBuffer->getSampleAtIndex(chan, mSampleIndex);
+	if (mPlayMode == freePlayback || !syncSrc){
+		//val = mVolScale * mAudioBuffer->getSampleAtIndex(chan, mSampleIndex);
 	} else {
-		double time;
-		index = (1.0 / mMyTempoDriver.getPeriodMul()) * (mBeatOffset + beatIndexOffset + mBeatIndex);
+		index = mTempoMul * (mBeatOffset + syncSrc->getIndex() + mBeatIndex);
 		//update mSampleIndex, we might update this ourselves later if we switch to free mode
-		time = mBeatBuffer->getValue(index);
-		val = mVolScale * mAudioBuffer->getSample(chan, time);
-		mSampleIndex = time * mAudioBuffer->getSampleRate();
+		mSampleIndex = mBeatBuffer->getValue(index) * mAudioBuffer->getSampleRate();
+		//val = mVolScale * mAudioBuffer->getSample(chan, time);
+
+		//update the sample increment
+		if(chan == 0){
+			double newIncrement = mSampleIndex - mLastSampleIndex;
+			//LPF
+			if(newIncrement > 0.0)
+				mSampleIncrement = (mSampleIncrement + newIncrement) / 2;
+			mLastSampleIndex = mSampleIndex;
+		}
 	}
+	//get the sample
+	val = mVolScale * mAudioBuffer->getSampleAtIndex(chan, mSampleIndex);
 
 	mMaxSample = abs_max(mMaxSample, val);
 	return val;
@@ -275,11 +263,17 @@ void BufferPlayer::setLooping(bool loop){
 }
 
 void BufferPlayer::setTempoMultiplier(float mul){
-	mMyTempoDriver.setPeriodMul(1.0 / mul);
+	if(mPlayMode == syncPlayback)
+		mTempoMul = mul;
+	else
+		mSampleIncrement = mul;
 }
 
 float BufferPlayer::getTempoMultiplier(){
-	return 1.0 / mMyTempoDriver.getPeriodMul();
+	if(mPlayMode == syncPlayback)
+		return mTempoMul;
+	else
+		return mSampleIncrement;
 }
 
 void BufferPlayer::setOutPort(outputPort_t out){
@@ -290,37 +284,6 @@ void BufferPlayer::setOutPort(outputPort_t out){
 //might not have loaded the audio yet, so we don't know if we can sync or not
 void BufferPlayer::setPlayMode(playMode_t mode){
 	mPlayMode = mode;
-	//our sync source's sync source
-	TempoDriver * syncSourceSyncSource = mDefaultSync->getSyncSrc();
-	//if we're doing free playback then the tempo mul we use
-	//is actually the tempo mul of our clock, so
-	if (mode == freePlayback){
-		if(canSync()){
-			//if we are syncing to another tempo driver and it is not syncing to us
-			//update our period mul
-			if(mMyTempoDriver.getSyncSrc() != NULL && mMyTempoDriver.getSyncSrc()->getSyncSrc() != &mMyTempoDriver){
-				if(validBeatPeriod()){
-					//set our period
-					mMyTempoDriver.setPeriod(getBeatPeriod(mMyTempoDriver.getSyncSrc()->getIndex()));
-					mMyTempoDriver.syncToPeriod(mMyTempoDriver.getSyncSrc()->getPeriod() * 
-							mMyTempoDriver.getSyncSrc()->getPeriodMul());
-				}
-			}
-			mMyTempoDriver.syncTo(NULL);
-		}
-	} else {
-		mMyTempoDriver.syncTo(mDefaultSync);
-		//if we're going to sync to a clock that is syncing to us then
-		//we shouldn't change our period mul
-		if(syncSourceSyncSource != &mMyTempoDriver)
-			mMyTempoDriver.setPeriodMul(1.0);
-	}
-}
-
-void BufferPlayer::tickTempoDriver(){
-	if(mMyTempoDriver.tick()){
-		//advanceBeat();
-	}
 }
 
 void BufferPlayer::setBeatOffset(float offset){
@@ -365,8 +328,6 @@ void BufferPlayer::setEQVals(float low, float mid, float high){
 }
 
 void BufferPlayer::play(){
-	if (!mPlaying && mPlayMode == freePlayback)
-		mMyTempoDriver.reset();
 	mPlaying = true;
 }
 
@@ -473,7 +434,7 @@ void BufferPlayer::SetVolume::operateOnPlayer(BufferPlayerPtr player){
 BufferPlayer::SetTempoMultiplier::SetTempoMultiplier(double mul) :
 	BufferPlayer::Cmd()
 {
-	mTempoMul = mul;
+		mTempoMul = mul;
 }
 
 void BufferPlayer::SetTempoMultiplier::operateOnPlayer(BufferPlayerPtr player){

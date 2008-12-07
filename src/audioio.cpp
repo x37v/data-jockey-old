@@ -72,7 +72,7 @@ AudioIO::AudioIO(unsigned int num_buf_players) :
 	}
 
 	for(unsigned int i = 0; i < num_buf_players; i++){
-		BufferPlayerPtr p(new BufferPlayer(getSampleRate(), &mBeatAndMeasureDriver.tempoDriver, cLv2World, cLv2Plugins));
+		BufferPlayerPtr p(new BufferPlayer(getSampleRate(), cLv2World, cLv2Plugins));
 		addBufferPlayer(p);
 		float ** stereoAudioBuf = new float*[2];
 		stereoAudioBuf[0] = new float[getBufferSize()];
@@ -237,6 +237,8 @@ void AudioIO::processCommand(AudioIOCmdPtr cmd){
 							//first let the master tempo driver run free
 							mBeatAndMeasureDriver.tempoDriver.runFree();
 
+							/*
+							 * XXX FIX THIS
 							//if the old player we were syncing to is in sync mode, set its period mul
 							if(mBufferPlayers[oldSyncBufferPlayerIndex]->getPlayMode() == BufferPlayer::syncPlayback){
 								mBufferPlayers[oldSyncBufferPlayerIndex]->getTempoDriver()->setPeriodMul(1.0);
@@ -245,6 +247,7 @@ void AudioIO::processCommand(AudioIOCmdPtr cmd){
 							//then sync to the master tempo driver
 							mBufferPlayers[mSyncBufferPlayerIndex]->getTempoDriver()->syncToPeriod(
 									mBeatAndMeasureDriver.tempoDriver.getPeriod());
+							*/
 
 							/*
 							mBufferPlayers[mSyncBufferPlayerIndex]->getTempoDriver()->syncToPeriod(
@@ -257,17 +260,21 @@ void AudioIO::processCommand(AudioIOCmdPtr cmd){
 						}
 
 					} else {
+						/*
 						if(mBufferPlayers[mSyncBufferPlayerIndex]->validBeatPeriod() &&
 								mBufferPlayers[mSyncBufferPlayerIndex]->getPlayMode() == BufferPlayer::syncPlayback){
 							mBufferPlayers[mSyncBufferPlayerIndex]->getTempoDriver()->syncToPeriod(
 									mBeatAndMeasureDriver.tempoDriver.getPeriod());
 						}
+						*/
 					}
 					//if we have a valid beat period then we sync to that clock..
 					//otherwise we stay at the same setting we had before
 					if(mBufferPlayers[mSyncBufferPlayerIndex]->validBeatPeriod()){
+						/*
 						mBeatAndMeasureDriver.tempoDriver.syncTo(
 								mBufferPlayers[mSyncBufferPlayerIndex]->getTempoDriver());
+								*/
 					} else {
 						mSyncBufferPlayerIndex = oldSyncBufferPlayerIndex;
 						mSyncToClock = wasSyncingToClock;
@@ -328,29 +335,27 @@ int AudioIO::audioCallback(jack_nframes_t nframes,
 			outBufs[j][i] = 0;
 		}
 
-		//tick the player's buffers
-		for(std::vector<BufferPlayerPtr>::iterator player_it = mBufferPlayers.begin();
-				player_it != mBufferPlayers.end(); player_it++){
-			(*player_it)->tickTempoDriver();
-		}
-
 		//SYNC!
 		//master
 		mBeatAndMeasureDriver.tempoDriver.sync();
 		//players
-		for(std::vector<BufferPlayerPtr>::iterator player_it = mBufferPlayers.begin();
-				player_it != mBufferPlayers.end(); player_it++){
-			(*player_it)->sync();
+		for(unsigned int j = 0; j < mBufferPlayers.size(); j++){
+			//if we're syncing to this player then don't pass the driver
+			if(!mSyncToClock && j == mSyncBufferPlayerIndex)
+				mBufferPlayers[j]->sync();
+			else
+				mBufferPlayers[j]->sync(&mBeatAndMeasureDriver.tempoDriver);
 		}
 
 		//loop through the players and get their samples
-		std::vector<float **>::iterator buffer_it = mAudioBuffers.begin();
-		for(std::vector<BufferPlayerPtr>::iterator player_it = mBufferPlayers.begin();
-				!((player_it == mBufferPlayers.end()) || (buffer_it == mAudioBuffers.end())); 
-				player_it++, buffer_it++){
-
-			for(unsigned int j = 0; j < 2; j++)
-				(*buffer_it)[j][i] = (*player_it)->getSample(j);
+		for(unsigned int j = 0; j < mBufferPlayers.size(); j++){
+			//if we're syncing to this player then don't pass the driver
+			for(unsigned int k = 0; k < 2; k++){
+				if(!mSyncToClock && j == mSyncBufferPlayerIndex)
+					mAudioBuffers[j][k][i] = mBufferPlayers[j]->getSample(k);
+				else
+					mAudioBuffers[j][k][i] = mBufferPlayers[j]->getSample(k, &mBeatAndMeasureDriver.tempoDriver);
+			}
 		}
 	}
 

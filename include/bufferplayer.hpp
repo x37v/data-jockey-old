@@ -79,7 +79,7 @@ namespace DataJockey {
 			unsigned int mPlaybackSampleRate;
 			playMode_t mPlayMode;
 			outputPort_t mOutPort;
-			//float mTempoMul;
+			double mTempoMul;
 			unsigned int mId;
 			static unsigned int mIdCnt;
 			unsigned int mBeatIndex;
@@ -96,10 +96,10 @@ namespace DataJockey {
 			//this is the sample index for running in free mode
 			double mSampleIndex;
 
-			bool mPlaying;
+			double mSampleIncrement;
+			double mLastSampleIndex;
 
-			TempoDriver mMyTempoDriver;
-			TempoDriver * mDefaultSync;
+			bool mPlaying;
 
 			//lv2 eq
 			///**< Plugin "class" (actually just a few strings) */
@@ -117,7 +117,7 @@ namespace DataJockey {
 			float mEqControlOut;
 
 		public:
-			BufferPlayer(unsigned int sample_rate, TempoDriver * defaultSync, SLV2World lv2World, SLV2Plugins lv2plugins);
+			BufferPlayer(unsigned int sample_rate, SLV2World lv2World, SLV2Plugins lv2plugins);
 			virtual ~BufferPlayer();
 			void setBuffers(AudioBufferPtr audio_buf, BeatBufferPtr beat_buf);
 			BeatBufferPtr getBeatBuffer(){return mBeatBuffer;}
@@ -126,11 +126,11 @@ namespace DataJockey {
 			void setBeatIndex(unsigned int index);
 			void reset();
 			void advanceBeat(int num_beats = 1);
-			TempoDriver * getTempoDriver() { return &mMyTempoDriver; } 
+			//TempoDriver * getTempoDriver() { return &mMyTempoDriver; } 
 
-			void sync();
+			void sync(TempoDriver * syncSrc = NULL);
 
-			float getSample(unsigned int chan);
+			float getSample(unsigned int chan, TempoDriver * syncSrc = NULL);
 			void setVolScale(float volume);
 			unsigned int getId(){return mId;}
 
@@ -146,8 +146,6 @@ namespace DataJockey {
 
 			playMode_t getPlayMode(){return mPlayMode;}
 			void setPlayMode(playMode_t mode);
-
-			void tickTempoDriver();
 
 			float getBeatOffset(){return mBeatOffset;}
 			void setBeatOffset(float offset);
