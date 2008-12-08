@@ -1,8 +1,6 @@
 Tags that are being dragged are not visible [black text on black background]
 	cannot seem to figure out which widget is displayed during this drag.
 Syncing:
-	* Moving from 'sync' to 'free' mode doesn't work correctly when the master
-	is in sync with a mixer and not running free.
 	* Tracks are auto synced when they load, so even if you select 'run free'
 	before the track is full loaded they will be in sync until you toggle 'sync'
 	2 times.
