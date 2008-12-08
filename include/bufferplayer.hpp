@@ -83,6 +83,7 @@ namespace DataJockey {
 			unsigned int mId;
 			static unsigned int mIdCnt;
 			unsigned int mBeatIndex;
+			double mSubBeatIndex;
 			float mVolScale;
 			AudioBufferPtr mAudioBuffer;
 			BeatBufferPtr mBeatBuffer;
@@ -98,6 +99,9 @@ namespace DataJockey {
 
 			double mSampleIncrement;
 			double mLastSampleIndex;
+
+			//this is true when we cross a beat border.. 
+			bool mOverflow;
 
 			bool mPlaying;
 
@@ -140,6 +144,7 @@ namespace DataJockey {
 
 			void setTempoMultiplier(float mult);
 			float getTempoMultiplier();
+			void setSampleIncrement(double increment);
 
 			outputPort_t getOutPort(){return mOutPort;}
 			void setOutPort(outputPort_t out);
@@ -159,6 +164,14 @@ namespace DataJockey {
 			//this gets the beat period from the beat buffer
 			bool validBeatPeriod();
 			float getBeatPeriod(float beatIndexOffset);
+
+			//these use the sampleIndex
+			float getBeatPeriod();
+			bool getOverflow();
+
+			//gives the index between beats, when running in free mode..
+			//for syncing to the player
+			double getSubBeatIndex();
 
 			void applyEq(unsigned int nframes, float ** audio);
 			void setEQVals(float low, float mid, float high);

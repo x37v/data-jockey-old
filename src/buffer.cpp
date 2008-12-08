@@ -285,10 +285,11 @@ double BeatBuffer::getBeatIndexAtTime(double time, double hint_beat_index){
 
 double BeatBuffer::getBeatPeriod(double beat_index){
 	unsigned int index = (unsigned int)floor(beat_index);
-	if (beat_index < 0 || mBeatBuffer.size() < 2){
+	if (mBeatBuffer.size() < 2){
 		//XXX this should not happen
 		return 0.5;
-	}
+	} else if(beat_index < 0.0)
+		index = 0;
 	else if (beat_index > (mBeatBuffer.size() - 1))
 		index = mBeatBuffer.size() - 2;
 

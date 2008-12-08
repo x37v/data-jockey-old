@@ -49,11 +49,13 @@ BufferPlayer::BufferPlayer(unsigned int sampleRate, SLV2World slv2world, SLV2Plu
 	mSampleIndex = 0;
 	mSampleIncrement = 1.0;
 	mLastSampleIndex = 0.0;
+	mOverflow = false;
 
 	mOutPort = cueOut;
 	mLoop = false;
 	mId = mIdCnt++;
 	mBeatIndex = 0;
+	mSubBeatIndex = 0.0;
 	mVolScale = 1;
 	mTempoMul = 1.0;
 	mBeatOffset = 0.0;
@@ -109,6 +111,7 @@ void BufferPlayer::setBuffers(AudioBufferPtr audio_buf, BeatBufferPtr beat_buf){
 	mSampleIncrement = mTempoMul = 1.0;
 	mSampleIndex = 0.0;
 	mBeatIndex = 0;
+	mSubBeatIndex = 0.0;
 	if(!canSync())
 		mPlayMode = freePlayback;
 	else 
@@ -120,8 +123,9 @@ unsigned int BufferPlayer::getBeatIndex(){
 }
 
 void BufferPlayer::setBeatIndex(unsigned int index){
-	if(mBeatBuffer != NULL && index <= mBeatBuffer->length())
+	if(mBeatBuffer != NULL && index <= mBeatBuffer->length()){
 		mBeatIndex = index;
+	}
 	if(mBeatBuffer != NULL && mAudioBuffer != NULL) 
 		mSampleIndex = mBeatBuffer->getValue(mBeatIndex + mBeatOffset) * mAudioBuffer->getSampleRate();
 	//if we don't have a beat buffer then we just have the index be 'seconds'
@@ -153,8 +157,9 @@ void BufferPlayer::advanceBeat(int num_beats){
 
 	if((int)mBeatIndex + num_beats < 0)
 		reset();
-	else
+	else {
 		mBeatIndex += num_beats;
+	}
 	/*
 	if(looping() && mBeatIndex >= mLoopPoints.getLoopEndBeat())
 		mBeatIndex = mLoopPoints.getLoopStartBeat();
@@ -186,13 +191,22 @@ void BufferPlayer::sync(TempoDriver * syncSrc){
 		if(mSampleIndex > mAudioBuffer->length())
 			mSampleIndex = mAudioBuffer->length() + 1;
 
-		if(mBeatBuffer != NULL && mPlayMode == freePlayback){
+		//if we have a beat buffer and we are not syncing
+		if(mBeatBuffer != NULL && (!syncSrc || mPlayMode == freePlayback)){
+			unsigned int prevBeatIndex = mBeatIndex;
 			//get the beat index at this point in time based on our mSampleIndex;
 			double newBeatIndex = 
 				mBeatBuffer->getBeatIndexAtTime(mSampleIndex / mAudioBuffer->getSampleRate(), 
 						mBeatIndex + mBeatOffset);
 			//store the index, ditch the offset
 			mBeatIndex = newBeatIndex - mBeatOffset;
+			//get the index between beats
+			mSubBeatIndex = newBeatIndex - mBeatIndex - mBeatOffset;
+			//if we've crossed a beat boundry, set overflow = true.. else false
+			if(mBeatIndex > prevBeatIndex)
+				mOverflow = true;
+			else
+				mOverflow = false;
 		}
 
 }
@@ -200,20 +214,9 @@ void BufferPlayer::sync(TempoDriver * syncSrc){
 float BufferPlayer::getSample(unsigned int chan, TempoDriver * syncSrc){
 	float val;
 	float index;
-	bool syncSrcSynchingToMe = false;//(syncSrc != NULL && syncSrc->getSyncSrc() == &mMyTempoDriver);
 
 	if (!mPlaying){
 		return 0.0;
-	}
-
-	//update our period, syncing to ourself, tricky huh?
-	if (chan == 0 && mPlayMode == syncPlayback && !syncSrcSynchingToMe){
-		/*
-		if(validBeatPeriod())
-			mMyTempoDriver.setPeriod( getBeatPeriod(mMyTempoDriver.getIndex()));
-		if(mMyTempoDriver.overflow())
-			advanceBeat();
-			*/
 	}
 
 	//if we don't have audio
@@ -226,7 +229,7 @@ float BufferPlayer::getSample(unsigned int chan, TempoDriver * syncSrc){
 
 	//if we're in free mode then our tempo driver sets the period mul for us..
 	//if we don't have a beat buffer than we can only play in free mode
-	if (mPlayMode == freePlayback || !syncSrc){
+	if ((mPlayMode == freePlayback) || !syncSrc){
 		//val = mVolScale * mAudioBuffer->getSampleAtIndex(chan, mSampleIndex);
 	} else {
 		index = mTempoMul * (mBeatOffset + syncSrc->getIndex() + mBeatIndex);
@@ -239,7 +242,7 @@ float BufferPlayer::getSample(unsigned int chan, TempoDriver * syncSrc){
 			double newIncrement = mSampleIndex - mLastSampleIndex;
 			//LPF
 			if(newIncrement > 0.0)
-				mSampleIncrement = (mSampleIncrement + newIncrement) / 2;
+				mSampleIncrement = (9 * mSampleIncrement + newIncrement) / 10;
 			mLastSampleIndex = mSampleIndex;
 		}
 	}
@@ -267,6 +270,10 @@ void BufferPlayer::setTempoMultiplier(float mul){
 		mTempoMul = mul;
 	else
 		mSampleIncrement = mul;
+}
+
+void BufferPlayer::setSampleIncrement(double increment){
+	mSampleIncrement = increment;
 }
 
 float BufferPlayer::getTempoMultiplier(){
@@ -309,6 +316,21 @@ float BufferPlayer::getBeatPeriod(float beatIndexOffset){
 		return 0;
 	}
 	return mBeatBuffer->getBeatPeriod(mBeatOffset + beatIndexOffset + mBeatIndex);
+}
+
+float BufferPlayer::getBeatPeriod(){
+	//if we cannot sync then we cannot give a beat period
+	if(!canSync())
+		return 0.5;
+	return mBeatBuffer->getBeatPeriod(mBeatOffset + mBeatIndex) / mSampleIncrement;
+}
+
+bool BufferPlayer::getOverflow(){
+	return mOverflow;
+}
+
+double BufferPlayer::getSubBeatIndex(){
+	return mSubBeatIndex;
 }
 
 void BufferPlayer::applyEq(unsigned int nframes, float ** audio){

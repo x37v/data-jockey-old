@@ -35,11 +35,9 @@ namespace DataJockey {
 	
 	TempoDriver::TempoDriver(unsigned int sample_rate, double period){
 		mOverflow = false;
-		mPeriodMul = 1.0;
 		reset();
 		mSampleRate = sample_rate;
 		setPeriod(period);
-		mSyncSrc = NULL;
 	}
 
 	void TempoDriver::reset(){
@@ -68,7 +66,7 @@ namespace DataJockey {
 			sample_val = mBeatIndex = (double)mSampleCnt / mNextTick;
 			mSampleCnt++;
 		} else {
-			mNextTick = mPeriodMul * mPeriod * mSampleRate + (mNextTick - mSampleCnt);
+			mNextTick = mPeriod * mSampleRate + (mNextTick - mSampleCnt);
 			mBeatIndex = mSampleCnt = 0;
 			sample_val = 1.0;
 			mOverflow = true;
@@ -92,7 +90,7 @@ namespace DataJockey {
 			//set the next tick value
 			//the number of samples to the next tick plus the error left over
 			//from the previous tick
-			mNextTick = mPeriodMul * mPeriod * mSampleRate + (mNextTick - mSampleCnt);
+			mNextTick = mPeriod * mSampleRate + (mNextTick - mSampleCnt);
 			mBeatIndex = mSampleCnt = 0;
 			sample_val = 1;
 			mOverflow = true;
@@ -131,70 +129,35 @@ namespace DataJockey {
 		mSampleRate = rate;
 	}
 
-	double TempoDriver::getPeriod(bool include_mul){
-		if (include_mul)
-			return mPeriod * mPeriodMul;
-		else
-			return mPeriod;
+	double TempoDriver::getPeriod(){
+		return mPeriod;
 	}
 
 	void TempoDriver::setPeriod(double period, bool updateTick){
 		mPeriod = period;
 		if (updateTick)
-			mNextTick = mPeriod * mSampleRate * mPeriodMul;
+			mNextTick = mPeriod * mSampleRate;
 	}
 
 	void TempoDriver::setBPM(double bpm){
 		setPeriod(60.0 / bpm);
 	}
 
-	void TempoDriver::syncTo(TempoDriver * driver){
-		mSyncSrc = driver;
-		sync();
-	}
-
-	void TempoDriver::sync(){
-		if(mSyncSrc != NULL){
-			mBeatIndex = mSyncSrc->getIndex();
-			mOverflow = mSyncSrc->overflow();
-			mNextTick = mSyncSrc->getNextTick();
-			//mLastTick = mSyncSrc->getLastTick();
-			mSampleCnt = mSyncSrc->getSampleCount();
-		}
-	}
-
-	void TempoDriver::syncToPeriod(double period){
-		//mPeriodMul = getPeriod() / period;
-		mPeriodMul = period / getPeriod();
-	}
-
-	void TempoDriver::runFree(bool set_period_mul){
-		sync();
-		if(mSyncSrc != NULL){
-			if(set_period_mul){
-				mPeriodMul = mSyncSrc->getPeriodMul() * mSyncSrc->getPeriod() / mPeriod;
-			} else {
-				mPeriod = mSyncSrc->getPeriod();
-				//mPeriodMul = mSyncSrc->getPeriodMul();
-				//mPeriod /= mPeriodMul;
-				mPeriodMul = 1.0;
-			}
-		}
-		mSyncSrc = NULL;
-	}
-
 	void TempoDriver::setIndex(double index){
 		mBeatIndex = index;
 	}
 
-	void TempoDriver::setPeriodMul(double mul){
-		mPeriodMul = mul;
-	}
+	void TempoDriver::sync(double index, double period, bool overflow){
+		mOverflow = overflow;
+		mBeatIndex = index;
+		mPeriod = period;
+		mSampleCnt++;
 
-	void TempoDriver::setTempoScale(double scale){
-		mPeriodMul = 1.0 / scale;
-	}
+		if(mOverflow)
+			mSampleCnt = 0;
 
+		mNextTick = mPeriod * mSampleRate;
+	}
 
 	//*************
 	// TempoDivider

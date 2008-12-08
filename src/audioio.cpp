@@ -143,10 +143,13 @@ void AudioIO::processCommand(AudioIOCmdPtr cmd){
 					if (bPlayerCmd->getTypeID() == BufferPlayer::Cmd::set_buffers &&
 							!mSyncToClock && mSyncBufferPlayerIndex == index){
 						if(mBufferPlayers[mSyncBufferPlayerIndex]->validBeatPeriod()){
+							/*
+							 * XXX
 							mBeatAndMeasureDriver.tempoDriver.syncToPeriod(
 									mBufferPlayers[mSyncBufferPlayerIndex]->getBeatPeriod( mLastBeatIndex) / 
 									mBufferPlayers[mSyncBufferPlayerIndex]->getTempoMultiplier()
 									);
+									*/
 						}
 					}
 				}
@@ -164,13 +167,9 @@ void AudioIO::processCommand(AudioIOCmdPtr cmd){
 			{
 				AudioIOSetTempoScalePtr tempoCmd = 
 					boost::static_pointer_cast<AudioIOSetTempoScale,AudioIOCmd>(cmd);
-				TempoDriver * syncSrc = mBeatAndMeasureDriver.tempoDriver.getSyncSrc();
-				//if there is no sync src then scale our tempo
-				//otherwise, scale the tempo of the clock we're in sync with
-				if(syncSrc == NULL)
-					mBeatAndMeasureDriver.tempoDriver.setTempoScale(tempoCmd->getTempoScale());
-				else
-					syncSrc->setTempoScale(tempoCmd->getTempoScale());
+				//set the tempo scale of the player we're syncing to
+				if(!mSyncToClock)
+					mBufferPlayers[mSyncBufferPlayerIndex]->setSampleIncrement(tempoCmd->getTempoScale());
 				cmd->setCompleted();
 			}
 			break;
@@ -185,7 +184,7 @@ void AudioIO::processCommand(AudioIOCmdPtr cmd){
 		//here we deal with state request commands
 		case AudioIOCmd::get_state : 
 			{
-				TempoDriver * syncSrc = mBeatAndMeasureDriver.tempoDriver.getSyncSrc();
+				//TempoDriver * syncSrc = mBeatAndMeasureDriver.tempoDriver.getSyncSrc();
 				AudioIOGetStatePtr stateCmd = 
 					boost::static_pointer_cast<AudioIOGetState,AudioIOCmd>(cmd);
 				//make sure the buffer for the information requested actually exists
@@ -199,12 +198,12 @@ void AudioIO::processCommand(AudioIOCmdPtr cmd){
 				stateCmd->setSyncToClock(mSyncToClock);
 				stateCmd->setSyncBufferPlayerIndex(mSyncBufferPlayerIndex);
 				//if we're syncing then we reflect that in the state update
-				if(syncSrc != NULL){
-					stateCmd->setPeriod(syncSrc->getPeriod());
-					stateCmd->setTempoScale(syncSrc->getTempoScale());
+				if(!mSyncToClock){
+					stateCmd->setPeriod(mBufferPlayers[mSyncBufferPlayerIndex]->getBeatPeriod());
+					stateCmd->setTempoScale(mBufferPlayers[mSyncBufferPlayerIndex]->getTempoMultiplier());
 				} else {
 					stateCmd->setPeriod(mBeatAndMeasureDriver.tempoDriver.getPeriod());
-					stateCmd->setTempoScale(mBeatAndMeasureDriver.tempoDriver.getTempoScale());
+					stateCmd->setTempoScale(1.0);
 				}
 
 				cmd->setCompleted();
@@ -214,8 +213,6 @@ void AudioIO::processCommand(AudioIOCmdPtr cmd){
 			{
 				AudioIOSyncToBufferPlayerPtr syncBufferPlayer = 
 					boost::static_pointer_cast<AudioIOSyncToBufferPlayer,AudioIOCmd>(cmd);
-				bool wasSyncingToClock = mSyncToClock;
-				unsigned int oldSyncBufferPlayerIndex = mSyncBufferPlayerIndex;
 				unsigned int newSyncBufferPlayerIndex = syncBufferPlayer->getBufferPlayerIndex();
 				//if the index is in range then sync to that!
 				if (syncBufferPlayer->getBufferPlayerIndex() < mBufferPlayers.size()){
@@ -224,77 +221,14 @@ void AudioIO::processCommand(AudioIOCmdPtr cmd){
 					if(mBufferPlayers[newSyncBufferPlayerIndex]->canSync()){
 						mSyncToClock = false;
 						mSyncBufferPlayerIndex = newSyncBufferPlayerIndex;
-					} else
-						break;
-
-					//if we were in sync with another buffer player then we sync to
-					//that instead of the main clock
-					if(!wasSyncingToClock && mSyncBufferPlayerIndex != oldSyncBufferPlayerIndex){
-
-						if(mBufferPlayers[mSyncBufferPlayerIndex]->validBeatPeriod() &&
-								mBufferPlayers[mSyncBufferPlayerIndex]->getPlayMode() == BufferPlayer::syncPlayback){
-
-							//first let the master tempo driver run free
-							mBeatAndMeasureDriver.tempoDriver.runFree();
-
-							/*
-							 * XXX FIX THIS
-							//if the old player we were syncing to is in sync mode, set its period mul
-							if(mBufferPlayers[oldSyncBufferPlayerIndex]->getPlayMode() == BufferPlayer::syncPlayback){
-								mBufferPlayers[oldSyncBufferPlayerIndex]->getTempoDriver()->setPeriodMul(1.0);
-							}
-
-							//then sync to the master tempo driver
-							mBufferPlayers[mSyncBufferPlayerIndex]->getTempoDriver()->syncToPeriod(
-									mBeatAndMeasureDriver.tempoDriver.getPeriod());
-							*/
-
-							/*
-							mBufferPlayers[mSyncBufferPlayerIndex]->getTempoDriver()->syncToPeriod(
-									mBufferPlayers[oldSyncBufferPlayerIndex]->getTempoDriver()->getPeriod());
-							//reset the tempoMul of the old tempo driver if that player is playing in sync mode.
-							if(mBufferPlayers[oldSyncBufferPlayerIndex]->getPlayMode() == BufferPlayer::syncPlayback){
-								mBufferPlayers[oldSyncBufferPlayerIndex]->getTempoDriver()->setPeriodMul(1.0);
-							}
-							*/
-						}
-
-					} else {
-						/*
-						if(mBufferPlayers[mSyncBufferPlayerIndex]->validBeatPeriod() &&
-								mBufferPlayers[mSyncBufferPlayerIndex]->getPlayMode() == BufferPlayer::syncPlayback){
-							mBufferPlayers[mSyncBufferPlayerIndex]->getTempoDriver()->syncToPeriod(
-									mBeatAndMeasureDriver.tempoDriver.getPeriod());
-						}
-						*/
-					}
-					//if we have a valid beat period then we sync to that clock..
-					//otherwise we stay at the same setting we had before
-					if(mBufferPlayers[mSyncBufferPlayerIndex]->validBeatPeriod()){
-						/*
-						mBeatAndMeasureDriver.tempoDriver.syncTo(
-								mBufferPlayers[mSyncBufferPlayerIndex]->getTempoDriver());
-								*/
-					} else {
-						mSyncBufferPlayerIndex = oldSyncBufferPlayerIndex;
-						mSyncToClock = wasSyncingToClock;
 					}
 				}
+
 			}
 			break;
 		case AudioIOCmd::sync_to_master_clock : 
-			{
-				TempoDriver * syncSrc = mBeatAndMeasureDriver.tempoDriver.getSyncSrc();
-				mSyncToClock = true;
-				if(syncSrc != NULL){
-					mBeatAndMeasureDriver.tempoDriver.runFree();
-					//only scale the period mul if we're syncing
-					if(mBufferPlayers[mSyncBufferPlayerIndex]->getPlayMode() == BufferPlayer::syncPlayback){
-						syncSrc->setPeriodMul(1.0);
-					}
-				}
-				break;
-			}
+			mSyncToClock = true;
+			break;
 		default:
 			//otherwise reject it and push it onto the output
 			cmd->setRejected();
@@ -316,9 +250,17 @@ int AudioIO::audioCallback(jack_nframes_t nframes,
 	handleInputEvents();
 
 	for(unsigned int i = 0; i < nframes; i++){
-		//tick the beat and measure clocks
-		beat = mBeatAndMeasureDriver.tempoDriver.tick(beatIndex);
-		mLastBeatIndex = beatIndex;
+		if(mSyncToClock){
+			//tick the beat and measure clocks
+			beat = mBeatAndMeasureDriver.tempoDriver.tick(beatIndex);
+			//mLastBeatIndex = beatIndex;
+		} else {
+			beat = mBufferPlayers[mSyncBufferPlayerIndex]->getOverflow();
+			mBeatAndMeasureDriver.tempoDriver.sync(
+					mBufferPlayers[mSyncBufferPlayerIndex]->getSubBeatIndex(),
+					mBufferPlayers[mSyncBufferPlayerIndex]->getBeatPeriod(),
+					beat);
+		}
 
 		//send out the measure index so that other apps can sync
 		outBufs[MEASURE_OUT][i] = (beatIndex + (float)mBeatAndMeasureDriver.measureDriver.getCnt()) / 
@@ -335,9 +277,6 @@ int AudioIO::audioCallback(jack_nframes_t nframes,
 			outBufs[j][i] = 0;
 		}
 
-		//SYNC!
-		//master
-		mBeatAndMeasureDriver.tempoDriver.sync();
 		//players
 		for(unsigned int j = 0; j < mBufferPlayers.size(); j++){
 			//if we're syncing to this player then don't pass the driver
