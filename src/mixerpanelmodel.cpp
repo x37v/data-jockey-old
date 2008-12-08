@@ -197,9 +197,6 @@ void MixerPanelModel::mixerLoad(int work_id, QObject * ob){
 	emit(mixerLoading(index, work_id));
 }
 
-#include <iostream>
-using namespace std;
-
 void MixerPanelModel::crossFadeUpdate(){
 	//update the mixers volumes
 	for(unsigned int i = 0; i < mDJMixerChannels.size(); i++)

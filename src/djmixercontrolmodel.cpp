@@ -229,6 +229,6 @@ void DJMixerControlModel::reset(){
 	setTempoMul(1.0);
 	//XXX there should be a setting to decide if we do this or not
 	setCueing(true);
-	setSync(true);
+	//setSync(true);
 }
 

@@ -112,10 +112,8 @@ void BufferPlayer::setBuffers(AudioBufferPtr audio_buf, BeatBufferPtr beat_buf){
 	mSampleIndex = 0.0;
 	mBeatIndex = 0;
 	mSubBeatIndex = 0.0;
-	if(!canSync())
+	if(!canSync() && audio_buf != NULL)
 		mPlayMode = freePlayback;
-	else 
-		mPlayMode = syncPlayback;
 }
 
 unsigned int BufferPlayer::getBeatIndex(){
@@ -426,7 +424,7 @@ void BufferPlayer::SetBuffers::operateOnPlayer(BufferPlayerPtr player){
 	player->setBuffers(mAudioBuffer, mBeatBuffer);
 	if(mReset){
 		player->reset();
-		player->setTempoMultiplier(1);
+		player->setTempoMultiplier(1.0);
 		player->setLooping(false);
 	}
 }
