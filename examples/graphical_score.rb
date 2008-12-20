@@ -13,27 +13,33 @@ class Song
   attr_reader :fill_color, :line_color, :text_color
   attr_accessor :max_volume
   alias :old_init :initialize
+
   def initialize(work_id = nil, text = "title")
     old_init(text)
     initialize_graphical
   end
+
   def initialize_graphical
-    @graphics_inited = true
-    @fill_color = [rand,rand,rand]
-    @line_color = [0,0,0]
-    @text_color = [0,0,0]
-    @draw_text_box = false
-    @max_volume = 1.5
+    @graphics_inited = true 
+    @fill_color = [rand,rand,rand] unless @fill_color
+    @line_color = [0,0,0] unless @line_color
+    @text_color = @fill_color.map{|x| 1.0 - x} unless @text_color
+    @draw_text_box = false unless @draw_text_box
+    @max_volume = 1.5 unless @max_volume
   end
+
   def set_fill_color(r,g,b)
     @fill_color = [r,g,b]
   end
+
   def set_line_color(r,g,b)
     @line_color = [r,g,b]
   end
+
   def set_text_color(r,g,b)
     @text_color = [r,g,b]
   end
+
   def draw(c) #c = draw context
     initialize_graphical unless @graphics_inited
     #store the matrix so that we can clean up later
@@ -96,30 +102,38 @@ class Track
 end
 
 class Score
+  attr_accessor :display_time_inc, :background_color, :text_color
+
   alias :old_init :initialize
   class << self
     alias :old_from_yaml_string :from_yaml_string
   end
-  attr_accessor :display_time_inc
+
   def initialize
     old_init
     initialize_graphical
   end
+
+  #initialize the graphical member data
   def initialize_graphical
-    @background_color = [1,1,1]
-    @display_time_inc = 10
+    @background_color = [1,1,1] unless @background_color
+    @text_color = [0,0,0] unless @text_color
+    @display_time_inc = 10 unless @display_time_inc
   end
+
+  #calculate the draw size
   def draw_size
     tracks = @track.get_non_overlapping_tracks
     return [100 + 40 + TIME_SCALE * @track.length, 40 + 100 * tracks.length]
   end
+
+  #draw onto the context(c)
   def draw(c)
     tracks = @track.get_non_overlapping_tracks
     matrix = c.matrix
 
     # fill background 
     c.set_source_rgba(*@background_color)
-    c.set_source_rgba([1,1,1])
     c.paint
 
     c.translate(10,10)
@@ -131,7 +145,7 @@ class Score
       header = header + " by #{@author}"
     end
     c.set_font_size(HEADER_TEXT_SIZE)
-    c.set_source_rgb(*(@background_color.map{|x| 1.0 - x}))
+    c.set_source_rgb(@text_color)
     c.show_text(header)
 
     c.matrix = matrix
@@ -168,6 +182,7 @@ class Score
     end
     c.matrix = matrix
   end
+
   def Score::from_yaml_string(input_string)
     ob = Score::old_from_yaml_string(input_string)
     ob.initialize_graphical
