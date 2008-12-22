@@ -117,6 +117,19 @@ AnnotatorView::AnnotatorView(AnnotatorModel * model, QWidget * parent)
 			SIGNAL(workSelected(int)),
 			mWorkDetailView,
 			SLOT(setWork(int)));
+
+	//tag editor + tag model
+	QObject::connect(
+			mTagEditor,
+			SIGNAL(tagAdded(int,QString)),
+			model->tagModel(),
+			SLOT(addTag(int,QString)));
+	QObject::connect(
+			mTagEditor,
+			SIGNAL(tagAdded(QString,QString)),
+			model->tagModel(),
+			SLOT(addClassAndTag(QString,QString)));
+
 }
 
 void AnnotatorView::selectWork(int work_id){
