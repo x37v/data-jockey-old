@@ -109,7 +109,7 @@ void BufferPlayer::setBuffers(AudioBufferPtr audio_buf, BeatBufferPtr beat_buf){
 	mAudioBuffer = audio_buf;
 	mBeatBuffer = beat_buf;
 	mSampleIncrement = mTempoMul = 1.0;
-	mSampleIndex = 0.0;
+	mLastSampleIndex = mSampleIndex = 0.0;
 	mBeatIndex = 0;
 	mSubBeatIndex = 0.0;
 	if(!canSync() && audio_buf != NULL)
