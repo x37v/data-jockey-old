@@ -242,6 +242,7 @@ DISTFILES += ruby/datajockey_importer
 DISTFILES += ruby/console
 DISTFILES += ruby/Rakefile
 DISTFILES += ruby/tasks/databases.rake
+DISTFILES += $$system("find examples/ -name '*.rb')
 
 #swig
 DISTFILES += $$system("find swig/ utils-swig/ -name '*.i'")
