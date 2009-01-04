@@ -97,7 +97,7 @@ rubytaglib requires libtagc
 		 	http://plugin.org.uk/lv2/swh-lv2-1.0.15.tar.gz
 		 	http://plugin.org.uk/
 			requires fftw3 [installed via ports above]
-		libxtract:
+		libxtract: [i used --enable-fft]
 		 	http://sourceforge.net/projects/libxtract
 
 	*dependencies from me:

@@ -114,7 +114,7 @@ std::string DataJockey::computeDescriptors(std::string inFileName, unsigned int 
 	for(unsigned int i = 0; i < windowSize / 2; i++)
 		window[windowSize - i - 1] = window[i] = ((float) i) * 2 / windowSize;
 
-	xtract_init_fft(windowSize, XTRACT_SPECTRUM);
+	//xtract_init_fft(windowSize, XTRACT_SPECTRUM);
 
 	for(unsigned int i = 0; ((i + 1) * windowSize) < audioData.size(); i += 1){
 		float argv[3];
