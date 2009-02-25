@@ -31,6 +31,7 @@
 #include "soundfile.hpp"
 
 #include <stdint.h>
+#include <string.h>
 #ifndef INT16_MAX
 #define INT16_MAX 32767
 #endif
