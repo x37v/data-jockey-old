@@ -136,7 +136,8 @@ namespace DataJockey {
 			void advanceBeat(int num_beats = 1);
 			//TempoDriver * getTempoDriver() { return &mMyTempoDriver; } 
 
-			void sync(TempoDriver * syncSrc = NULL);
+			//returns false if the player is paused or done playing
+			bool sync(TempoDriver * syncSrc = NULL);
 
 			float getSample(unsigned int chan, TempoDriver * syncSrc = NULL);
 			void setVolScale(float volume);

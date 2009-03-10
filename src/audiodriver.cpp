@@ -96,6 +96,12 @@ void AudioDriver::processAudioEvents(){
 		if(!state->getSyncToClock()){
 			float tempo = 60.0f / state->getPeriod();
 			emit(tempoChanged(tempo));
+		} 
+		if(state->getSyncSrcChanged()){
+			if(state->getSyncToClock())
+				emit(syncSourceChanged(0));
+			else
+				emit(syncSourceChanged(state->getSyncBufferPlayerIndex() + 1));
 		}
 
 		if(state->getTempoScale() != mTempoMul && mReportTempoMul){
@@ -334,6 +340,13 @@ void AudioDriver::connectToMixerPanel(){
 			SIGNAL(mixerTempoMulChanged(unsigned int, double)),
 			mMixerPanel,
 			SLOT(mixerSetTempoMul(unsigned int, double)),
+			Qt::QueuedConnection);
+	//report change in sync src
+	QObject::connect(
+			this,
+			SIGNAL(syncSourceChanged(unsigned int)),
+			mMixerPanel->master(),
+			SLOT(setSyncSource(unsigned int)),
 			Qt::QueuedConnection);
 
 	//master

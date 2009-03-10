@@ -88,6 +88,9 @@ namespace DataJockey {
 			unsigned int mSyncBufferPlayerIndex;
 			float mLastBeatIndex;
 
+			//indicates if we've updated the sync src internally
+			bool mSyncSrcChanged;
+
 			JackCpp::RingBuffer<jack_default_audio_sample_t> mPreviewBuffer;
 
 		public:
@@ -176,6 +179,7 @@ namespace DataJockey {
 			bool mSyncToClock;
 			double mPeriod;
 			double mTempoScale;
+			bool mSyncSrcChanged;
 		public:
 			AudioIOGetState(unsigned int nbufferplayers);
 			virtual const typeID_t getTypeID(){return AudioIOCmd::get_state;}
@@ -186,6 +190,8 @@ namespace DataJockey {
 			void setSyncToClock(bool sync){mSyncToClock = sync;}
 			unsigned int getSyncBufferPlayerIndex(){ return mSyncBufferPlayerIndex;}
 			void setSyncBufferPlayerIndex(unsigned int index){ mSyncBufferPlayerIndex = index;}
+			void setSyncSrcChanged(){ mSyncSrcChanged = true;}
+			bool getSyncSrcChanged(){ return mSyncSrcChanged;}
 			double getPeriod(){return mPeriod;}
 			void setPeriod(double period){ mPeriod = period;}
 			double getTempoScale(){return mTempoScale;}

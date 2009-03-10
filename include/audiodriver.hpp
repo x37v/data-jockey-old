@@ -38,6 +38,8 @@ class AudioDriver : public QObject {
 		void mixerTempoMulChanged(unsigned int mixer, double value);
 		void tempoChanged(float value);
 		void tempoMulChanged(double value);
+		//0 is master
+		void syncSourceChanged(unsigned int src);
 	protected:
 		void run();
 	public slots:

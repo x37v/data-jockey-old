@@ -189,46 +189,51 @@ void BufferPlayer::advanceBeat(int num_beats){
 	}
 }
 
-void BufferPlayer::sync(TempoDriver * syncSrc){
-		//double prevIndex = mBeatIndex + mBeatOffset + mMyTempoDriver.getIndex();
+bool BufferPlayer::sync(TempoDriver * syncSrc){
+	bool playing = true;
+	//double prevIndex = mBeatIndex + mBeatOffset + mMyTempoDriver.getIndex();
 
-		//make sure we have valid data and we're playing
-		if(mAudioBuffer == NULL || !mPlaying)
-			return;
+	//make sure we have valid data and we're playing
+	if(mAudioBuffer == NULL || !mPlaying)
+		return false;
 
-		//increment our index if we're not paused
-		if(syncSrc == NULL || mPlayMode == freePlayback){
-			mLastSampleIndex = mSampleIndex;
-			//we might be playing at a different sampling rate than our sound file
-			mSampleIndex += mSampleIncrement * mSampleRateMul;
-		}
-		if(syncSrc && mPlayMode == syncPlayback && syncSrc->overflow()){
-			advanceBeat();
-		}
+	//increment our index if we're not paused
+	if(syncSrc == NULL || mPlayMode == freePlayback){
+		mLastSampleIndex = mSampleIndex;
+		//we might be playing at a different sampling rate than our sound file
+		mSampleIndex += mSampleIncrement * mSampleRateMul;
+	}
+	if(syncSrc && mPlayMode == syncPlayback && syncSrc->overflow()){
+		advanceBeat();
+	}
 
-		//don't see past the end of our audio buffer
-		if(mSampleIndex > mAudioBuffer->length()){
-			mLastSampleIndex = mSampleIndex = mAudioBuffer->length() + 1;
-		}
+	//don't see past the end of our audio buffer
+	if(mSampleIndex > mAudioBuffer->length()){
+		mLastSampleIndex = mSampleIndex = mAudioBuffer->length() + 1;
+		playing = false;
+	}
 
-		//if we have a beat buffer and we are not syncing
-		if(mBeatBuffer != NULL && (!syncSrc || mPlayMode == freePlayback)){
-			unsigned int prevBeatIndex = mBeatIndex;
-			//get the beat index at this point in time based on our mSampleIndex;
-			double newBeatIndex = 
-				mBeatBuffer->getBeatIndexAtTime(mSampleIndex / mAudioBuffer->getSampleRate(), 
-						mBeatIndex + mBeatOffset);
-			//store the index, ditch the offset
-			mBeatIndex = newBeatIndex - mBeatOffset;
-			//get the index between beats
-			mSubBeatIndex = newBeatIndex - mBeatIndex - mBeatOffset;
-			//if we've crossed a beat boundry, set overflow = true.. else false
-			if(mBeatIndex > prevBeatIndex){
-				mOverflow = true;
-			} else {
-				mOverflow = false;
-			}
+	//if we have a beat buffer and we are not syncing
+	if(mBeatBuffer != NULL && (!syncSrc || mPlayMode == freePlayback)){
+		unsigned int prevBeatIndex = mBeatIndex;
+		//get the beat index at this point in time based on our mSampleIndex;
+		double newBeatIndex = 
+			mBeatBuffer->getBeatIndexAtTime(mSampleIndex / mAudioBuffer->getSampleRate(), 
+					mBeatIndex + mBeatOffset);
+		//store the index, ditch the offset
+		mBeatIndex = newBeatIndex - mBeatOffset;
+		//get the index between beats
+		mSubBeatIndex = newBeatIndex - mBeatIndex - mBeatOffset;
+		//if we've crossed a beat boundry, set overflow = true.. else false
+		if(mBeatIndex > prevBeatIndex){
+			mOverflow = true;
+		} else {
+			mOverflow = false;
 		}
+		if(newBeatIndex >= mBeatBuffer->length())
+			playing = false;
+	}
+	return playing;
 }
 
 float BufferPlayer::getSample(unsigned int chan, TempoDriver * syncSrc){

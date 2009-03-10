@@ -62,6 +62,7 @@ AudioIO::AudioIO(unsigned int num_buf_players) :
 	mSyncToClock = true;
 	mSyncBufferPlayerIndex = 0;
 	mLastBeatIndex = 0.0;
+	mSyncSrcChanged = false;
 
 	//lv2 stuff
 	if(!cLv2Inited){
@@ -197,6 +198,10 @@ void AudioIO::processCommand(AudioIOCmdPtr cmd){
 				}
 				stateCmd->setSyncToClock(mSyncToClock);
 				stateCmd->setSyncBufferPlayerIndex(mSyncBufferPlayerIndex);
+				if(mSyncSrcChanged){
+					stateCmd->setSyncSrcChanged();
+					mSyncSrcChanged = false;
+				}
 				//if we're syncing then we reflect that in the state update
 				if(!mSyncToClock){
 					stateCmd->setPeriod(mBufferPlayers[mSyncBufferPlayerIndex]->getBeatPeriod());
@@ -280,9 +285,13 @@ int AudioIO::audioCallback(jack_nframes_t nframes,
 		//players
 		for(unsigned int j = 0; j < mBufferPlayers.size(); j++){
 			//if we're syncing to this player then don't pass the driver
-			if(!mSyncToClock && j == mSyncBufferPlayerIndex)
-				mBufferPlayers[j]->sync();
-			else
+			if(!mSyncToClock && j == mSyncBufferPlayerIndex){
+				//if the buffer player is not playing audio [paused or at the end], don't sync to it
+				if(!mBufferPlayers[j]->sync()){
+					mSyncToClock = true;
+					mSyncSrcChanged = true;
+				}
+			}else
 				mBufferPlayers[j]->sync(&mBeatAndMeasureDriver.tempoDriver);
 		}
 
@@ -445,6 +454,7 @@ AudioIOSetVolume::AudioIOSetVolume(double vol, bool wait_for_measure) :
 AudioIOGetState::AudioIOGetState(unsigned int nbufferplayers) :
 	AudioIOCmd(false)
 {
+	mSyncSrcChanged = false;
 	//allocate the buffer player states here
 	for(unsigned int i = 0; i < nbufferplayers; i++){
 		BufferPlayer::GetStatePtr bpState = new BufferPlayer::GetState();
