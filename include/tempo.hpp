@@ -26,13 +26,11 @@ namespace DataJockey {
 	//this class is essentially a ramp that is used as an index for buffers of data
 	class TempoDriver {
 		private:
-			bool mOverflow;
+			double mIncrement;
 			double mBeatIndex;
+			bool mOverflow;
 			double mPeriod;
 			unsigned int mSampleRate;
-			double mNextTick;
-			//double mLastTick;
-			unsigned int mSampleCnt;
 		public:
 			//period is in seconds, a period of 0.5 gives 120 beats per minute
 			TempoDriver(unsigned int sample_rate, double period = 0.5);
@@ -41,24 +39,15 @@ namespace DataJockey {
 			bool tick(double &sample_val);
 			bool tick();
 			void setSampleRate(unsigned int rate);
-			void setPeriod(double period, bool updateTick = true);
+			void setPeriod(double period);
 			double getPeriod();
 			void setBPM(double bpm);
 
 			bool overflow(){ return mOverflow; }
 			void setOverflowed(bool overflow = true){ mOverflow = overflow;}
 
-			void setIndex(double index);
 			double getIndex(){ return mBeatIndex; }
 			void sync(double index, double period, bool overflow);
-
-			unsigned int getSampleCount(){return mSampleCnt;}
-			void setSampleCount(unsigned int cnt){mSampleCnt = cnt;}
-
-			double getNextTick(){return mNextTick;}
-			void setNextTick(double next){ mNextTick = next;}
-
-			//double getLastTick(){return mLastTick;}
 	};
 
 	class TempoDivider {

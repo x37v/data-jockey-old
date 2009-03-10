@@ -192,6 +192,9 @@ void AudioDriver::mixerSetBeatOffset(unsigned int mixer, unsigned int offset, bo
 
 void AudioDriver::mixerSetPause(unsigned int mixer, bool pause, bool wait_for_measure){
 	BufferPlayer::CmdPtr cmd = new BufferPlayer::SetPlaying(!pause);
+	//if we pause and we're syncing to this mixer, stop syncing to it
+	if(mMixerPanel->master()->syncSource() == (mixer + 1))
+		mMixerPanel->master()->setSyncSource(0);
 	AudioIOBufferPlayerCmdPtr audioIOcmd = new AudioIOBufferPlayerCmd(mixer, cmd, wait_for_measure);
 	mAudioIO.sendCommand(audioIOcmd);
 }

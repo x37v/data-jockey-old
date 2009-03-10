@@ -120,6 +120,10 @@ namespace DataJockey {
 			float mEqControlLow;
 			float mEqControlOut;
 
+			bool mWasSyncingToClock;
+
+			double mSampleRateMul;
+
 		public:
 			BufferPlayer(unsigned int sample_rate, SLV2World lv2World, SLV2Plugins lv2plugins);
 			virtual ~BufferPlayer();

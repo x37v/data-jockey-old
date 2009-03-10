@@ -21,11 +21,9 @@
 #include "tempo.hpp"
 #include <unistd.h>
 
-/*
 #include <iostream>
 using std::cerr;
 using std::endl;
-*/
 
 namespace DataJockey {
 
@@ -37,72 +35,23 @@ namespace DataJockey {
 		mOverflow = false;
 		reset();
 		mSampleRate = sample_rate;
+		mIncrement = 1;
 		setPeriod(period);
 	}
 
 	void TempoDriver::reset(){
-		mSampleCnt = 0;
-		//mLastTick = 0;
 		mBeatIndex = 0;
 		mOverflow = false;
 	}
 
-	//XXX this is not perfect yet, something with updating the 
-	//period messes with the clock slightly..
 	bool TempoDriver::tick(double &sample_val){
-
 		mOverflow = false;
-
-		/*
-		if(mSyncSrc != NULL){
-			sync();
-			sample_val = mSyncSrc->getIndex();
-			return mSyncSrc->overflow();
-		}
-		*/
-
-		//XXX
-		if(mNextTick > mSampleCnt){
-			sample_val = mBeatIndex = (double)mSampleCnt / mNextTick;
-			mSampleCnt++;
-		} else {
-			mNextTick = mPeriod * mSampleRate + (mNextTick - mSampleCnt);
-			mBeatIndex = mSampleCnt = 0;
-			sample_val = 1.0;
+		mBeatIndex += mIncrement;
+		if(mBeatIndex >= 1.0){
+			mBeatIndex = 0;
 			mOverflow = true;
 		}
-		return mOverflow;
-
-		if(mNextTick > mSampleCnt){
-			sample_val = mBeatIndex;
-			mBeatIndex += (1.0 - mBeatIndex) / (double)(mNextTick - mSampleCnt);
-			/*
-			if(mBeatIndex > 1.0){
-				cerr << "mNextTick: " << mNextTick << endl;
-				cerr << "mSampleCnt: " << mSampleCnt <<  endl;
-				cerr << "mBeatIndex: " << mBeatIndex << cerr.precision(20) << endl;
-				cerr << "sample_val: " << sample_val << cerr.precision(20) << endl;
-				cerr << endl;
-			}
-			*/
-			mSampleCnt++;
-		} else {
-			//set the next tick value
-			//the number of samples to the next tick plus the error left over
-			//from the previous tick
-			mNextTick = mPeriod * mSampleRate + (mNextTick - mSampleCnt);
-			mBeatIndex = mSampleCnt = 0;
-			sample_val = 1;
-			mOverflow = true;
-		}
-		/*
-		if(sample_val > 1.0){
-			mOverflow = true;
-			sample_val = 1.0;
-			mNextTick = mPeriodMul * mPeriod * mSampleRate + (mNextTick - mSampleCnt);
-			mBeatIndex = mSampleCnt = 0;
-		}
-		*/
+		sample_val = mBeatIndex;
 		return mOverflow;
 	}
 
@@ -110,20 +59,6 @@ namespace DataJockey {
 		double whocares;
 		return tick(whocares);
 	}
-
-//	bool TempoDriver::tick(float &sample_val){
-//		if(mNextTick <= mLastTick)
-//			sample_val = 0;
-//		else
-//			sample_val = (float)((mSampleCnt - mLastTick) / (mNextTick - mLastTick));
-//		mSampleCnt++;
-//		if(mSampleCnt > mNextTick){
-//			mLastTick = mNextTick;
-//			mNextTick = mSampleCnt + mPeriod * mSampleRate;
-//			return true;
-//		}
-//		return false;
-//	}
 
 	void TempoDriver::setSampleRate(unsigned int rate){
 		mSampleRate = rate;
@@ -133,30 +68,21 @@ namespace DataJockey {
 		return mPeriod;
 	}
 
-	void TempoDriver::setPeriod(double period, bool updateTick){
+	void TempoDriver::setPeriod(double period){
 		mPeriod = period;
-		if (updateTick)
-			mNextTick = mPeriod * mSampleRate;
+		mIncrement = (1.0 / (double)(mPeriod * mSampleRate));
 	}
 
 	void TempoDriver::setBPM(double bpm){
 		setPeriod(60.0 / bpm);
 	}
 
-	void TempoDriver::setIndex(double index){
-		mBeatIndex = index;
-	}
-
 	void TempoDriver::sync(double index, double period, bool overflow){
 		mOverflow = overflow;
 		mBeatIndex = index;
 		mPeriod = period;
-		mSampleCnt++;
-
-		if(mOverflow)
-			mSampleCnt = 0;
-
-		mNextTick = mPeriod * mSampleRate;
+		mIncrement = (1.0 / (double)(mPeriod * mSampleRate));
+		return;
 	}
 
 	//*************
