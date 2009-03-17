@@ -22,3 +22,5 @@ Notes:
 	variable: DATAJOCKEY_JAVA_OPTS
 	example (to increase the max heap size): export DATAJOCKEY_JAVA_OPTS="-Xmx1024m"
 
+	The file, if it exists,  ~/.datajockey/startup.rb will be executed on startup.
+
