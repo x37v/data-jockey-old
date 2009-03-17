@@ -99,6 +99,7 @@ namespace DataJockey {
 			virtual int audioCallback(jack_nframes_t nframes, 
 					std::vector<jack_default_audio_sample_t *> inBufs,
 					std::vector<jack_default_audio_sample_t *> outBufs);
+			virtual void jackShutdownCallback();
 			//don't call this while the audio is running, it is not
 			//realtime safe and will therefore thrown an error
 			void addBufferPlayer(BufferPlayerPtr buffer_player)

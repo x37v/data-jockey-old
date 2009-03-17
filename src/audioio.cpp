@@ -344,6 +344,9 @@ int AudioIO::audioCallback(jack_nframes_t nframes,
 	return 0;
 }
 
+void AudioIO::jackShutdownCallback(){
+	qFatal("jack has shut down");
+}
 
 //don't call this after we've started the audio!
 void AudioIO::addBufferPlayer(BufferPlayerPtr buffer_player)

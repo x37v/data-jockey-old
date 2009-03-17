@@ -190,6 +190,15 @@ rescue
   puts $!
 end
 
+#load the startup file if there is one
+begin
+  if File.exists?(File.expand_path("~/.datajockey/startup.rb"))
+    load File.expand_path("~/.datajockey/startup.rb")
+  end
+rescue
+  puts $!
+end
+
 #include the Datajockey module so we don't have to prefix everything with Datajockey
 include Datajockey
 
