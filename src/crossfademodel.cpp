@@ -53,7 +53,8 @@ float CrossFadeModel::valueLeft() const {
 		return 0.0f;
 	else if(mPosition <= 0.0f)
 		return 1.0f;
-	return (float)log((exp(1) - exp(0)) * (1.0f - mPosition) + exp(0));
+	//equal power!
+	return (float)sin((M_PI / 2) * (1.0f + mPosition));
 }
 
 float CrossFadeModel::valueRight() const {
@@ -61,7 +62,8 @@ float CrossFadeModel::valueRight() const {
 		return 0.0f;
 	else if(mPosition >= 1.0f)
 		return 1.0f;
-	return (float)log((exp(1) - exp(0)) * mPosition + exp(0));
+	//equal power!
+	return (float)sin((M_PI / 2) * mPosition);
 }
 
 bool CrossFadeModel::enabled() const {
