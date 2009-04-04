@@ -9,7 +9,7 @@ class ScoreLogger
     @stop_time = nil
     @start_time = Time.now
     @current_songs = Hash.new
-    @poll_period = 0.01
+    @poll_period = 0.1
   end
   def start
     @score = Score.new
