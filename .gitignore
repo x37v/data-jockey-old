@@ -5,3 +5,4 @@ qrc_datajockey.cpp
 *.so
 *_wrap.cxx
 moc/
+./datajockey
