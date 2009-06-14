@@ -106,7 +106,9 @@ void AudioDriver::processAudioEvents(){
 
 		if(state->getTempoScale() != mTempoMul && mReportTempoMul){
 			mTempoMul = state->getTempoScale();
-			emit(tempoMulChanged(mTempoMul));
+			//XXX this should go away and just be delt with in the gui because
+			//it is the same as the mixerTempoMulChanged above..
+			//emit(tempoMulChanged(mTempoMul));
 		}
 
 		//push a new state request on there
@@ -362,12 +364,14 @@ void AudioDriver::connectToMixerPanel(){
 			this,
 			SLOT(masterSetTempo(float)),
 			Qt::QueuedConnection);
+	/*
 	QObject::connect(
 			mMixerPanel->master(),
 			SIGNAL(tempoMulChanged(double)),
 			this,
 			SLOT(masterSetTempoMul(double)),
 			Qt::QueuedConnection);
+			*/
 	QObject::connect(
 			mMixerPanel->master(),
 			SIGNAL(syncSourceChanged(unsigned int)),
@@ -381,12 +385,14 @@ void AudioDriver::connectToMixerPanel(){
 			mMixerPanel->master(),
 			SLOT(setTempo(float)),
 			Qt::QueuedConnection);
+	/*
 	QObject::connect(
 			this,
 			SIGNAL(tempoMulChanged(double)),
 			mMixerPanel->master(),
 			SLOT(setTempoMul(double)),
 			Qt::QueuedConnection);
+			*/
 }
 
 AudioDriverThread::AudioDriverThread(QObject * parent) :

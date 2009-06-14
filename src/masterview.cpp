@@ -122,6 +122,9 @@ MasterView::MasterView(unsigned int numMixers, QWidget *parent) :
 			mTempoMul,
 			SIGNAL(valueChanged(double)),
 			this, SLOT(setTempoMulSelf(double)));
+
+	//XXX we get rid of the tempo mul for now because it isn't being used
+	mTempoMul->setVisible(false);
 }
 
 QSlider * MasterView::volume() const {
