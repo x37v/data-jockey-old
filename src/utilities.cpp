@@ -25,6 +25,8 @@
 #include <vector>
 #include <map>
 #include <xtract/libxtract.h>
+#include <algorithm>
+#include <limits>
 //harmonicity takes a long time, you can skip windows by making this larger than 0
 #define SKIP_HARM_WINDOWS 1
 
