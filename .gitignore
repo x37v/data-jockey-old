@@ -6,3 +6,5 @@ qrc_datajockey.cpp
 *_wrap.cxx
 moc/
 datajockey
+core.*
+core
