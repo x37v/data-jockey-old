@@ -40,6 +40,8 @@ namespace datajockey {
          //returns the path to the config file has been loaded
          static std::string getFile();
 
+			bool run_interpreter();
+
 			//get database data
 			std::string databaseAdapter() throw(std::runtime_error);
 			std::string databaseName() throw(std::runtime_error);

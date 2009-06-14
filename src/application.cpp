@@ -72,6 +72,7 @@ int DataJockeyApplication::run(int argc, char *argv[]){
 	QErrorMessage::qtHandler();
 	app.setStyle(new QCleanlooksStyle);
 	unsigned int oscPort = DEFAULT_OSC_PORT;
+	bool run_interp = true;
 
 	datajockey::Configuration * config = datajockey::Configuration::instance();
 
@@ -84,6 +85,7 @@ int DataJockeyApplication::run(int argc, char *argv[]){
 
 		desc.add_options()
 			("help,h", "Produce this help message.")
+			("no-interp,n", "Disable the script interpreter.")
 			("config,c", po::value<std::string>(), "Specify a configuration file to use.")
 			("osc-port,p", po::value<unsigned int>(), "Specify a port number to use for Open Sound Control input messages.")
 			("style-sheet,s", po::value<std::string>(), "Specify a style sheet file to use for the GUI.")
@@ -113,6 +115,13 @@ int DataJockeyApplication::run(int argc, char *argv[]){
 			qFatal(str.c_str());
 			return app.exec();
 		}
+
+		//should we run the interpreter
+		if(vm.count("no-interp"))
+			run_interp = false;
+		else
+			run_interp = config->run_interpreter();
+
 		//if we haven't set the osc-port in the command line, set it via the config file
 		if(vm.count("osc-port")) 
 			oscPort = vm["osc-port"].as<unsigned int>();
@@ -233,8 +242,12 @@ int DataJockeyApplication::run(int argc, char *argv[]){
 			audioDriverThread,
 			SLOT(stop()));
 
-	RubyInterpreterThread * rubyThread = new RubyInterpreterThread;
-	rubyThread->start();
+	if(run_interp){
+		RubyInterpreterThread * rubyThread = new RubyInterpreterThread;
+		rubyThread->start();
+	} else {
+		cout << "disabling the interpreter" << endl;
+	}
 
 	cout << "oscPort: " << oscPort << endl;
 

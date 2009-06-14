@@ -109,6 +109,15 @@ std::string Configuration::getFile(){
       return instance()->mFile;
 }
 
+bool Configuration::run_interpreter(){
+	yaml::map_ptr topmap = yaml::get<yaml::map_ptr>(mRoot);
+	yaml::map::iterator it = topmap->find(std::string("interpreter"));
+	if(it != topmap->end()){
+		return yaml::get<bool>(it->second);
+	} else
+		return true;
+}
+
 /*
 std::string Configuration::tostr(){
 	return std::string();
