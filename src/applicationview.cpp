@@ -47,6 +47,7 @@
 #include "interpretermodel.hpp"
 #include "tagmodel.hpp"
 #include "workfiltermodel.hpp"
+#include "config.hpp"
 
 //qt stuff
 #include <QSplitter>
@@ -66,7 +67,10 @@ ApplicationView::ApplicationView(ApplicationModel * model):
 	mTagEditor = new TagEditor(mModel->tagModel(), this);
 	mWorkFilterList = new WorkFilterListView(mModel->workFilterList(), this);
 
-	mInterpView = new InterpreterView(mModel->interpreter(), this);
+	if(datajockey::Configuration::instance()->run_interpreter())
+		mInterpView = new InterpreterView(mModel->interpreter(), this);
+	else
+		mInterpView = NULL;
 
 	//set up our view
 	setWindowTitle("data jockey");
@@ -84,7 +88,8 @@ ApplicationView::ApplicationView(ApplicationModel * model):
 	leftTopTabView->addTab(mWorkFilterList, "filters");
 
 	rightTabView->addTab(mWorkDB, "work list");
-	rightTabView->addTab(mInterpView, "script interpreter");
+	if(mInterpView)
+		rightTabView->addTab(mInterpView, "script interpreter");
 
 	vertSplit->addWidget(leftTopTabView);
 	vertSplit->addWidget(mWorkDetail);
@@ -365,21 +370,23 @@ void ApplicationView::connectToModel(){
 			mModel->filteredWorkTable(),
 			SLOT(clearFilter()));
 
-	//connect up the interpreter
-	QObject::connect(
-			mInterpView,
-			SIGNAL(newInput(QString)),
-			mModel->interpreter(),
-			SLOT(addToInput(QString)));
-	QObject::connect(
-			mInterpView,
-			SIGNAL(cancelingInput()),
-			mModel->interpreter(),
-			SLOT(cancelInput()));
-	QObject::connect(
-			mModel->interpreter(),
-			SIGNAL(newOutput(QString)),
-			mInterpView,
-			SLOT(addToOutput(QString)));
+	if(mInterpView){
+		//connect up the interpreter
+		QObject::connect(
+				mInterpView,
+				SIGNAL(newInput(QString)),
+				mModel->interpreter(),
+				SLOT(addToInput(QString)));
+		QObject::connect(
+				mInterpView,
+				SIGNAL(cancelingInput()),
+				mModel->interpreter(),
+				SLOT(cancelInput()));
+		QObject::connect(
+				mModel->interpreter(),
+				SIGNAL(newOutput(QString)),
+				mInterpView,
+				SLOT(addToOutput(QString)));
+	}
 }
 

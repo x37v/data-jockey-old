@@ -115,7 +115,7 @@ bool Configuration::run_interpreter(){
 	if(it != topmap->end()){
 		return yaml::get<bool>(it->second);
 	} else
-		return true;
+		return false;
 }
 
 /*
