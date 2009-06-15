@@ -1,3 +1,4 @@
+The Interpreter seems to be causing crashes, added a switch to disable the interpreter
 Tags that are being dragged are not visible [black text on black background]
 	cannot seem to figure out which widget is displayed during this drag.
 Syncing:
