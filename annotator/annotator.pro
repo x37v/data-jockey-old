@@ -13,7 +13,7 @@ DEPENDPATH += ../
 INCLUDEPATH += ../include/
 INCLUDEPATH += /usr/local/include/
 
-LIBS += -lyamlcpp -lsyck -lboost_program_options
+LIBS += -lyamlcpp -lsyck -lboost_program_options-mt
 
 target.path = $$PREFIX/bin
 INSTALLS += target

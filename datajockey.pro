@@ -39,13 +39,13 @@ QT += sql
 LIBS += -ljackcpp -lsndfile -lslv2 -lmad -lvorbisfile -loscpack 
 
 unix:!macx {
-	LIBS += -lruby1.8 -lboost_regex 
+	LIBS += -lruby1.8 -lboost_regex-mt 
 }
 macx {
 	LIBS += -lruby.1.8 -lboost_regex-mt 
 }
 
-LIBS += -lyamlcpp -lsyck $$system("pkg-config --libs jack") -lboost_program_options
+LIBS += -lyamlcpp -lsyck $$system("pkg-config --libs jack") -lboost_program_options-mt
 
 unix:!macx { QMAKE_LFLAGS += -rdynamic }
 macx { 

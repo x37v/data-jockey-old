@@ -56,7 +56,7 @@ CrossFadeView::CrossFadeView(unsigned int numMixers, QWidget *parent) :
 				label.append(leftNum.str());
 				label.append(" <-> ");
 				label.append(rightNum.str());
-				mSelection->addItem(label.c_str(), pair);
+				mSelection->addItem(label.c_str(), 1 + numMixers * i + j);
 			}
 		}
 	}
