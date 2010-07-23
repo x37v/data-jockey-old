@@ -32,6 +32,8 @@ class WorkFilterList;
 class InterpreterModel;
 class RemoteWorkFilterModel;
 class OscReceiver;
+//XXX hack for now
+class OscSender;
 
 class ApplicationModel : public QObject {
 	Q_OBJECT
@@ -53,6 +55,7 @@ class ApplicationModel : public QObject {
 		WorkFilterList * workFilterList() const;
 		InterpreterModel * interpreter() const;
 		OscReceiver * oscReceiver() const;
+		OscSender * oscSender() const;
 	protected:
 		ApplicationModel();
 		ApplicationModel(const ApplicationModel&);
@@ -69,6 +72,7 @@ class ApplicationModel : public QObject {
 		WorkFilterList * mWorkFilterList;
 		InterpreterModel * mInterp;
 		OscReceiver * mOscReceiver;
+		OscSender * mOscSender;
 };
 
 class ApplicationModelProxy : public QObject {

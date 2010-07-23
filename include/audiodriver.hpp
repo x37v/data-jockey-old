@@ -40,6 +40,9 @@ class AudioDriver : public QObject {
 		void tempoMulChanged(double value);
 		//0 is master
 		void syncSourceChanged(unsigned int src);
+		//hack
+		void mixerMaxSample(unsigned int mixer, float val);
+		void masterMaxSample(float val);
 	protected:
 		void run();
 	public slots:

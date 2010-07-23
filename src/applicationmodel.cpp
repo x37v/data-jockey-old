@@ -27,6 +27,7 @@
 #include "interpretermodel.hpp"
 #include "remoteworkfiltermodel.hpp"
 #include "oscreceiver.hpp"
+#include "oscsender.hpp"
 
 #include <stdexcept>
 
@@ -87,6 +88,16 @@ ApplicationModel::ApplicationModel() {
 	QObject::connect(
 			mWorkFilterList, SIGNAL(selectionChanged(WorkFilterModel *)),
 			mFilterProxy, SLOT(setFilter(WorkFilterModel *)));
+
+	//HACK
+	//XXX this is the host and port to send to!
+	mOscSender = new OscSender("127.0.0.1", 10101, mMixerPanel);
+	QObject::connect(
+			mTagModel, SIGNAL(tagAssociationMade(int, int)),
+			mOscSender, SLOT(newTag(int, int)),
+			Qt::QueuedConnection);
+
+	mOscSender->start();
 }
 
 ApplicationModel::~ApplicationModel(){
@@ -123,6 +134,11 @@ InterpreterModel * ApplicationModel::interpreter() const {
 
 OscReceiver * ApplicationModel::oscReceiver() const {
 	return mOscReceiver;
+}
+
+//HACK
+OscSender * ApplicationModel::oscSender() const {
+	return mOscSender;
 }
 
 ApplicationModelProxy::ApplicationModelProxy(Qt::ConnectionType type, QObject * parent) :

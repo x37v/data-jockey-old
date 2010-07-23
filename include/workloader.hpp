@@ -61,6 +61,7 @@ class WorkLoader : public QObject {
 	signals:
 		void mixerLoaded(unsigned int mixer, DataJockey::AudioBufferPtr audiobuf, 
 				DataJockey::BeatBufferPtr beatbuf, bool wait_for_measure = false);
+		void mixerLoaded(unsigned int mixer, int work);
 	protected slots:
 		//this is mapped internally (uses an int because the mapper doesn't do unsigned)
 		void mixerLoadWork(int mixer);

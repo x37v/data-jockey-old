@@ -44,7 +44,8 @@ AudioIO::AudioIO(unsigned int num_buf_players) :
 	mBeatAndMeasureDriver(getSampleRate()),
 	mMsgBufToAudio(AUDIOIO_MAX_MESSAGES_PER_CALLBACK),
 	mMsgBufFromAudio(AUDIOIO_MAX_MESSAGES_PER_CALLBACK),
-	mPreviewBuffer((getSampleRate() * AUDIOIO_PREVIEW_BUFFER_MS) / 500)
+	mPreviewBuffer((getSampleRate() * AUDIOIO_PREVIEW_BUFFER_MS) / 500),
+	mMaxSample(0.0)
 	//SR * 2 * milliseconds / 1000 = SR(samples / sec) * milliseconds / 500 (ms)
 {
 
@@ -210,6 +211,8 @@ void AudioIO::processCommand(AudioIOCmdPtr cmd){
 					stateCmd->setPeriod(mBeatAndMeasureDriver.tempoDriver.getPeriod());
 					stateCmd->setTempoScale(1.0);
 				}
+				stateCmd->setMaxSample(mMaxSample);
+				mMaxSample = 0.0f;
 
 				cmd->setCompleted();
 			}
@@ -329,6 +332,12 @@ int AudioIO::audioCallback(jack_nframes_t nframes,
 			}
 		}
 	}
+
+	//find the max sample [hack]
+	for(unsigned int i = 0; i < nframes; i++){
+		mMaxSample = abs_max(outBufs[0][i], mMaxSample);
+	}
+	
 	//reat the preview buffer into cue output
 	if(mPreviewBuffer.getReadSpace() > 2){
 		unsigned int readFrames = (mPreviewBuffer.getReadSpace() / 2);
@@ -457,6 +466,7 @@ AudioIOSetVolume::AudioIOSetVolume(double vol, bool wait_for_measure) :
 AudioIOGetState::AudioIOGetState(unsigned int nbufferplayers) :
 	AudioIOCmd(false)
 {
+	mMaxSample = 0.0;
 	mSyncSrcChanged = false;
 	//allocate the buffer player states here
 	for(unsigned int i = 0; i < nbufferplayers; i++){

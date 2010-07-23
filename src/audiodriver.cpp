@@ -84,12 +84,20 @@ void AudioDriver::processAudioEvents(){
 					progress = 1.0;
 			}
 			emit(progressChanged(i, progress));
+			//HACK
+			float max = bufferPlayerStates[i]->getMaxSample();
+			emit(mixerMaxSample(i, max));
+
+
 			//report the mixer's tempo mul if we should
 			if(i < mNumMixers && mReportPlayerTempoMul[i]){
 				double mixerTempoMul = bufferPlayerStates[i]->getTempoMultiplier();
 				emit(mixerTempoMulChanged(i, mixerTempoMul));
 			}
 		}
+
+		//HACK
+		emit(masterMaxSample(state->getMaxSample()));
 
 		//deal with tempo changes
 		//it only changes when we're in sync with a buffer

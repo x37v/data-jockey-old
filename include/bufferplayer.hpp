@@ -34,6 +34,8 @@
 
 #define DJ_EQ_URI "http://plugin.org.uk/swh-plugins/dj_eq"
 
+float abs_max(float x,float y);
+
 namespace DataJockey {
 
 	class BufferPlayer;

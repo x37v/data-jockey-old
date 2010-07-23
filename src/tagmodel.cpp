@@ -203,6 +203,7 @@ void TagModel::addWorkTagAssociation(int work_id, int tag_id){
 	if(!mAddTagQuery.first()){
 		queryStr.sprintf("insert into audio_work_tags (audio_work_id, tag_id) values(%d, %d)", work_id, tag_id);
 		mAddTagQuery.exec(queryStr);
+		emit(tagAssociationMade(work_id, tag_id));
 		//update association count
 		updateTagCount(tag_id);
 	}

@@ -151,6 +151,7 @@ HEADERS +=  include/application.hpp \
 				include/mixerpanelview.hpp \
 				include/object.hpp \
 				include/oscreceiver.hpp \
+				include/oscsender.hpp \
 				include/interpretermodel.hpp \
 				include/interpreterioproxy.hpp \
 				include/interpreterview.hpp \
@@ -200,6 +201,7 @@ SOURCES +=  src/application.cpp \
 				src/mixerpanelview.cpp \
 				src/object.cpp \
 				src/oscreceiver.cpp \
+				src/oscsender.cpp \
 				src/interpretermodel.cpp \
 				src/interpreterioproxy.cpp \
 				src/interpreterview.cpp \

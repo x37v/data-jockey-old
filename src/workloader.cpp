@@ -214,6 +214,7 @@ void WorkLoader::setWork(unsigned int mixer_index,
 	workQueryStr.append(id);
 
 	emit(mixerLoaded(mixer_index, audio_buffer, beat_buffer));
+	emit(mixerLoaded(mixer_index, work));
 	
 	//set the info
 	mWorkInfoQuery.exec(workQueryStr);

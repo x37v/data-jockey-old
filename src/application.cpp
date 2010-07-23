@@ -59,6 +59,8 @@ using std::endl;
 
 
 #include "oscreceiver.hpp"
+//hack
+#include "oscsender.hpp"
 
 #include "config.hpp"
 
@@ -227,6 +229,20 @@ int DataJockeyApplication::run(int argc, char *argv[]){
 			previewer,
 			SLOT(preview(bool)));
 
+	//HACK
+	QObject::connect(
+			loader, SIGNAL(mixerLoaded(unsigned int, int)),
+			model->oscSender(), SLOT(newWork(unsigned int, int)),
+			Qt::QueuedConnection);
+	QObject::connect(
+			audioDriver, SIGNAL(mixerMaxSample(unsigned int, float)),
+			model->oscSender(), SLOT(setMixerMax(unsigned int, float)),
+			Qt::QueuedConnection);
+	QObject::connect(
+			audioDriver, SIGNAL(masterMaxSample(float)),
+			model->oscSender(), SLOT(setMasterMax(float)),
+			Qt::QueuedConnection);
+
 	//start the driver and the driver thread
 	audioDriver->start();
 	audioDriverThread->start();
@@ -253,7 +269,6 @@ int DataJockeyApplication::run(int argc, char *argv[]){
 
 	OscThread * oscThread = new OscThread(model->oscReceiver(), oscPort);
 	oscThread->start();
-
 
 	view->show();
 	return app.exec();

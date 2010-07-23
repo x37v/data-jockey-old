@@ -93,6 +93,9 @@ namespace DataJockey {
 
 			JackCpp::RingBuffer<jack_default_audio_sample_t> mPreviewBuffer;
 
+			//HACK
+			float mMaxSample;
+
 		public:
 			AudioIO(unsigned int num_buf_players = 4);
 			~AudioIO();
@@ -181,6 +184,7 @@ namespace DataJockey {
 			double mPeriod;
 			double mTempoScale;
 			bool mSyncSrcChanged;
+			float mMaxSample;
 		public:
 			AudioIOGetState(unsigned int nbufferplayers);
 			virtual const typeID_t getTypeID(){return AudioIOCmd::get_state;}
@@ -197,6 +201,9 @@ namespace DataJockey {
 			void setPeriod(double period){ mPeriod = period;}
 			double getTempoScale(){return mTempoScale;}
 			void setTempoScale(double scale){ mTempoScale = scale;}
+			//hack
+			double getMaxSample(){return mMaxSample;}
+			void setMaxSample(float max){ mMaxSample = max;}
 	};
 
 	class AudioIOSyncToBufferPlayer : public AudioIOCmd {

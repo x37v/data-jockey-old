@@ -70,6 +70,7 @@ class TagModel : public TreeModel {
 		int find(std::string tag_name, std::string class_name);
 	signals:
 		void classAdded(QPair<int, QString> classInfo);
+		void tagAssociationMade(int work_id, int tag_id);
 	public slots:
 		void addTag(int classId, QString tagName);
 		void addClassAndTag(QString className, QString tagName);
