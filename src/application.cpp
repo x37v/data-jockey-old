@@ -27,7 +27,7 @@ namespace po = boost::program_options;
 using std::cout;
 using std::endl;
 
-#define NUM_MIXERS 4
+#define NUM_MIXERS 2
 
 #include <QApplication>
 #include <QWidget>

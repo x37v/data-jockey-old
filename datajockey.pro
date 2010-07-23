@@ -5,8 +5,8 @@ PREFIX = /usr/local/
 RUBYLIBDEST = $$system("ruby -e 'require \"rbconfig\"; puts File.join(Config::CONFIG[\"sitelibdir\"].chomp, \"datajockey/\")'")
 
 #change to release if you want to be optimized
-CONFIG += qt debug
-#CONFIG += qt release
+#CONFIG += qt debug
+CONFIG += qt release
 
 VERSION = 0.1
 

@@ -28,11 +28,11 @@
 require 'datajockey/base'
 require 'datajockey/annotation/beatlocations'
 require 'rubygems'
-require 'rtaglib'
+require 'taglib'
 require 'yaml'
 require 'datajockey_utils'
 
-class TagFile::File
+class TagLib::File
   def has_attribute(name)
     if !self.send(name) or self.send(name) =~ /^\s*$/
       return false
@@ -138,7 +138,7 @@ module Datajockey
 
       #get id3tag data from file if it exists
       begin
-        tag = TagFile::File.new(audioFile)
+        tag = TagLib::File.new(audioFile)
         tag.store_attribute_in_hash(annotation,"title")
         tag.store_attribute_in_hash(annotation,"artist")
         tag.store_attribute_in_hash(annotation,"year")
@@ -155,7 +155,7 @@ module Datajockey
           album["name"] = tag.album
           album["track"] = tag.track.to_i if tag.has_attribute("track")
         end
-      rescue TagFile::BadFile
+      rescue TagLib::BadFile
       end
 
       return annotation
