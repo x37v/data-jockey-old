@@ -48,17 +48,23 @@ SoundFile::SoundFile(std::string location) :
 	mSampleRate(0),
 	mChannels(0)
 {
+	bool isMp3 = false;
 	std::string oggEnd0("ogg");
 	std::string oggEnd1("OGG");
 	std::string mp3End0("mp3");
 	std::string mp3End1("MP3");
 
+	if(location.compare(location.length() - 3, 3, mp3End0) == 0 ||
+			location.compare(location.length() - 3, 3, mp3End1) == 0) {
+		isMp3 = true;
+	}
+
 	//determine what type of soundfile it is
-	if(mSndFile){
+	if(mSndFile && !isMp3){
 		mType = SNDFILE;
 		mSampleRate = mSndFile.samplerate();
 		mChannels = mSndFile.channels();
-		//see if it is an mp3
+		//see if it is an mp3 or ogg
 	} else {
 		//we need to have enough characters to see the extension
 		if(location.length() < 4){
@@ -80,8 +86,9 @@ SoundFile::SoundFile(std::string location) :
 			mSampleRate = vi->rate;
 			mChannels = vi->channels;
 		//mp3
-		} else if(location.compare(location.length() - 3, 3, mp3End0) == 0 ||
-				location.compare(location.length() - 3, 3, mp3End1) == 0) {
+		//} else if(location.compare(location.length() - 3, 3, mp3End0) == 0 ||
+				//location.compare(location.length() - 3, 3, mp3End1) == 0) {
+		} else if(isMp3) {
 			mType = MP3;
 
 			//if libsoundfile couldn't open.. see if we can open it as an mp3
